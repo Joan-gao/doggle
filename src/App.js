@@ -21,6 +21,7 @@ import Main from "./components/layout/Main";
 import "antd/dist/antd.css";
 import "./assets/styles/main.css";
 import "./assets/styles/responsive.css";
+import ChatBotTest from "./pages/ChatBotTest.js";
 
 function App() {
   return (
@@ -34,7 +35,8 @@ function App() {
           <Route exact path="/billing" component={Billing} />
           <Route exact path="/profile" component={Profile} />
           <Route exact path="/chatbot" component={Chatbot} />
-          <Redirect from="*" to="/dashboard" />
+          <Route exact path="/chatbottest" component={ChatBotTest} />
+          {/* <Redirect from="*" to="/dashboard" /> */}
         </Main>
       </Switch>
     </div>

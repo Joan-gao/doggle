@@ -65,7 +65,7 @@ function Sidenav({ color }) {
             <span
               className="icon"
               style={{
-                background: page === "dashboard" ? color : "",
+                background: page === 'dashboard' ? color : '',
               }}
             >
               {dashboard}
@@ -78,12 +78,25 @@ function Sidenav({ color }) {
             <span
               className="icon"
               style={{
-                background: page === "chatbot" ? color : "",
+                background: page === 'chatbot' ? color : '',
               }}
             >
               {tables}
             </span>
             <span className="label">Chatbot</span>
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item key="3">
+          <NavLink to="/chatbottest">
+            <span
+              className="icon"
+              style={{
+                background: page === 'chatbottest' ? color : '',
+              }}
+            >
+              {tables}
+            </span>
+            <span className="label">Chatbotest</span>
           </NavLink>
         </Menu.Item>
       </Menu>
