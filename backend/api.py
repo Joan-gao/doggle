@@ -2,6 +2,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from fileAnalyze import *
+from db import *
 
 
 app = Flask(__name__)
@@ -28,3 +29,9 @@ def upload():
         filename = file.filename
         fileAnalyze(file)
         return jsonify({"message": f"File {filename} uploaded successfully"}), 200
+
+
+@app.route('/transactions/<int:user_id>')
+def get_transactions_for_current_month(user_id):
+    response = getOverAllTransactionAnalyze(user_id)
+    return jsonify(response)

@@ -42,8 +42,7 @@ generation_config = {
 model = genai.GenerativeModel(
     model_name="gemini-1.5-flash",
     generation_config=generation_config,
-    # safety_settings = Adjust safety settings
-    # See https://ai.google.dev/gemini-api/docs/safety-settings
+
 )
 
 
@@ -72,7 +71,3 @@ def fileAnalyze(file):
         print("Ready for analyze")
     else:
         print("Upload file to gemini fail")
-
-    # 获取文件的 MIME 类型
-    # kind = filetype.guess(file_path)
-    # file_type = kind.mime
