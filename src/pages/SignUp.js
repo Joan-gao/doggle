@@ -148,11 +148,10 @@ export default class SignUp extends Component {
             }
           );
           console.log("Response:", response.data);
-          // ...
+
+          this.props.history.push("/dashboard");
         })
         .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
           console.log("error", error);
           // ..
         });

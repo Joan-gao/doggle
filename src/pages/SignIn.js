@@ -11,6 +11,9 @@
 */
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import firebaseConfig from "../components/other/firebaseAuth";
+import { initializeApp } from "firebase/app";
 import {
   Layout,
   Menu,
@@ -29,6 +32,7 @@ import {
   InstagramOutlined,
   GithubOutlined,
 } from "@ant-design/icons";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 function onChange(checked) {
   console.log(`switch to ${checked}`);
 }
@@ -114,10 +118,30 @@ const signin = [
     />
   </svg>,
 ];
+
 export default class SignIn extends Component {
   render() {
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+
+    const handleSubmit = (email, password) => {
+      console.log("Call submit method");
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user.uid);
+          this.props.history.push("/dashboard");
+
+          // ...
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
     const onFinish = (values) => {
       console.log("Success:", values);
+      handleSubmit(values.email, values.password);
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -221,6 +245,7 @@ export default class SignIn extends Component {
                       type="primary"
                       htmlType="submit"
                       style={{ width: "100%" }}
+                      onSubmit={handleSubmit}
                     >
                       SIGN IN
                     </Button>
