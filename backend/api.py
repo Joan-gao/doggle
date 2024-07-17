@@ -4,6 +4,16 @@ from flask_cors import CORS
 from db import *
 
 
+## import gemini api
+import google.generativeai as genai
+from oAuth import load_creds
+
+## authenticate to use gemini api
+creds = load_creds()
+genai.configure(credentials=creds)
+analyzer = genai.get_tuned_model(f'tunedModels/analyzer-bys21ugc6n7d')
+categorizer = genai.get_tuned_model(f'tunedModels/categorizer-w96cc9hez4u7')
+
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
@@ -12,6 +22,28 @@ CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 def hello_world():
     return "<p>Hello, World!</p>"
 
+
+# use gemini api 
+@app.route('/gemini/categorizer')
+def categozie_user_transaction(user_transaction):
+    prompt = '''
+    You should classify the text into one of the following classes:[Savings Potential, High Consumption, Fixed Expenditure, Non-Essential Payment, Essential Expenditure].
+    '''
+
+    prompt += user_transaction
+    result = analyzer.generate_content(prompt)
+    return jsonify(result.text)
+
+# use gemini api 
+@app.route('/gemini/analyzer')
+def categozie_user_transaction(user_input):
+    prompt = '''
+    You should act as financial expert, base on following user input, providing revelent and specific suggestions: 
+    '''
+
+    prompt += user_input
+    result = analyzer.generate_content(prompt)
+    return jsonify(result.text)
 
 # Get overall transactions by usesr_id
 @app.route('/transactions/<int:user_id>')
