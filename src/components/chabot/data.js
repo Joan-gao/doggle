@@ -1,103 +1,163 @@
 export const initialMessages = [
   {
-    type: 'system',
-    content: { text: 'Alibaba Cloud Intelligent Chatbot at your service' },
+    type: "system",
+    content: { text: "Alibaba Cloud Intelligent Chatbot at your service" },
   },
   {
-    type: 'card',
+    type: "card",
     content: {
-      image: '//gw.alicdn.com/tfs/TB1Xv5_vlr0gK0jSZFnXXbRRXXa-427-240.png',
-      title: 'Card title',
-      text: 'Card content',
-      button1Text: 'Default button',
-      button2Text: 'Primary button',
+      image: "//gw.alicdn.com/tfs/TB1Xv5_vlr0gK0jSZFnXXbRRXXa-427-240.png",
+      title: "Card title",
+      text: "Card content",
+      button1Text: "Default button",
+      button2Text: "Primary button",
     },
   },
 ];
 
 export const defaultQuickReplies = [
   {
-    icon: 'message',
-    name: 'Contact Support',
+    icon: "message",
+    name: "Contact Support",
     isNew: true,
     isHighlight: true,
   },
   {
-    name: 'Phrase 1',
+    name: "Phrase 1",
     isNew: true,
   },
   {
-    name: 'Phrase 2',
+    name: "Phrase 2",
     isHighlight: true,
   },
   {
-    name: 'Phrase 3',
+    name: "Phrase 3",
   },
 ];
 
-export const cardMockData = {
-  "operations": [
-    {
-      "image": "https://gw.alicdn.com/tfs/TB19n9pg8fH8KJjy1XbXXbLdXXa-750-280.png",
-      "intro": "",
-      "link": "https://market.m.taobao.com/markets/xianyufamily/value-gaisir_copy?wh_weex=true",
-      "title": ""
+export const botConfig2 = {
+  config: {
+    navbar: {
+      title: "智能助理",
     },
-    {
-      "image": "https://gw.alicdn.com/tfs/TB1AJZuX8fH8KJjy1XbXXbLdXXa-682-214.png",
-      "intro": "",
-      "link": "https://h5.m.taobao.com/app/baqcenter/index.html?source=603#tradeIndemnity",
-      "title": ""
+    toolbar: [
+      {
+        type: "speech",
+        icon: "mic",
+        title: "语音输入",
+      },
+    ],
+    robot: {
+      avatar: "//gw.alicdn.com/tfs/TB1U7FBiAT2gK0jSZPcXXcKkpXa-108-108.jpg",
     },
-    {
-      "image": "https://gw.alicdn.com/tfs/TB1jxjLSFXXXXcWXpXXXXXXXXXX-702-220.png",
-      "intro": "",
-      "link": "https://gw.alicdn.com/tfs/TB1hZDwSFXXXXbeXVXXXXXXXXXX-750-4310.png",
-      "title": ""
-    }
-  ],
-  "briefs": [
-    {
-      "title": "我的信用速卖交易问题",
-      "subContent": [
-        {
-          "title": "信用速卖订单在哪里？",
-          "content": "信用速卖订单在哪里？"
+    messages: [
+      {
+        type: "system",
+        content: {
+          text: "智能助理进入对话，为您服务",
         },
-        {
-          "title": "旧机型号找不到怎么办?",
-          "content": "信用速卖旧机型号找不到怎么办?"
+      },
+      {
+        type: "text",
+        content: {
+          text: "浙江智能助理为您服务，请问有什么可以帮您？",
         },
-        {
-          "title": "我要如何填写发货单号？",
-          "content": "信用速卖如何填写单号？"
+      },
+      {
+        type: "image",
+        content: {
+          picUrl:
+            "https://gw.alicdn.com/tfs/TB1j2Y3xUY1gK0jSZFMXXaWcVXa-602-337.png",
         },
-        {
-          "title": "回收商质检退回后商品有问题怎么办？",
-          "content": "信用速卖质检退回后商品有问题怎么办？"
-        }
-      ]
-    },
-    {
-      "title": "什么是信用速卖？",
-      "subContent": [
-        {
-          "title": "信用速卖有哪些品牌可以参与？",
-          "content": "信用速卖涉及哪些品牌？"
+      },
+      {
+        type: "card",
+        content: {
+          code: "promotion",
+          data: {
+            array: [
+              {
+                image:
+                  "//alime-base.oss-cn-beijing.aliyuncs.com/avatar/alime-base.oss-cn-beijing-internal.aliyuncs.com1569811067816-首页推荐卡底图（售前）.jpg",
+                toggle:
+                  "https://gw.alicdn.com/tfs/TB1D79ZXAL0gK0jSZFtXXXQCXXa-100-100.png",
+                type: "recommend",
+                list: [
+                  {
+                    title: "收到商品不新鲜怎么办？",
+                    hot: true,
+                    content: "收到商品不新鲜怎么办？",
+                  },
+                  {
+                    title: "怎么改配送时间/地址/电话？",
+                    hot: true,
+                    content: "配送时间/地址/电话错了，怎么修改",
+                  },
+                  {
+                    title: "我的订单什么时间配送",
+                    content: "我的订单什么时间配送",
+                  },
+                  {
+                    title: "已下单，还能临时加/减商品吗？",
+                    content: "已下单，还能临时加/减商品吗？",
+                  },
+                ],
+              },
+              {
+                image:
+                  "https://gw.alicdn.com/tfs/TB114P3XHY1gK0jSZTEXXXDQVXa-400-372.jpg",
+                action: "send",
+                text: "点此学习美食做法",
+                type: "default",
+                title: "热门菜谱",
+                params: {
+                  content: "热门菜谱",
+                },
+              },
+              {
+                image:
+                  "https://gw.alicdn.com/tfs/TB1rsT0Xxv1gK0jSZFFXXb0sXXa-400-358.jpg",
+                action: "send",
+                text: "看看你家的天气吧",
+                type: "default",
+                title: "天气查询",
+                params: {
+                  content: "天气查询",
+                },
+              },
+            ],
+          },
         },
-        {
-          "title": "信用速卖安全吗？",
-          "content": "信用速卖安全吗？"
-        },
-        {
-          "title": "信用速卖提示我未开通支付宝免密支付",
-          "content": "信用速卖提示我未开通支付宝免密支付"
-        },
-        {
-          "title": "信用速卖活动规则",
-          "content": "信用速卖活动规则"
-        }
-      ]
-    }
-  ]
-}
+      },
+    ],
+    // 快捷短语
+    quickReplies: [
+      { name: "健康码颜色" },
+      { name: "入浙通行申报" },
+      { name: "健康码是否可截图使用" },
+      { name: "健康通行码适用范围" },
+      { name: "最美战疫人有哪些权益" },
+      { name: "我要查社保" },
+      { name: "办理居住证需要什么材料" },
+      { name: "公共支付平台" },
+      { name: "浙江省定点医院清单" },
+      { name: "智能问诊" },
+    ],
+  },
+  requests: {
+    /* ... */
+  },
+  // handlers: {
+  //   onToolbarClick: function (item, ctx) {
+  //     if (item.type === "speech") {
+  //       // 这里改成 App 提供的 bridge 方法
+  //       nativeInvoke("speech", (text) => {
+  //         if (text) {
+  //           // 通过 setText 更新输入框内容
+  //           bot.appRef.current.setText(text);
+  //         }
+  //       });
+  //     }
+  //   },
+  // },
+};

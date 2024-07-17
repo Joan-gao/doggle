@@ -1,13 +1,24 @@
-from flask_sqlalchemy import SQLAlchemy
-from flask import Flask
+
 from model.model import *
 from datetime import datetime
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root123456@35.226.135.14/Finance'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+import hashlib
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+# 配置数据库 URI
+DATABASE_URI = 'mysql+pymysql://root:root123456@35.226.135.14/Finance'
+
+# 创建 SQLAlchemy 引擎
+engine = create_engine(DATABASE_URI, echo=True)
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# 初始化数据库
 
 
-db = SQLAlchemy(app)
+def init_db():
+    Base.metadata.create_all(bind=engine)
+
+
+init_db()
 
 categories = {
     1: "Salary income",
@@ -30,6 +41,20 @@ categories = {
     18: "Shopping expense",
     19: "Grocery expense"
 }
+# Generate Password Hash
+
+
+def generate_hash(input_string):
+    # 创建 SHA-256 哈希对象
+    sha256 = hashlib.sha256()
+
+    # 更新哈希对象以包括输入字符串
+    sha256.update(input_string.encode('utf-8'))
+
+    # 获取哈希值的十六进制表示
+    hash_hex = sha256.hexdigest()
+
+    return hash_hex
 
 
 def categorize_transactions(transactions, categories):
@@ -70,6 +95,8 @@ def categorize_transactions(transactions, categories):
 
     return income_percent, expense_percent, summary
 
+# Get overall transaction analysis
+
 
 def getOverAllTransactionAnalyze(user_id):
 
@@ -83,7 +110,8 @@ def getOverAllTransactionAnalyze(user_id):
     print(first_day_of_year)
     last_day_of_year = datetime(today.year + 1, 1, 1)
     print(last_day_of_year)
-    transactions = db.session.query(Transaction).filter(
+    session = SessionLocal()
+    transactions = session.query(Transaction).filter(
         Transaction.user_id == user_id,
         Transaction.transaction_date >= first_day_of_year.strftime('%Y-%m-%d'),
         Transaction.transaction_date < last_day_of_year.strftime('%Y-%m-%d')
@@ -108,3 +136,22 @@ def getOverAllTransactionAnalyze(user_id):
     }
 
     return response_data
+
+
+# Create User
+
+def createUserInDB(email, password, uid, username):
+    session = SessionLocal()
+    try:
+        passwordhash = generate_hash(password)
+        new_user = User(auth_uid=uid, email=email,
+                        password_hash=passwordhash, username=username)
+        session.add(new_user)
+        session.commit()
+        # session.refresh(new_user)
+
+        print(f'User {email} created successfully!')
+        return new_user
+    except Exception as e:
+        print(e)
+        return None

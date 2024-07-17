@@ -14,10 +14,6 @@ import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 
-// 将 React 添加到全局对象
-window.React = React;
-window.ReactDOM = ReactDOM;
-
 ReactDOM.render(
   <BrowserRouter>
     <App />

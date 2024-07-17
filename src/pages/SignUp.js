@@ -9,7 +9,11 @@
 =========================================================
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { initializeApp } from "firebase/app";
 import React, { Component } from "react";
+import axios from "axios";
+import firebaseConfig from "../components/other/firebaseAuth";
 import {
   Layout,
   Menu,
@@ -23,7 +27,7 @@ import {
 import logo1 from "../assets/images/logos-facebook.svg";
 import logo2 from "../assets/images/logo-apple.svg";
 import logo3 from "../assets/images/Google__G__Logo.svg.png";
-
+// import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { Link } from "react-router-dom";
 import {
   DribbbleOutlined,
@@ -116,13 +120,53 @@ const signin = [
 ];
 export default class SignUp extends Component {
   render() {
+    // const auth = getAuth();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+
+    const handleSubmit = async (email, password, username) => {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(async (userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user.uid, user.email);
+          const response = await axios.post(
+            // "https://tiktok-hackathon-app-6b6d56fcd0c7.herokuapp.com/edit",
+            "http://127.0.0.1:5000/user/create",
+            {
+              email: user.email,
+              password: password,
+              uid: user.uid,
+              username: username,
+            },
+
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+              },
+            }
+          );
+          console.log("Response:", response.data);
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log("error", error);
+          // ..
+        });
+    };
+
     const onFinish = (values) => {
       console.log("Success:", values);
+      handleSubmit(values.email, values.password, values.Name);
     };
 
     const onFinishFailed = (errorInfo) => {
       console.log("Failed:", errorInfo);
     };
+
     return (
       <>
         <div className="layout-default ant-layout layout-sign-up">
@@ -220,7 +264,7 @@ export default class SignUp extends Component {
                     { required: true, message: "Please input your password!" },
                   ]}
                 >
-                  <Input placeholder="Passwoed" />
+                  <Input placeholder="Password" />
                 </Form.Item>
 
                 <Form.Item name="remember" valuePropName="checked">
@@ -237,6 +281,7 @@ export default class SignUp extends Component {
                     style={{ width: "100%" }}
                     type="primary"
                     htmlType="submit"
+                    onClick={handleSubmit}
                   >
                     SIGN UP
                   </Button>
