@@ -1,3 +1,4 @@
+from sqlalchemy.exc import SQLAlchemyError
 
 from model.model import *
 from datetime import datetime
@@ -19,6 +20,7 @@ def init_db():
 
 
 init_db()
+session = SessionLocal()
 
 categories = {
     1: "Salary income",
@@ -99,59 +101,114 @@ def categorize_transactions(transactions, categories):
 
 
 def getOverAllTransactionAnalyze(user_id):
+    try:
+        today = datetime.today()
+        # first_day_of_month = datetime(today.year, today.month, 1)
+        # next_month = today.month + 1 if today.month < 12 else 1
+        # next_year = today.year if today.month < 12 else today.year + 1
+        # last_day_of_month = datetime(next_year, next_month, 1)
 
-    today = datetime.today()
-    # first_day_of_month = datetime(today.year, today.month, 1)
-    # next_month = today.month + 1 if today.month < 12 else 1
-    # next_year = today.year if today.month < 12 else today.year + 1
-    # last_day_of_month = datetime(next_year, next_month, 1)
+        first_day_of_year = datetime(today.year, 1, 1)
+        print(first_day_of_year)
+        last_day_of_year = datetime(today.year + 1, 1, 1)
+        print(last_day_of_year)
 
-    first_day_of_year = datetime(today.year, 1, 1)
-    print(first_day_of_year)
-    last_day_of_year = datetime(today.year + 1, 1, 1)
-    print(last_day_of_year)
-    session = SessionLocal()
-    transactions = session.query(Transaction).filter(
-        Transaction.user_id == user_id,
-        Transaction.transaction_date >= first_day_of_year.strftime('%Y-%m-%d'),
-        Transaction.transaction_date < last_day_of_year.strftime('%Y-%m-%d')
-    ).all()
+        transactions = session.query(Transaction).filter(
+            Transaction.user_id == user_id,
+            Transaction.transaction_date >= first_day_of_year.strftime(
+                '%Y-%m-%d'),
+            Transaction.transaction_date < last_day_of_year.strftime(
+                '%Y-%m-%d')
+        ).all()
 
-    # Convert the results into a list of serializable dictionaries
-    transaction_result = [{
-        'transaction_id': t.transaction_id,
-        'category_id': t.category_id,
+        # Convert the results into a list of serializable dictionaries
+        transaction_result = [{
+            'transaction_id': t.transaction_id,
+            'category_id': t.category_id,
 
-    } for t in transactions]
+        } for t in transactions]
 
-    # Assume categories is defined somewhere in your app
-    income_percent, expense_percent, summary = categorize_transactions(
-        transaction_result, categories)
+        # Assume categories is defined somewhere in your app
+        income_percent, expense_percent, summary = categorize_transactions(
+            transaction_result, categories)
 
-    # Structure the final JSON response
-    response_data = {
-        'income': income_percent,
-        'expense': expense_percent,
-        'summary': summary
-    }
+        # Structure the final JSON response
+        response_data = {
+            'income': income_percent,
+            'expense': expense_percent,
+            'summary': summary
+        }
 
-    return response_data
+        return response_data
+    except SQLAlchemyError as e:
+        print(f"An error occurred: {e}")
+        session.rollback()
+        return None
+
+    finally:
+        session.close()
 
 
 # Create User
 
 def createUserInDB(email, password, uid, username):
-    session = SessionLocal()
+
     try:
         passwordhash = generate_hash(password)
         new_user = User(auth_uid=uid, email=email,
                         password_hash=passwordhash, username=username)
         session.add(new_user)
         session.commit()
-        # session.refresh(new_user)
+        session.refresh(new_user)
 
         print(f'User {email} created successfully!')
         return new_user
     except Exception as e:
         print(e)
         return None
+    finally:
+        session.close()
+
+
+def updateUserInDB(userData):
+
+    try:
+        # Retrieve the user by user_id
+        user = session.query(User).filter(
+            User.user_id == userData['userId']).one_or_none()
+
+        if user is None:
+            print("User not found")
+            return False
+
+        # Update the user fields
+        user.gender = userData.get('gender', user.gender)
+        user.birth_date = datetime.strptime(
+            userData['birth_date'], '%Y-%m-%d').date()
+        user.address = userData.get('address', user.address)
+        user.occupation = userData.get('occupation', user.occupation)
+        user.income_source = ','.join(userData.get(
+            'income_source', user.income_source))
+
+        # Update the saving goals if provided in userData
+        if 'goal' in userData:
+            # Check if a SavingGoal exists, if not, create a new one
+            if not user.saving_goals:
+                new_goal = SavingGoal(
+                    user_id=user.user_id,
+                    target=userData['goal']
+                )
+                session.add(new_goal)
+            else:
+                for goal in user.saving_goals:
+                    goal.target = userData['goal']
+
+        # Commit the transaction
+        session.commit()
+        return True
+    except SQLAlchemyError as e:
+        print(f"An error occurred: {e}")
+        session.rollback()
+        return False
+    finally:
+        session.close()

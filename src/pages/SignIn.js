@@ -32,7 +32,6 @@ import {
   InstagramOutlined,
   GithubOutlined,
 } from "@ant-design/icons";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 function onChange(checked) {
   console.log(`switch to ${checked}`);
 }
