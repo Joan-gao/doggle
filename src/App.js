@@ -23,7 +23,7 @@ import "antd/dist/antd.css";
 import "./assets/styles/main.css";
 import "./assets/styles/responsive.css";
 import ChatBotTest from "./pages/ChatBotTest.js";
-import Dashboard from "./pages/dashboard.js"
+import Dashboard from "./pages/Dashboard.js"
 function App() {
   return (
     <div className="App">
