@@ -1,0 +1,6 @@
+flask_cors
+flask
+flask-sqlalchemy
+google.generativeai
+firebase
+google_auth_oauthlib

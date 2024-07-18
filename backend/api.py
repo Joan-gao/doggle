@@ -28,10 +28,28 @@ def create_user():
     username = request.json.get("username")
 
     if email is not None and password is not None and uid is not None:
-         user_data = createUserInDB(email, password, uid, username)
-         if user_data is not None:
-             return jsonify({'status': 'success'}), 200
-         else:
-             return jsonify({'status': 'error', 'message': 'User creation failed'}), 401
+        user_data = createUserInDB(email, password, uid, username)
+
+        if user_data is not None:
+            return jsonify({'status': 'success', "user_id": user_data.user_id}), 200
+        else:
+            return jsonify({'status': 'error', 'message': 'User creation failed'}), 401
     else:
-         return jsonify({'status': 'error', 'message': 'Missing email, password, or uid'}), 400
+        return jsonify({'status': 'error', 'message': 'Missing email, password, or uid'}), 400
+
+
+@app.route('/user/update', methods=['POST'])
+def update_user():
+    userData = request.json.get("userData")
+
+    print(userData)
+
+    if userData is not None:
+        result = updateUserInDB(userData)
+
+        if result is not None:
+            return jsonify({'status': 'success'}), 200
+        else:
+            return jsonify({'status': 'error', 'message': 'User update failed'}), 401
+    else:
+        return jsonify({'status': 'error'}), 400

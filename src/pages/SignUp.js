@@ -14,6 +14,8 @@ import { initializeApp } from "firebase/app";
 import React, { Component } from "react";
 import axios from "axios";
 import firebaseConfig from "../components/other/firebaseAuth";
+import { Modal } from "antd";
+import Information from "../components/other/Information";
 import {
   Layout,
   Menu,
@@ -23,6 +25,7 @@ import {
   Form,
   Input,
   Checkbox,
+  Select,
 } from "antd";
 import logo1 from "../assets/images/logos-facebook.svg";
 import logo2 from "../assets/images/logo-apple.svg";
@@ -36,6 +39,7 @@ import {
   GithubOutlined,
 } from "@ant-design/icons";
 
+const { Option } = Select;
 const { Title } = Typography;
 const { Header, Footer, Content } = Layout;
 const template = [
@@ -118,11 +122,31 @@ const signin = [
     />
   </svg>,
 ];
+
 export default class SignUp extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      // open:false
+      openModal: false,
+      userId: "",
+      // loading: false,
+    };
+  }
   render() {
     // const auth = getAuth();
     const app = initializeApp(firebaseConfig);
     const auth = getAuth();
+    // const handleOk = () => {
+    //   this.setState({ loading: true });
+    //   setTimeout(() => {
+    //     this.setState({ loading: false });
+    //     this.setState({ open: false });
+    //   }, 3000);
+    // };
+    // const handleCancel = () => {
+    //   this.setState({ open: false });
+    // };
 
     const handleSubmit = async (email, password, username) => {
       createUserWithEmailAndPassword(auth, email, password)
@@ -148,15 +172,27 @@ export default class SignUp extends Component {
             }
           );
           console.log("Response:", response.data);
+          if (response.data.status === "success") {
+            this.setState({
+              openModal: true,
+              userId: response.data.user_id,
+            });
+          }
 
-          this.props.history.push("/dashboard");
+          // this.props.history.push("/dashboard");
         })
         .catch((error) => {
           console.log("error", error);
           // ..
         });
     };
+    // const handleSubmit = async (email, password, username) => {
+    //     this.setState({
+    //       openModal: true,
+    //       userId: 5,
+    //     });
 
+    // };
     const onFinish = (values) => {
       console.log("Success:", values);
       handleSubmit(values.email, values.password, values.Name);
@@ -335,6 +371,149 @@ export default class SignUp extends Component {
             </p>
           </Footer>
         </div>
+        {/* <Modal
+          open={this.state.open}
+          title="Please enter your basic Info"
+          onOk={handleOk}
+          onCancel={handleCancel}
+          footer={[
+            <Button key="back" onClick={handleCancel}>
+              Return
+            </Button>,
+            <Button
+              key="submit"
+              type="primary"
+              loading={this.state.loading}
+              onClick={handleOk}
+            >
+              Submit
+            </Button>,
+            //   <Button
+            //     key="link"
+            //     href="https://google.com"
+            //     type="primary"
+            //     loading={loading}
+            //     onClick={handleOk}
+            //   >
+            //     Search on Google
+            //   </Button>,
+          ]}
+        >
+          <Form
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+            layout="vertical"
+            className="row-col"
+          >
+            <Form.Item
+              className="username"
+              label="Age"
+              name="age"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your age!",
+                },
+              ]}
+            >
+              <Input placeholder="Age" />
+            </Form.Item>
+
+            <Form.Item
+              className="username"
+              label="Gender"
+              name="gender"
+              rules={[
+                {
+                  required: true,
+                  message: "Please select an option!",
+                },
+              ]}
+            >
+              <Select placeholder="Select an option">
+                <Option value="option1">Female</Option>
+                <Option value="option2">Male</Option>
+                <Option value="option3">Rather Not Say</Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              className="username"
+              label="Address"
+              name="address"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your address!",
+                },
+              ]}
+            >
+              <Input placeholder="Pleaase enter your address" />
+            </Form.Item>
+
+            <Form.Item
+              className="username"
+              label="Income"
+              name="income"
+              rules={[
+                {
+                  required: true,
+                  message: "Please select an option!",
+                },
+              ]}
+            >
+              <Select placeholder="Select an income source" mode="multiple">
+                <Option value="salary">Salary</Option>
+                <Option value="parentalSupport">Parental support</Option>
+                <Option value="investmentIncome">Investment income</Option>
+                <Option value="freelance">Freelance</Option>
+                <Option value="other">Other</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item
+              className="username"
+              label="Goal"
+              name="goal"
+              rules={[
+                {
+                  required: true,
+                  message: "Please select an option!",
+                },
+              ]}
+            >
+              <Select placeholder="Select a recent goal">
+                <Option value="none">None</Option>
+                <Option value="saveMoney">Save money</Option>
+                <Option value="selfImprovement">Self-improvement</Option>
+                <Option value="buyHouse">Buy a house</Option>
+                <Option value="travel">Travel</Option>
+                <Option value="education">Education</Option>
+                <Option value="other">Other</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item
+              className="username"
+              label="Occupation"
+              name="occupation"
+              rules={[
+                {
+                  required: true,
+                  message: "Please select an option!",
+                },
+              ]}
+            >
+              <Select placeholder="Select your identity">
+                <Option value="student">Student</Option>
+                <Option value="employee">Employee</Option>
+                <Option value="unemployed">Unemployed</Option>
+                <Option value="freelancer">Freelancer</Option>
+                <Option value="retired">Retired</Option>
+                <Option value="other">Other</Option>
+              </Select>
+            </Form.Item>
+          </Form>
+        </Modal> */}
+        {this.state.openModal && <Information userId={this.state.userId} />}
       </>
     );
   }
