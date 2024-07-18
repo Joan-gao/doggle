@@ -3046,3 +3046,30 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
   path {
   fill: #8c8c8c;
 }
+
+.layout-content {
+  padding: 24px;
+  background: #f0f2f5;
+}
+
+.mb-24 {
+  margin-bottom: 24px;
+}
+
+.criclebox {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.h-full {
+  height: 100%;
+}
+
+.responsive-calendar {
+  width: 100%;
+  overflow: hidden;
+}
+
+.ant-picker-calendar {
+  width: 100%;
+}

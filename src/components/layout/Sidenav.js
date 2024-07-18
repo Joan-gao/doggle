@@ -1,11 +1,11 @@
 // import { useState } from "react";
-import { Menu, Button } from "antd";
-import { NavLink, useLocation } from "react-router-dom";
-import logo from "../../assets/images/logo.png";
+import { Menu, Button } from 'antd';
+import { NavLink, useLocation } from 'react-router-dom';
+import logo from '../../assets/images/logo.png';
 
 function Sidenav({ color }) {
-  const { pathname } = useLocation();
-  const page = pathname.replace("/", "");
+  const location = useLocation();
+  const page = location.pathname;
 
   const dashboard = [
     <svg
@@ -59,9 +59,22 @@ function Sidenav({ color }) {
         <span>Muse Dashboard</span>
       </div>
       <hr />
-      <Menu theme="light" mode="inline">
+      <Menu theme="light" mode="inline" selectedKeys={[page]}>
         <Menu.Item key="1">
-          <NavLink to="/dashboard">
+          <NavLink to="/" exact>
+            <span
+              className="icon"
+              style={{
+                background: page === 'dashboard' ? color : '',
+              }}
+            >
+              {dashboard}
+            </span>
+            <span className="label">Home</span>
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item key="2">
+          <NavLink to="/dashboard" exact>
             <span
               className="icon"
               style={{
@@ -73,20 +86,20 @@ function Sidenav({ color }) {
             <span className="label">Dashboard</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="2">
-          <NavLink to="/chatbot">
+        <Menu.Item key="3">
+          <NavLink to="/calendarbill">
             <span
               className="icon"
               style={{
-                background: page === 'chatbot' ? color : '',
+                background: page === 'calendarbill' ? color : '',
               }}
             >
               {tables}
             </span>
-            <span className="label">Chatbot</span>
+            <span className="label">Calendar</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="3">
+        <Menu.Item key="4">
           <NavLink to="/chatbottest">
             <span
               className="icon"

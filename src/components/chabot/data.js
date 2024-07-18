@@ -1,3 +1,7 @@
+import React from 'react';
+import { Upload, Button } from 'antd';
+import { FileTextOutlined } from '@ant-design/icons';
+
 export const initialMessages = [
   {
     type: "system",
@@ -42,9 +46,19 @@ export const botConfig2 = {
     },
     toolbar: [
       {
-        type: "speech",
-        icon: "mic",
-        title: "语音输入",
+        type: 'speech',
+        icon: 'mic',
+        title: 'audio',
+      },
+      {
+        type: 'image',
+        icon: 'image',
+        title: 'photo',
+      },
+      {
+        type: 'file',
+        icon: 'file',
+        title: 'file',
       },
     ],
     robot: {
@@ -160,4 +174,5 @@ export const botConfig2 = {
   //     }
   //   },
   // },
+  handlers: {},
 };
