@@ -3046,3 +3046,47 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
   path {
   fill: #8c8c8c;
 }
+
+.layout-content {
+  padding: 24px;
+  background: #f0f2f5;
+}
+
+.mb-24 {
+  margin-bottom: 24px;
+}
+
+.criclebox {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.h-full {
+  height: 100%;
+}
+
+.responsive-calendar {
+  width: 100%;
+  overflow: hidden;
+}
+
+.ant-picker-calendar {
+  width: 100%;
+}
+
+.card-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.card-uniform {
+  width: 100%;
+  max-width: 600px;
+  box-sizing: border-box; /* 确保内边距包含在宽度内 */
+}
+
+
+.space-container {
+  margin-bottom: 10px; /* 调整与下一个元素的间距 */
+}

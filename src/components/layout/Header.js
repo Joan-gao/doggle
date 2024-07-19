@@ -270,22 +270,9 @@ function Header({
 
   return (
     <>
-      <div className="setting-drwer" onClick={showDrawer}>
-        {setting}
-      </div>
       <Row gutter={[24, 0]}>
-        <Col span={24} md={6}>
-          <div className="ant-page-header-heading">
-            <span
-              className="ant-page-header-heading-title"
-              style={{ textTransform: "capitalize" }}
-            >
-              {subName.replace("/", "")}
-            </span>
-          </div>
-        </Col>
         <Col span={24} md={18} className="header-control">
-          <Badge size="small" count={4}>
+          <Badge size="middle" count={4}>
             <Dropdown overlay={menu} trigger={["click"]}>
               <a
                 href="#pablo"

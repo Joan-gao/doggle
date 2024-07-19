@@ -18,10 +18,12 @@ import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
 import Chatbot from './pages/Chatbot';
 import Main from "./components/layout/Main";
+import CalendarBill from "./pages/CalendarBill.js";
 import "antd/dist/antd.css";
 import "./assets/styles/main.css";
 import "./assets/styles/responsive.css";
-
+import ChatBotTest from "./pages/ChatBotTest.js";
+import Dashboard from "./pages/Dashboard.js"
 function App() {
   return (
     <div className="App">
@@ -29,12 +31,15 @@ function App() {
         <Route path="/sign-up" exact component={SignUp} />
         <Route path="/sign-in" exact component={SignIn} />
         <Main>
-          <Route exact path="/dashboard" component={Home} />
+          <Route exact path="/" component={Home} />
+          <Route exact path="/dashboard" component={Dashboard} />
           <Route exact path="/tables" component={Tables} />
           <Route exact path="/billing" component={Billing} />
           <Route exact path="/profile" component={Profile} />
-          <Route exact path="/chatbot" component={Chatbot} />
-          <Redirect from="*" to="/dashboard" />
+          {/* <Route exact path="/chatbot" component={Chatbot} /> */}
+          <Route exact path="/chatbot" component={ChatBotTest} />
+          <Route exact path="/calendarbill" component={CalendarBill} />
+          {/* <Redirect from="*" to="/dashboard" /> */}
         </Main>
       </Switch>
     </div>
