@@ -9,6 +9,8 @@ import {
   Button,
   Table,
   Carousel,
+  Tabs,
+  Select,
 } from 'antd';
 import {
   ToTopOutlined,
@@ -108,10 +110,13 @@ function Home() {
   const { Title, Text } = Typography;
   const carouselRef = React.createRef();
 
+  const onSelectChange = (value) => {
+    console.log(value);
+  };
+
   const handlePrev = () => {
     carouselRef.current.prev();
   };
-
   const handleNext = () => {
     carouselRef.current.next();
   };
@@ -119,7 +124,25 @@ function Home() {
   return (
     <>
       <div className="layout-content">
-        <Carousel arrows infinite={false} autoplay>
+        <Space wrap className="space-container">
+          <Select
+            defaultValue="1"
+            style={{ width: 70 }}
+            onChange={onSelectChange}
+            options={months}
+          />
+          <Select
+            defaultValue="2024"
+            style={{ width: 80 }}
+            onChange={onSelectChange}
+            options={years}
+          />
+        </Space>
+        <Carousel
+          arrows
+          infinite={false}
+          autoplay
+        >
           {count.map((c, index) => (
             <div key={index}>
               <div className="card-container">

@@ -3085,3 +3085,8 @@ section.ant-layout.ant-layout-has-sider.layout-dashboard.layout-profile
   max-width: 600px;
   box-sizing: border-box; /* 确保内边距包含在宽度内 */
 }
+
+
+.space-container {
+  margin-bottom: 10px; /* 调整与下一个元素的间距 */
+}
