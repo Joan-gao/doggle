@@ -138,11 +138,7 @@ function Home() {
             options={years}
           />
         </Space>
-        <Carousel
-          arrows
-          infinite={false}
-          autoplay
-        >
+        <Carousel arrows infinite={false} autoplay>
           {count.map((c, index) => (
             <div key={index}>
               <div className="card-container">
@@ -181,11 +177,18 @@ function Home() {
         </div>
 
         <div className="card-container">
-          <Table
-            className=" card-uniform"
-            columns={columns}
-            dataSource={financeData}
-          />
+          <Row gutter={[24, 0]}>
+            <Col xs={24} sm={24} md={8} lg={6} xl={6}>
+              <p>18-07 Thu Expense: 500 Income: 300</p>
+            </Col>
+            <Col xs={24} sm={24} md={16} lg={18} xl={18}>
+              <Table
+                className="card-uniform"
+                columns={columns}
+                dataSource={financeData}
+              />
+            </Col>
+          </Row>
         </div>
       </div>
     </>

@@ -100,16 +100,16 @@ function Sidenav({ color }) {
           </NavLink>
         </Menu.Item>
         <Menu.Item key="4">
-          <NavLink to="/chatbottest">
+          <NavLink to="/chatbot">
             <span
               className="icon"
               style={{
-                background: page === 'chatbottest' ? color : '',
+                background: page === 'chatbot' ? color : '',
               }}
             >
               {tables}
             </span>
-            <span className="label">Chatbotest</span>
+            <span className="label">Chatbot</span>
           </NavLink>
         </Menu.Item>
       </Menu>
