@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-
-const ChatApp = window.ChatSDK.ChatApp;
+const canRecord = true; // 写个判断逻辑
 
 function ChatBotTest() {
   const wrapper = useRef();
@@ -12,16 +11,79 @@ function ChatBotTest() {
     const bot = new window.ChatSDK({
       root: wrapper.current,
       popContainer: wrapper.current,
+      // 语音输入
+      makeRecorder({ ctx }) {
+        let recognition;
+        // 检查浏览器是否支持 Web Speech API
+        const SpeechRecognition =
+          window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+          recognition = new SpeechRecognition();
+          recognition.continuous = false;
+          recognition.interimResults = false;
+          recognition.lang = 'en-US';
+
+          recognition.onstart = () => {
+            console.log('start recording');
+          };
+
+          recognition.onresult = (event) => {
+            console.log('onresult triggered');
+            const transcript = event.results[0][0].transcript;
+            console.log('recognized text:', transcript);
+            // 识别到文本后自动回复
+            console.log('Preparing to send postMessage');
+            ctx.postMessage({
+              type: 'text',
+              content: {
+                text: `I heard: ${transcript}`,
+              },
+              position: 'left',
+            });
+            console.log('postMessage sent');
+          };
+
+          recognition.onerror = (event) => {
+            console.log('recognition error:', event.error);
+          };
+
+          recognition.onend = () => {
+            console.log('stop recording');
+          };
+        } else {
+          console.log('SpeechRecognition not supported');
+        }
+        return {
+          // 是否支持语音输入，
+          canRecord: !!recognition,
+          onStart() {
+            if (recognition) {
+              console.log('Starting recognition');
+              recognition.start();
+            }
+          },
+          onEnd() {
+            if (recognition) {
+              console.log('Stopping recognition');
+              recognition.stop();
+            }
+          },
+          onCancel() {
+            if (recognition) {
+              console.log('Cancelling recognition');
+              recognition.stop();
+            }
+          },
+        };
+      },
       config: {
+        lang: 'en-US',
+        // 当支持语音时默认用语音输入
+        inputType: canRecord ? 'voice' : 'text',
         navbar: {
           title: 'AI Bot',
         },
         toolbar: [
-          {
-            type: 'speech',
-            icon: 'mic',
-            title: 'audio',
-          },
           {
             type: 'image',
             icon: 'image',
@@ -98,7 +160,8 @@ function ChatBotTest() {
          * @return {object}
          */
         send: function (msg) {
-          console.log('Message Content:', msg.content);
+          console.log('Send method called');
+          console.log('Message:', msg);
 
           return new Promise((resolve) => {
             setTimeout(() => {
@@ -162,11 +225,96 @@ function ChatBotTest() {
                   text: responseText,
                 },
               });
-            }, 500);
+            }, 1000);
           });
         },
       },
-      handlers: {},
+      handlers: {
+        onToolbarClick(item, ctx) {
+          //图片上传
+          if (item.type === 'image') {
+            ctx.util.chooseImage({
+              multiple: true, // 是否可多选
+              success(e) {
+                if (e.files) {
+                  // 如果有 h5 上传的图
+                  const file = e.files[0];
+                  // 先展示图片
+                  ctx.appendMessage({
+                    type: 'image',
+                    content: {
+                      picUrl: URL.createObjectURL(file),
+                    },
+                    position: 'right',
+                  });
+                  ctx.postMessage({
+                    type: 'text',
+                    content: {
+                      text: `Photo received`,
+                    },
+                    position: 'left',
+                  });
+                }
+              },
+            });
+          }
+          // 文件上传
+          else if (item.type === 'file') {
+            // 创建一个隐藏的文件输入元素
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.pdf,.xls,.xlsx,.doc,.docx';
+            input.style.display = 'none';
+
+            // 当文件选择完成时处理文件
+            input.onchange = (event) => {
+              const file = event.target.files[0];
+              if (file) {
+                const allowedTypes = [
+                  'application/pdf',
+                  'application/vnd.ms-excel',
+                  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                  'application/msword',
+                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                ];
+                if (allowedTypes.includes(file.type)) {
+                  // 文件类型检查通过
+                  // 可以选择在前端展示文件信息
+                  ctx.appendMessage({
+                    type: 'file',
+                    content: {
+                      fileName: file.name,
+                      fileType: file.type,
+                    },
+                    position: 'right',
+                  });
+
+                  // 自动回复 "文件已收到"
+                  ctx.postMessage({
+                    type: 'text',
+                    content: {
+                      text: `file ${file.name} received`,
+                    },
+                    position: 'left',
+                  });
+                } else {
+                  ctx.postMessage({
+                    type: 'text',
+                    content:
+                      "Woof woof! 🐾 This file type isn't my favorite! Please upload a PDF, Excel, or Word file. 🐶✨",
+                    position: 'left',
+                  });
+                }
+              }
+            };
+
+            // 触发文件选择对话框
+            document.body.appendChild(input);
+            input.click();
+            document.body.removeChild(input);
+          }
+        },
+      },
     });
     bot.run();
   }, []);
