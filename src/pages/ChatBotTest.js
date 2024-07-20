@@ -81,7 +81,7 @@ function ChatBotTest() {
         // 当支持语音时默认用语音输入
         inputType: canRecord ? 'voice' : 'text',
         navbar: {
-          title: 'AI Bot',
+          title: 'Doggle 🐾',
         },
         toolbar: [
           {
@@ -150,6 +150,7 @@ function ChatBotTest() {
           },
         ],
       },
+      // 文本回复
       requests: {
         /*
          *
@@ -229,6 +230,7 @@ function ChatBotTest() {
           });
         },
       },
+      // 图片文件上传
       handlers: {
         onToolbarClick(item, ctx) {
           //图片上传
