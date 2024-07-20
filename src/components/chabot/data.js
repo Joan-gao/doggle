@@ -1,3 +1,7 @@
+import React from "react";
+import { Upload, Button } from "antd";
+import { FileTextOutlined } from "@ant-design/icons";
+
 export const initialMessages = [
   {
     type: "system",
@@ -44,7 +48,17 @@ export const botConfig2 = {
       {
         type: "speech",
         icon: "mic",
-        title: "语音输入",
+        title: "audio",
+      },
+      {
+        type: "image",
+        icon: "image",
+        title: "photo",
+      },
+      {
+        type: "file",
+        icon: "file",
+        title: "file",
       },
     ],
     robot: {
@@ -147,17 +161,5 @@ export const botConfig2 = {
   requests: {
     /* ... */
   },
-  // handlers: {
-  //   onToolbarClick: function (item, ctx) {
-  //     if (item.type === "speech") {
-  //       // 这里改成 App 提供的 bridge 方法
-  //       nativeInvoke("speech", (text) => {
-  //         if (text) {
-  //           // 通过 setText 更新输入框内容
-  //           bot.appRef.current.setText(text);
-  //         }
-  //       });
-  //     }
-  //   },
-  // },
+  handlers: {},
 };

@@ -1,46 +1,153 @@
-/*!
-  =========================================================
-  * Muse Ant Design Dashboard - v1.0.0
-  =========================================================
-  * Product Page: https://www.creative-tim.com/product/muse-ant-design-dashboard
-  * Copyright 2021 Creative Tim (https://www.creative-tim.com)
-  * Licensed under MIT (https://github.com/creativetimofficial/muse-ant-design-dashboard/blob/main/LICENSE.md)
-  * Coded by Creative Tim
-  =========================================================
-  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import ReactApexChart from "react-apexcharts";
 import { Typography } from "antd";
+import { useState, useEffect, act } from "react";
 import { MinusOutlined } from "@ant-design/icons";
 import lineChart from "./configs/lineChart";
 
-function LineChart() {
+function LineChart({ type, activeKey }) {
   const { Title, Paragraph } = Typography;
+  const initialYearSeries = [
+    {
+      name: "Montly Expense",
+      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      offsetY: 0,
+    },
+  ];
+  const initialMonthSeries = [
+    {
+      name: "Daily expense",
+      data: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0,
+      ],
+      offsetY: 0,
+    },
+  ];
 
+  const initialMonthCategory = [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "17",
+    "18",
+    "19",
+    "20",
+    "21",
+    "22",
+    "23",
+    "24",
+    "25",
+    "26",
+    "27",
+    "28",
+    "29",
+    "30",
+    "31",
+  ];
+  const initialYearCategory = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const [series, setSeries] = useState(
+    activeKey === "1" ? initialMonthSeries : initialYearSeries
+  );
+  const [category, setCategory] = useState(
+    activeKey === "1" ? initialMonthCategory : initialYearCategory
+  );
+  const generateColors = (length) => Array(length).fill("#8c8c8c");
+  useEffect(() => {
+    console.log(activeKey);
+    if (activeKey === "1") {
+      setSeries(initialMonthSeries);
+      setCategory(initialMonthCategory);
+    } else {
+      setSeries(initialYearSeries);
+      setCategory(initialYearCategory);
+    }
+  }, [activeKey]);
+  const config = {
+    options: {
+      chart: {
+        width: "100%",
+        height: "auto",
+        type: "area",
+        toolbar: {
+          show: false,
+        },
+      },
+
+      legend: {
+        show: false,
+      },
+
+      dataLabels: {
+        enabled: false,
+      },
+      stroke: {
+        curve: "smooth",
+      },
+
+      yaxis: {
+        labels: {
+          style: {
+            fontSize: "14px",
+            fontWeight: 600,
+            colors: ["#8c8c8c"],
+          },
+        },
+      },
+
+      xaxis: {
+        labels: {
+          style: {
+            fontSize: activeKey === "1" ? "10px" : "14px",
+            fontWeight: 600,
+            colors: generateColors(category.length),
+          },
+        },
+        categories: category,
+      },
+
+      tooltip: {
+        y: {
+          formatter: function (val) {
+            return val;
+          },
+        },
+      },
+    },
+  };
   return (
     <>
-      <div className="linechart">
-        <div>
-          <Title level={5}>Active Users</Title>
-          <Paragraph className="lastweek">
-            than last week <span className="bnb2">+30%</span>
-          </Paragraph>
-        </div>
-        <div className="sales">
-          <ul>
-            <li>{<MinusOutlined />} Traffic</li>
-            <li>{<MinusOutlined />} Sales</li>
-          </ul>
-        </div>
-      </div>
-
       <ReactApexChart
         className="full-width"
-        options={lineChart.options}
-        series={lineChart.series}
+        options={config.options}
+        series={series}
         type="area"
-        height={350}
+        height={220}
         width={"100%"}
       />
     </>

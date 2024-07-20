@@ -12,8 +12,10 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import firebaseConfig from "../components/other/firebaseAuth";
-import { initializeApp } from "firebase/app";
+import app from "../components/other/firebaseAuth";
+// import firebaseConfig from "../components/other/firebaseAuth";
+// import { initializeApp } from "firebase/app";
+
 import {
   Layout,
   Menu,
@@ -120,7 +122,7 @@ const signin = [
 
 export default class SignIn extends Component {
   render() {
-    const app = initializeApp(firebaseConfig);
+    // const app = initializeApp(firebaseConfig);
     const auth = getAuth();
 
     const handleSubmit = (email, password) => {
@@ -130,6 +132,7 @@ export default class SignIn extends Component {
           // Signed in
           const user = userCredential.user;
           console.log(user.uid);
+
           this.props.history.push("/dashboard");
 
           // ...

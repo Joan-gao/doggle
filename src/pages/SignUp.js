@@ -10,10 +10,11 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { initializeApp } from "firebase/app";
+import app from "../components/other/firebaseAuth";
+// import { initializeApp } from "firebase/app";
 import React, { Component } from "react";
 import axios from "axios";
-import firebaseConfig from "../components/other/firebaseAuth";
+// import firebaseConfig from "../components/other/firebaseAuth";
 import { Modal } from "antd";
 import Information from "../components/other/Information";
 import {
@@ -134,9 +135,9 @@ export default class SignUp extends Component {
     };
   }
   render() {
-    // const auth = getAuth();
-    const app = initializeApp(firebaseConfig);
     const auth = getAuth();
+    // const app = initializeApp(firebaseConfig);
+    // const auth = getAuth();
     // const handleOk = () => {
     //   this.setState({ loading: true });
     //   setTimeout(() => {

@@ -4,7 +4,6 @@ import Chat, { Bubble, useMessages } from "@chatui/core";
 import "@chatui/core/dist/index.css";
 import "../assets/styles/chatui-theme.css";
 import CardComponent from "../components/chabot/CardComponent";
-
 import {
   initialMessages,
   defaultQuickReplies,
@@ -12,7 +11,6 @@ import {
 
 const Chatbot = () => {
   const { messages, appendMsg, setTyping } = useMessages(initialMessages);
-  // Inside Chatbot component
 
   function handleSend(type, val) {
     if (type === "text" && val.trim()) {
@@ -57,17 +55,15 @@ const Chatbot = () => {
   }
 
   return (
-    <div className="flex flex-row gap-2">
-      <Chat
-        navbar={{ title: "Finance AI Bot" }}
-        locale="en-US"
-        messages={messages}
-        renderMessageContent={renderMessageContent}
-        quickReplies={defaultQuickReplies}
-        onQuickReplyClick={handleQuickReplyClick}
-        onSend={handleSend}
-      />
-    </div>
+    <Chat
+      navbar={{ title: "Finance AI Bot" }}
+      locale="en-US"
+      messages={messages}
+      renderMessageContent={renderMessageContent}
+      quickReplies={defaultQuickReplies}
+      onQuickReplyClick={handleQuickReplyClick}
+      onSend={handleSend}
+    />
   );
 };
 
