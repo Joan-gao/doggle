@@ -117,14 +117,14 @@ function ChatBotTest() {
                     type: 'recommend',
                     list: [
                       {
-                        title: 'What features does AI bot support?',
+                        title: 'What features does doggle support?',
                         hot: true,
-                        content: 'What features does AI bot support?',
+                        content: 'What features does doggle support?',
                       },
                       {
-                        title: 'How to start AI bookkeeping?',
+                        title: 'How to start bookkeeping with doggle?',
                         hot: true,
-                        content: 'How to start AI bookkeeping?',
+                        content: 'How to start bookkeeping with doggle?',
                       },
                       {
                         title: 'How to view my bills?',
