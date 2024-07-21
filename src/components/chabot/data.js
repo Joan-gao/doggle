@@ -1,6 +1,7 @@
 import React from "react";
 import { Upload, Button } from "antd";
 import { FileTextOutlined } from "@ant-design/icons";
+import avatar from "../chabot/avatar.jpg";
 
 export const initialMessages = [
   {
@@ -42,7 +43,7 @@ export const defaultQuickReplies = [
 export const botConfig2 = {
   config: {
     navbar: {
-      title: "智能助理",
+      title: "AI Bot",
     },
     toolbar: [
       {
@@ -62,26 +63,13 @@ export const botConfig2 = {
       },
     ],
     robot: {
-      avatar: "//gw.alicdn.com/tfs/TB1U7FBiAT2gK0jSZPcXXcKkpXa-108-108.jpg",
+      avatar: "//www.pnglog.com/xtTTFV.jpg",
     },
     messages: [
       {
-        type: "system",
-        content: {
-          text: "智能助理进入对话，为您服务",
-        },
-      },
-      {
         type: "text",
         content: {
-          text: "浙江智能助理为您服务，请问有什么可以帮您？",
-        },
-      },
-      {
-        type: "image",
-        content: {
-          picUrl:
-            "https://gw.alicdn.com/tfs/TB1j2Y3xUY1gK0jSZFMXXaWcVXa-602-337.png",
+          text: "Hi, I'm your bookkeeping AI Bot. Let's start keeping track of your finances together!",
         },
       },
       {
@@ -94,50 +82,28 @@ export const botConfig2 = {
                 image:
                   "//alime-base.oss-cn-beijing.aliyuncs.com/avatar/alime-base.oss-cn-beijing-internal.aliyuncs.com1569811067816-首页推荐卡底图（售前）.jpg",
                 toggle:
-                  "https://gw.alicdn.com/tfs/TB1D79ZXAL0gK0jSZFtXXXQCXXa-100-100.png",
+                  "//gw.alicdn.com/tfs/TB1D79ZXAL0gK0jSZFtXXXQCXXa-100-100.png",
                 type: "recommend",
                 list: [
                   {
-                    title: "收到商品不新鲜怎么办？",
+                    title: "What features does AI bot support?",
                     hot: true,
-                    content: "收到商品不新鲜怎么办？",
+                    content: "What features does AI bot support?",
                   },
                   {
-                    title: "怎么改配送时间/地址/电话？",
+                    title: "How to start AI bookkeeping?",
                     hot: true,
-                    content: "配送时间/地址/电话错了，怎么修改",
+                    content: "How to start AI bookkeeping?",
                   },
                   {
-                    title: "我的订单什么时间配送",
-                    content: "我的订单什么时间配送",
+                    title: "How to view my bills?",
+                    content: "How to view my bills?",
                   },
                   {
-                    title: "已下单，还能临时加/减商品吗？",
-                    content: "已下单，还能临时加/减商品吗？",
+                    title: "How to edit or delete bills?",
+                    content: "How to edit or delete bills?",
                   },
                 ],
-              },
-              {
-                image:
-                  "https://gw.alicdn.com/tfs/TB114P3XHY1gK0jSZTEXXXDQVXa-400-372.jpg",
-                action: "send",
-                text: "点此学习美食做法",
-                type: "default",
-                title: "热门菜谱",
-                params: {
-                  content: "热门菜谱",
-                },
-              },
-              {
-                image:
-                  "https://gw.alicdn.com/tfs/TB1rsT0Xxv1gK0jSZFFXXb0sXXa-400-358.jpg",
-                action: "send",
-                text: "看看你家的天气吧",
-                type: "default",
-                title: "天气查询",
-                params: {
-                  content: "天气查询",
-                },
               },
             ],
           },
@@ -146,16 +112,11 @@ export const botConfig2 = {
     ],
     // 快捷短语
     quickReplies: [
-      { name: "健康码颜色" },
-      { name: "入浙通行申报" },
-      { name: "健康码是否可截图使用" },
-      { name: "健康通行码适用范围" },
-      { name: "最美战疫人有哪些权益" },
-      { name: "我要查社保" },
-      { name: "办理居住证需要什么材料" },
-      { name: "公共支付平台" },
-      { name: "浙江省定点医院清单" },
-      { name: "智能问诊" },
+      { name: "Spent $50 on taxi" },
+      { name: "Spent $20 on dinner last week" },
+      {
+        name: "Received $5000 salary yesterday, spent $50 on haircut, and $70 on groceries",
+      },
     ],
   },
   requests: {

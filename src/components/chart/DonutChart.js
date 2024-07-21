@@ -1,12 +1,27 @@
 import React, { useState, useEffect } from "react";
 import Chart from "react-apexcharts";
-
+const months = [
+  { value: 1, label: "Jan" },
+  { value: 2, label: "Feb" },
+  { value: 3, label: "Mar" },
+  { value: 4, label: "Apr" },
+  { value: 5, label: "May" },
+  { value: 6, label: "Jun" },
+  { value: 7, label: "Jul" },
+  { value: 8, label: "Aug" },
+  { value: 9, label: "Sep" },
+  { value: 10, label: "Oct" },
+  { value: 11, label: "Nov" },
+  { value: 12, label: "Dec" },
+];
 const DonutChart = ({
   type,
   month,
   year,
   registrationMonth,
   registrationYear,
+  incomeData,
+  expenseData,
 }) => {
   const expenseInitialData = [
     { type: "Housing", value: 8 },
@@ -23,13 +38,13 @@ const DonutChart = ({
     { type: "Grocery", value: 19 },
   ];
   const incomeInitialData = [
-    { type: "Salary", value: 1 },
-    { type: "Bonus", value: 2 },
-    { type: "Investment Income", value: 3 },
-    { type: "Other Income", value: 4 },
-    { type: "Business", value: 5 },
-    { type: "Part-time Job", value: 6 },
-    { type: "Buying and Selling", value: 7 },
+    { type: "Salary", value: 10000 },
+    { type: "Bonus", value: 3000 },
+    { type: "Investment Income", value: 2000 },
+    { type: "Other Income", value: 0 },
+    { type: "Business", value: 0 },
+    { type: "Part-time Job", value: 1000 },
+    { type: "Buying and Selling", value: 1000 },
   ];
   const EmptyIncome = [
     { type: "Salary", value: 0 },
@@ -61,21 +76,35 @@ const DonutChart = ({
   const [data, setData] = useState(initialData);
 
   useEffect(() => {
-    if (month && year && registrationMonth && registrationYear) {
-      const currentDate = new Date();
-      const currentMonth = currentDate.getMonth() + 1;
-      const currentYear = currentDate.getFullYear();
-      if (currentYear < year || registrationYear > year) {
-        type === "expense" ? setData(EmptyExpense) : setData(EmptyIncome);
-      }
-
-      if (registrationMonth > month || currentMonth < month) {
-        type === "expense" ? setData(EmptyExpense) : setData(EmptyIncome);
-      }
-    } else {
-      setData(type === "income" ? incomeInitialData : expenseInitialData);
-    }
-  }, []);
+    setData(
+      type === "income"
+        ? incomeData && incomeData.length > 0
+          ? incomeData
+          : EmptyIncome
+        : expenseData && expenseData.length > 0
+        ? expenseData
+        : EmptyExpense
+    );
+    // if (month && year && registrationMonth && registrationYear) {
+    //   const currentDate = new Date();
+    //   const currentMonth = currentDate.getMonth() + 1;
+    //   const currentYear = currentDate.getFullYear();
+    //   if (currentYear < year || registrationYear > year) {
+    //     type === "expense" ? setData(EmptyExpense) : setData(EmptyIncome);
+    //   }
+    //   if (registrationMonth > month || currentMonth < month) {
+    //     type === "expense" ? setData(EmptyExpense) : setData(EmptyIncome);
+    //   }
+    // } else {
+    //   console.log("Get in here");
+    //   setData(
+    //     type === "income"
+    //       ? incomeData || EmptyIncome
+    //       : expenseData || EmptyExpense
+    //   );
+    //   console.log("data", data);
+    // }
+  }, [type, incomeData, expenseData]);
 
   const series = data.map((item) => item.value);
   const labels = data.map((item) => item.type);

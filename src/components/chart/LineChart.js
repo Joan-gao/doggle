@@ -4,7 +4,14 @@ import { useState, useEffect, act } from "react";
 import { MinusOutlined } from "@ant-design/icons";
 import lineChart from "./configs/lineChart";
 
-function LineChart({ type, activeKey }) {
+function LineChart({
+  type,
+  activeKey,
+  incomeSeries,
+  incomeCategory,
+  expenseCategory,
+  expenseSeries,
+}) {
   const { Title, Paragraph } = Typography;
   const initialYearSeries = [
     {
@@ -81,13 +88,52 @@ function LineChart({ type, activeKey }) {
   useEffect(() => {
     console.log(activeKey);
     if (activeKey === "1") {
-      setSeries(initialMonthSeries);
-      setCategory(initialMonthCategory);
+      setSeries(
+        type === "income"
+          ? incomeSeries && incomeSeries.length > 0
+            ? incomeSeries
+            : initialMonthSeries
+          : expenseSeries && expenseSeries.length > 0
+          ? expenseSeries
+          : initialMonthSeries
+      );
+      setCategory(
+        type === "income"
+          ? incomeCategory && incomeCategory.length > 0
+            ? incomeCategory
+            : initialMonthCategory
+          : expenseCategory && expenseCategory.length > 0
+          ? expenseCategory
+          : initialMonthCategory
+      );
     } else {
-      setSeries(initialYearSeries);
-      setCategory(initialYearCategory);
+      setSeries(
+        type === "income"
+          ? incomeSeries && incomeSeries.length > 0
+            ? incomeSeries
+            : initialMonthSeries
+          : expenseSeries && expenseSeries.length > 0
+          ? expenseSeries
+          : initialYearSeries
+      );
+      setCategory(
+        type === "income"
+          ? incomeCategory && incomeCategory.length > 0
+            ? incomeCategory
+            : initialYearCategory
+          : expenseCategory && expenseCategory.length > 0
+          ? expenseCategory
+          : initialYearCategory
+      );
     }
-  }, [activeKey]);
+  }, [
+    activeKey,
+    type,
+    incomeCategory,
+    incomeSeries,
+    expenseCategory,
+    expenseSeries,
+  ]);
   const config = {
     options: {
       chart: {

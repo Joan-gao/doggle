@@ -36,8 +36,8 @@ function App() {
           <Route exact path="/tables" component={Tables} />
           <Route exact path="/billing" component={Billing} />
           <Route exact path="/profile" component={Profile} />
-          <Route exact path="/chatbot" component={Chatbot} />
-          <Route exact path="/chatbottest" component={ChatBotTest} />
+          {/* <Route exact path="/chatbot" component={Chatbot} /> */}
+          <Route exact path="/chatbot" component={ChatBotTest} />
           <Route exact path="/calendarbill" component={CalendarBill} />
           {/* <Redirect from="*" to="/dashboard" /> */}
         </Main>

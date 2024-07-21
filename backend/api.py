@@ -5,7 +5,7 @@ from db import *
 
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 
 @app.route("/")
@@ -38,6 +38,20 @@ def create_user():
         return jsonify({'status': 'error', 'message': 'Missing email, password, or uid'}), 400
 
 
+@app.route('/user/get', methods=['POST'])
+def get_user():
+    uid = request.json.get("uid")
+
+    user = get_user_id_by_uid(uid)
+    if user is not None:
+        user_dict = user.to_dict()
+
+        return jsonify({'status': 'success', "user": user_dict}), 200
+
+    else:
+        return jsonify({'status': 'error', 'message': 'Missing email, password, or uid'}), 400
+
+
 @app.route('/user/update', methods=['POST'])
 def update_user():
     userData = request.json.get("userData")
@@ -53,3 +67,60 @@ def update_user():
             return jsonify({'status': 'error', 'message': 'User update failed'}), 401
     else:
         return jsonify({'status': 'error'}), 400
+
+
+@app.route('/income_expense_summary', methods=['Post'])
+def getIncomeExpenseSummaryData():
+
+    month = request.json.get("month")
+    year = request.json.get("year")
+    uid = request.json.get("uid")
+
+    summary = get_user_data(uid, year, month)
+
+    return jsonify(summary)
+
+
+@app.route('/api/getDataByMonth', methods=['POST'])
+def get_data_by_month():
+    user = request.json.get("user")
+    month = request.json.get('month')
+    result = getCalanderDatabyMonth(user, month)
+
+    return jsonify(result)
+
+
+@app.route('/api/getDataByDate', methods=['POST'])
+def get_data_by_date():
+    user = request.json.get("user")
+    date = request.json.get('date')
+
+    result = getCalanderDatabyDate(user, date)
+    return jsonify(result)
+
+
+@app.route('/api/delete/transaction', methods=['POST'])
+def deleteTransaction():
+    transaction_id = request.json.get("transaction_id")
+    result = delete_transaction(transaction_id)
+    return jsonify(result)
+
+
+@app.route('/api/edit/transaction', methods=['POST'])
+def editTransaction():
+    transaction_id = request.json.get("transaction_id")
+    category_id = request.json.get("category_id")
+    amount = request.json.get("amount")
+    result = edit_transaction(transaction_id, category_id, amount)
+    return jsonify(result)
+
+
+@app.route('/fetch/all-transactions', methods=['POST'])
+def getAllTransactionsByUser():
+    user = request.json.get("user")
+    result = getTransactionsByUser(user)
+    return jsonify(result)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
