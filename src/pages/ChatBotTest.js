@@ -188,13 +188,15 @@ function ChatBotTest() {
                     "Bill 3\nDate: 2024-07-18\nCategory: Shopping\nExpense: $70\n" +
                     "Description: groceries\nAccount Book: Default account book";
                   break;
-                case "What features does AI bot support?":
+
+                case 'What features does doggle support?':
                   responseText =
                     "I can help you with voice input 🎤, image recognition 📸, and file text recognition 📄. " +
                     "I also love analyzing your bills based on your personal info, helping you understand your spending habits, " +
                     "and giving you pawsome suggestions, woof! 🐶✨";
                   break;
-                case "How to start AI bookkeeping?":
+
+                case 'How to start bookkeeping with doggle?':
                   responseText =
                     "First, fill in some basic info about yourself 💗. Then you can start bookkeeping! " +
                     "When you log an expense or income, just provide the date, event, and amount 📝. " +
