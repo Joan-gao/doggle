@@ -11,10 +11,10 @@ function ChatBotTest() {
     const bot = new window.ChatSDK({
       root: wrapper.current,
       popContainer: wrapper.current,
-      // 语音输入
+      // voice input
       makeRecorder({ ctx }) {
         let recognition;
-        // 检查浏览器是否支持 Web Speech API
+        // check if support Web Speech API
         const SpeechRecognition =
           window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRecognition) {
@@ -31,7 +31,7 @@ function ChatBotTest() {
             console.log('onresult triggered');
             const transcript = event.results[0][0].transcript;
             console.log('recognized text:', transcript);
-            // 识别到文本后自动回复
+            // auto reply for text
             console.log('Preparing to send postMessage');
             ctx.postMessage({
               type: 'text',
@@ -54,7 +54,7 @@ function ChatBotTest() {
           console.log('SpeechRecognition not supported');
         }
         return {
-          // 是否支持语音输入，
+          // if support voice input
           canRecord: !!recognition,
           onStart() {
             if (recognition) {
@@ -78,7 +78,7 @@ function ChatBotTest() {
       },
       config: {
         lang: 'en-US',
-        // 当支持语音时默认用语音输入
+        // default support voice input
         inputType: canRecord ? 'voice' : 'text',
         navbar: {
           title: 'Doggle 🐾',
@@ -99,14 +99,14 @@ function ChatBotTest() {
           avatar: '//www.pnglog.com/xtTTFV.jpg',
         },
         messages: [
-          // 文本自动回复
+          // text auto reply
           {
             type: 'text',
             content: {
               text: "Woof woof! 🐾 I'm Doggle, your best bookkeeping pup! 💰 Let's keep track of your finances together! 🐶✨",
             },
           },
-          // 卡片信息
+          // card info
           {
             type: 'card',
             content: {
@@ -117,14 +117,14 @@ function ChatBotTest() {
                     type: 'recommend',
                     list: [
                       {
-                        title: 'What features does AI bot support?',
+                        title: 'What features does doggle support?',
                         hot: true,
-                        content: 'What features does AI bot support?',
+                        content: 'What features does doggle support?',
                       },
                       {
-                        title: 'How to start AI bookkeeping?',
+                        title: 'How to start bookkeeping with doggle?',
                         hot: true,
-                        content: 'How to start AI bookkeeping?',
+                        content: 'How to start bookkeeping with doggle?',
                       },
                       {
                         title: 'How to view my bills?',
@@ -141,7 +141,7 @@ function ChatBotTest() {
             },
           },
         ],
-        // 快捷短语
+        // quick autoreply
         quickReplies: [
           { name: 'Spent $50 on taxi' },
           { name: 'Spent $20 on dinner last week' },
@@ -150,7 +150,7 @@ function ChatBotTest() {
           },
         ],
       },
-      // 文本回复
+      // text reply
       requests: {
         /*
          *
@@ -230,18 +230,18 @@ function ChatBotTest() {
           });
         },
       },
-      // 图片文件上传
+      // photo, file upload
       handlers: {
         onToolbarClick(item, ctx) {
-          //图片上传
+          //photo upload
           if (item.type === 'image') {
             ctx.util.chooseImage({
-              multiple: true, // 是否可多选
+              multiple: true, 
               success(e) {
                 if (e.files) {
-                  // 如果有 h5 上传的图
+                  // h5 upload
                   const file = e.files[0];
-                  // 先展示图片
+                  // show photo message
                   ctx.appendMessage({
                     type: 'image',
                     content: {
@@ -260,15 +260,13 @@ function ChatBotTest() {
               },
             });
           }
-          // 文件上传
+          // upload file
           else if (item.type === 'file') {
-            // 创建一个隐藏的文件输入元素
+            // create a hide file as input
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = '.pdf,.xls,.xlsx,.doc,.docx';
             input.style.display = 'none';
-
-            // 当文件选择完成时处理文件
             input.onchange = (event) => {
               const file = event.target.files[0];
               if (file) {
@@ -280,8 +278,7 @@ function ChatBotTest() {
                   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                 ];
                 if (allowedTypes.includes(file.type)) {
-                  // 文件类型检查通过
-                  // 可以选择在前端展示文件信息
+                  // check file 
                   ctx.appendMessage({
                     type: 'file',
                     content: {
@@ -291,7 +288,7 @@ function ChatBotTest() {
                     position: 'right',
                   });
 
-                  // 自动回复 "文件已收到"
+                  // auto reply
                   ctx.postMessage({
                     type: 'text',
                     content: {
@@ -309,8 +306,6 @@ function ChatBotTest() {
                 }
               }
             };
-
-            // 触发文件选择对话框
             document.body.appendChild(input);
             input.click();
             document.body.removeChild(input);
