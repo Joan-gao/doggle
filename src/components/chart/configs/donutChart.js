@@ -1,18 +1,18 @@
 export const data = [
   {
-    type: 'Food',
+    type: "Food",
     value: 25,
   },
   {
-    type: 'Sports',
+    type: "Sports",
     value: 25,
   },
   {
-    type: 'Shopping',
+    type: "Shopping",
     value: 30,
   },
   {
-    type: 'Study',
+    type: "Study",
     value: 15,
   },
 ];
@@ -22,7 +22,7 @@ const labels = data.map((item) => item.type);
 
 export const config = {
   chart: {
-    type: 'donut',
+    type: "donut",
     events: {
       dataPointSelection: function (event, chartContext, config) {
         const selectedLabel = config.w.globals.labels[config.dataPointIndex];
@@ -66,18 +66,18 @@ export const config = {
           show: true,
           name: {
             show: true,
-            fontSize: '22px',
-            fontFamily: 'Helvetica, Arial, sans-serif',
+            fontSize: "22px",
+            fontFamily: "Helvetica, Arial, sans-serif",
             fontWeight: 600,
-            color: '#373d3f',
+            color: "#373d3f",
             offsetY: -10,
           },
           value: {
             show: true,
-            fontSize: '16px',
-            fontFamily: 'Helvetica, Arial, sans-serif',
+            fontSize: "16px",
+            fontFamily: "Helvetica, Arial, sans-serif",
             fontWeight: 400,
-            color: '#373d3f',
+            color: "#373d3f",
             offsetY: 16,
             formatter: function (val) {
               return val;
@@ -86,11 +86,11 @@ export const config = {
           total: {
             show: true,
             showAlways: true,
-            label: 'Total',
-            fontSize: '22px',
-            fontFamily: 'Helvetica, Arial, sans-serif',
+            label: "Total",
+            fontSize: "22px",
+            fontFamily: "Helvetica, Arial, sans-serif",
             fontWeight: 600,
-            color: '#373d3f',
+            color: "#373d3f",
             formatter: function (w) {
               return w.globals.seriesTotals.reduce((a, b) => a + b, 0);
             },
@@ -109,7 +109,7 @@ export const config = {
           width: 200,
         },
         legend: {
-          position: 'bottom',
+          position: "bottom",
         },
       },
     },
