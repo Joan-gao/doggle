@@ -799,14 +799,29 @@ function Dashboard() {
     return month ? month.label : "Invalid month value";
   };
   useEffect(() => {
-    if (user.user && user.user.created_at) {
-      const createdAt = user.user.created_at;
-      const createdyear = parseInt(createdAt.substring(0, 4), 10);
-      const createdmonth = parseInt(createdAt.substring(5, 7), 10);
-
-      setRegistrationYear(createdyear);
-      setRegistrationMonth(createdmonth);
-    }
+    // fetch("http://127.0.0.1:5000/user/get", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     "Access-Control-Allow-Origin": "*",
+    //   },
+    //   body: JSON.stringify({
+    //     uid: user.uid, // 根据实际用户ID字段名称调整
+    //   }),
+    // })
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     console.log(data);
+    //     if (data.user && data.user.created_at) {
+    //       const createdAt = data.user.created_at;
+    //       const createdyear = parseInt(createdAt.substring(0, 4), 10);
+    //       const createdmonth = parseInt(createdAt.substring(5, 7), 10);
+    //       setRegistrationYear(createdyear);
+    //       console.log(registrationYear);
+    //       setRegistrationMonth(createdmonth);
+    //       console.log(registrationMonth);
+    //     }
+    //   });
     //调用AI组装所需要数据
   }, []);
   useEffect(() => {
