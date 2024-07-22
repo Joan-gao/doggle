@@ -1,3 +1,5 @@
+from contextlib import contextmanager
+
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import extract
 from model.model import *
@@ -12,7 +14,7 @@ DATABASE_URI = 'mysql+pymysql://root:root123456@35.226.135.14/Finance'
 # 创建 SQLAlchemy 引擎
 engine = create_engine(DATABASE_URI, echo=True)
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # 初始化数据库
 
 
@@ -21,7 +23,23 @@ def init_db():
 
 
 init_db()
-session = SessionLocal()
+# session = SessionLocal()
+
+SessionFactory = sessionmaker(bind=engine)
+
+
+@contextmanager
+def session_scope():
+    """Provide a transactional scope around a series of operations."""
+    session = SessionFactory()
+    try:
+        yield session
+        session.commit()
+    except:
+        session.rollback()
+        raise
+    finally:
+        session.close()
 
 
 categories = {
@@ -103,7 +121,8 @@ def categorize_transactions(transactions, categories):
 
 
 def getOverAllTransactionAnalyze(user_id):
-    try:
+    with session_scope() as session:
+
         today = datetime.today()
         # first_day_of_month = datetime(today.year, today.month, 1)
         # next_month = today.month + 1 if today.month < 12 else 1
@@ -143,20 +162,12 @@ def getOverAllTransactionAnalyze(user_id):
         }
 
         return response_data
-    except SQLAlchemyError as e:
-        print(f"An error occurred: {e}")
-        session.rollback()
-        return None
-
-    finally:
-        session.close()
 
 
 # Create User
 
 def createUserInDB(email, password, uid, username):
-
-    try:
+    with session_scope() as session:
         passwordhash = generate_hash(password)
         new_user = User(auth_uid=uid, email=email,
                         password_hash=passwordhash, username=username)
@@ -166,16 +177,11 @@ def createUserInDB(email, password, uid, username):
 
         print(f'User {email} created successfully!')
         return new_user
-    except Exception as e:
-        print(e)
-        return None
-    finally:
-        session.close()
 
 
 def updateUserInDB(userData):
 
-    try:
+    with session_scope() as session:
         # Retrieve the user by user_id
         user = session.query(User).filter(
             User.user_id == userData['userId']).one_or_none()
@@ -209,72 +215,6 @@ def updateUserInDB(userData):
         # Commit the transaction
         session.commit()
         return True
-    except SQLAlchemyError as e:
-        print(f"An error occurred: {e}")
-        session.rollback()
-        return False
-    finally:
-        session.close()
-
-
-def get_income_expense_summary(uid, month=None, year=None):
-    """
-    1.根据uid 查看 User并拿到 user_id
-
-    2. 首先判断用户的注册时间，以及用户传递的查询时间，如果用用户传递的年份大于或者小于注册年份，则直接返回null
-
-    3. 如果用户传递的年份与注册年份一致，则继续判断用户是否传递了月份，如果传递的月份小于注册月份，或者大于当前月份，也没有数据 直接返回 null
-
-    4 然后开始查看用户的数据，如果月份不为空，则先以月为单位，查询选定年份那年的月份内的 income transaction总金额，expense transaction 总金额，income总共有几笔消费
-    expense总共有几笔消费
-    5. 然后再以年为但查询选定年份的内，income transaction总金额，expense transaction 总金额，income总共有几笔消费
-    expense总共有几笔消费
-
-    6. 需要判断筛选出来的数据对应的category分别有多少金额，给我两个字典list,一个list是income,一个list 是expense list中放着多个字典对象
-    字典中的键为type值为金额 类似于这样data = {
-  year:[{
-    type: "Food",
-    value: 25,
-  },
-  {
-    type: "Sports",
-    value: 25,
-  },
-  {
-    type: "Shopping",
-    value: 30,
-  },
-  {
-    type: "Study",
-    value: 15,
-  }]
-   Month:[{
-    type: "Food",
-    value: 25,
-  },
-  {
-    type: "Sports",
-    value: 25,
-  },
-  {
-    type: "Shopping",
-    value: 30,
-  },
-  {
-    type: "Study",
-    value: 15,
-  },
-}];
-
-7 我需要一个排序数据，请将排序最高的前三个category 提供给我，category 名称， transaction数量，transaction金额，income以及out come各需要一个：类似于下面这样
-  expense={"year":[ { category: "hotel & travel", transactions: 2, amount: -5000 },
-  { category: "rent", transactions: 1, amount:-2000 },
-  { category: "shopping", transactions: 2, amount: -1500 }],Month:[ { category: "hotel & travel", transactions: 2, amount: -5000 },
-  { category: "rent", transactions: 1, amount:-2000 },
-  { category: "shopping", transactions: 2, amount: -1500 }]}
-
-
-"""
 
 
 def assembaleData(monthDataDict, yearDataDict):
@@ -331,14 +271,18 @@ def assembaleData(monthDataDict, yearDataDict):
 
 
 def get_user_id_by_uid(uid):
-    try:
+    with session_scope() as session:
         user = session.query(User).filter_by(auth_uid=uid).first()
-        return user if user else None
-    except Exception as e:
-        print(e)
+        if user:
+            # 提取必要的数据
+            user_data = {
+                'id': user.user_id,
+                'username': user.username,
+                'created_at': user.created_at,
+                # 添加其他需要的属性
+            }
+            return user_data
         return None
-    finally:
-        session.close()
 
 
 def validate_date(user, year, month=None):
@@ -359,16 +303,17 @@ def validate_date(user, year, month=None):
 
 
 def get_transactions(user_id, year, month=None):
-    query = session.query(Transaction).filter(
-        Transaction.user_id == user_id,
-        Transaction.is_shown != 1,
-        func.date_format(Transaction.transaction_date, '%Y') == str(year)
-    )
-    if month:
-        query = query.filter(func.strftime(
-            '%m', Transaction.transaction_date) == str(month).zfill(2))
+    with session_scope() as session:
+        query = session.query(Transaction).filter(
+            Transaction.user_id == user_id,
+            Transaction.is_shown != 1,
+            func.date_format(Transaction.transaction_date, '%Y') == str(year)
+        )
+        if month:
+            query = query.filter(func.strftime(
+                '%m', Transaction.transaction_date) == str(month).zfill(2))
 
-    return query.all()
+        return query.all()
 
 
 def categorize_transactions(transactions):
@@ -400,14 +345,14 @@ def get_user_data(uid, year=None, month=None):
     user_id = get_user_id_by_uid(uid)
     if not user_id:
         return None
+    with session_scope() as session:
+        user = session.query(User).get(user_id)
+        if not validate_date(user, year, month):
+            return None
 
-    user = session.query(User).get(user_id)
-    if not validate_date(user, year, month):
-        return None
-
-    transactions = get_transactions(user_id, year, month)
-    if not transactions:
-        return None
+        transactions = get_transactions(user_id, year, month)
+        if not transactions:
+            return None
 
     income_data_year, expense_data_year = categorize_transactions(
         get_transactions(user_id, year))
@@ -442,10 +387,9 @@ def get_user_data(uid, year=None, month=None):
 
 
 def getCalanderDatabyDate(user, date):
-    try:
+    with session_scope() as session:
 
-        registered_at = datetime.strptime(
-            user.get("created_at"), '%Y-%m-%d')
+        registered_at = datetime.strptime(user.get("created_at"), '%Y-%m-%d')
         query_date = datetime.strptime(date, '%Y-%m-%d')
 
         if query_date < registered_at:
@@ -490,58 +434,52 @@ def getCalanderDatabyDate(user, date):
 
         return result
 
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return {"error": "An error occurred while fetching data"}
-
-    finally:
-        session.close()
-
 
 def getCalanderDatabyMonth(user, month):
+    with session_scope() as session:
 
-    transactions = session.query(Transaction).filter(
-        extract('year', Transaction.transaction_date) == int(month[:4]),
-        extract('month', Transaction.transaction_date) == int(month[5:7]),
-        Transaction.user_id == user.get("user_id"),
-        Transaction.is_shown != 1
-    ).all()
+        transactions = session.query(Transaction).filter(
+            extract('year', Transaction.transaction_date) == int(month[:4]),
+            extract('month', Transaction.transaction_date) == int(month[5:7]),
+            Transaction.user_id == user.get("user_id"),
+            Transaction.is_shown != 1
+        ).all()
 
-    expense = 0
-    income = 0
-    financeData = []
-    key = 0
+        expense = 0
+        income = 0
+        financeData = []
+        key = 0
 
-    for transaction in transactions:
-        category_name = categories.get(
-            transaction.category_id, "Unknown").rsplit(' ', 1)[0]
-        amount = transaction.amount
-        if "expense" in categories.get(transaction.category_id, "Unknown").lower():
-            amount = -amount
-            expense += amount
-        else:
-            income += amount
-        key += 1
-        financeData.append({
-            "key": key,
-            "category": category_name,
-            "amount": amount,
-            "transaction_id": transaction.transaction_id,
-            "category_id": transaction.category_id
-        })
+        for transaction in transactions:
+            category_name = categories.get(
+                transaction.category_id, "Unknown").rsplit(' ', 1)[0]
+            amount = transaction.amount
+            if "expense" in categories.get(transaction.category_id, "Unknown").lower():
+                amount = -amount
+                expense += amount
+            else:
+                income += amount
+            key += 1
+            financeData.append({
+                "key": key,
+                "category": category_name,
+                "amount": amount,
+                "transaction_id": transaction.transaction_id,
+                "category_id": transaction.category_id
+            })
 
-    result = {
-        "expense": expense,
-        "income": income,
-        "financeData": financeData
-    }
+        result = {
+            "expense": expense,
+            "income": income,
+            "financeData": financeData
+        }
 
-    return result
+        return result
 
 
 def delete_transaction(transaction_id):
+    with session_scope() as session:
 
-    try:
         transaction = session.query(Transaction).filter(
             Transaction.transaction_id == transaction_id).first()
         if transaction:
@@ -550,16 +488,11 @@ def delete_transaction(transaction_id):
             return {'status': "success"}
         else:
             return {'status': "fail"}
-    except Exception as e:
-        session.rollback()
-        return {'status': "fail", 'error': str(e)}
-    finally:
-        session.close()
 
 
 def edit_transaction(transaction_id, category_id, amount):
+    with session_scope() as session:
 
-    try:
         transaction = session.query(Transaction).filter(
             Transaction.transaction_id == transaction_id).first()
         if transaction:
@@ -569,15 +502,11 @@ def edit_transaction(transaction_id, category_id, amount):
             return {'status': "success"}
         else:
             return {'status': "fail"}
-    except Exception as e:
-        session.rollback()
-        return {'status': "fail", 'error': str(e)}
-    finally:
-        session.close()
 
 
 def getTransactionsByUser(user):
-    try:
+    with session_scope() as session:
+
         registered_at = datetime.strptime(user.get("created_at"), '%Y-%m-%d')
         user_id = user.get("user_id")
 
@@ -628,10 +557,3 @@ def getTransactionsByUser(user):
             "by_date": dict(result_by_date),
             "by_month": dict(result_by_month)
         }
-
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return {"error": "An error occurred while fetching data"}
-
-    finally:
-        session.close()

@@ -44,9 +44,8 @@ def get_user():
 
     user = get_user_id_by_uid(uid)
     if user is not None:
-        user_dict = user.to_dict()
 
-        return jsonify({'status': 'success', "user": user_dict}), 200
+        return jsonify({'status': 'success', "user": user}), 200
 
     else:
         return jsonify({'status': 'error', 'message': 'Missing email, password, or uid'}), 400
