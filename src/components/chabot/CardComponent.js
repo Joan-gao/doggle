@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Card,
   CardMedia,
@@ -6,10 +6,9 @@ import {
   CardText,
   CardActions,
   Button,
-} from '@chatui/core';
+} from "@chatui/core";
 
-
-function CardComponent () {
+function CardComponent() {
   return (
     <Card size="xl">
       <CardMedia image="//gw.alicdn.com/tfs/TB1Xv5_vlr0gK0jSZFnXXbRRXXa-427-240.png" />

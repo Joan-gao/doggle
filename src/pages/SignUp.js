@@ -9,7 +9,14 @@
 =========================================================
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import app from "../components/other/firebaseAuth";
+// import { initializeApp } from "firebase/app";
 import React, { Component } from "react";
+import axios from "axios";
+// import firebaseConfig from "../components/other/firebaseAuth";
+import { Modal } from "antd";
+import Information from "../components/other/Information";
 import {
   Layout,
   Menu,
@@ -19,11 +26,12 @@ import {
   Form,
   Input,
   Checkbox,
+  Select,
 } from "antd";
 import logo1 from "../assets/images/logos-facebook.svg";
 import logo2 from "../assets/images/logo-apple.svg";
 import logo3 from "../assets/images/Google__G__Logo.svg.png";
-
+// import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { Link } from "react-router-dom";
 import {
   DribbbleOutlined,
@@ -32,6 +40,7 @@ import {
   GithubOutlined,
 } from "@ant-design/icons";
 
+const { Option } = Select;
 const { Title } = Typography;
 const { Header, Footer, Content } = Layout;
 const template = [
@@ -114,15 +123,86 @@ const signin = [
     />
   </svg>,
 ];
+
 export default class SignUp extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      // open:false
+      openModal: false,
+      userId: "",
+      // loading: false,
+    };
+  }
   render() {
+    const auth = getAuth();
+    // const app = initializeApp(firebaseConfig);
+    // const auth = getAuth();
+    // const handleOk = () => {
+    //   this.setState({ loading: true });
+    //   setTimeout(() => {
+    //     this.setState({ loading: false });
+    //     this.setState({ open: false });
+    //   }, 3000);
+    // };
+    // const handleCancel = () => {
+    //   this.setState({ open: false });
+    // };
+
+    const handleSubmit = async (email, password, username) => {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(async (userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user.uid, user.email);
+          const response = await axios.post(
+            // "https://tiktok-hackathon-app-6b6d56fcd0c7.herokuapp.com/edit",
+            "http://127.0.0.1:5000/user/create",
+            {
+              email: user.email,
+              password: password,
+              uid: user.uid,
+              username: username,
+            },
+
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+              },
+            }
+          );
+          console.log("Response:", response.data);
+          if (response.data.status === "success") {
+            this.setState({
+              openModal: true,
+              userId: response.data.user_id,
+            });
+          }
+
+          // this.props.history.push("/dashboard");
+        })
+        .catch((error) => {
+          console.log("error", error);
+          // ..
+        });
+    };
+    // const handleSubmit = async (email, password, username) => {
+    //     this.setState({
+    //       openModal: true,
+    //       userId: 5,
+    //     });
+
+    // };
     const onFinish = (values) => {
       console.log("Success:", values);
+      handleSubmit(values.email, values.password, values.Name);
     };
 
     const onFinishFailed = (errorInfo) => {
       console.log("Failed:", errorInfo);
     };
+
     return (
       <>
         <div className="layout-default ant-layout layout-sign-up">
@@ -220,7 +300,7 @@ export default class SignUp extends Component {
                     { required: true, message: "Please input your password!" },
                   ]}
                 >
-                  <Input placeholder="Passwoed" />
+                  <Input placeholder="Password" />
                 </Form.Item>
 
                 <Form.Item name="remember" valuePropName="checked">
@@ -237,6 +317,7 @@ export default class SignUp extends Component {
                     style={{ width: "100%" }}
                     type="primary"
                     htmlType="submit"
+                    onClick={handleSubmit}
                   >
                     SIGN UP
                   </Button>
@@ -291,6 +372,149 @@ export default class SignUp extends Component {
             </p>
           </Footer>
         </div>
+        {/* <Modal
+          open={this.state.open}
+          title="Please enter your basic Info"
+          onOk={handleOk}
+          onCancel={handleCancel}
+          footer={[
+            <Button key="back" onClick={handleCancel}>
+              Return
+            </Button>,
+            <Button
+              key="submit"
+              type="primary"
+              loading={this.state.loading}
+              onClick={handleOk}
+            >
+              Submit
+            </Button>,
+            //   <Button
+            //     key="link"
+            //     href="https://google.com"
+            //     type="primary"
+            //     loading={loading}
+            //     onClick={handleOk}
+            //   >
+            //     Search on Google
+            //   </Button>,
+          ]}
+        >
+          <Form
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+            layout="vertical"
+            className="row-col"
+          >
+            <Form.Item
+              className="username"
+              label="Age"
+              name="age"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your age!",
+                },
+              ]}
+            >
+              <Input placeholder="Age" />
+            </Form.Item>
+
+            <Form.Item
+              className="username"
+              label="Gender"
+              name="gender"
+              rules={[
+                {
+                  required: true,
+                  message: "Please select an option!",
+                },
+              ]}
+            >
+              <Select placeholder="Select an option">
+                <Option value="option1">Female</Option>
+                <Option value="option2">Male</Option>
+                <Option value="option3">Rather Not Say</Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              className="username"
+              label="Address"
+              name="address"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your address!",
+                },
+              ]}
+            >
+              <Input placeholder="Pleaase enter your address" />
+            </Form.Item>
+
+            <Form.Item
+              className="username"
+              label="Income"
+              name="income"
+              rules={[
+                {
+                  required: true,
+                  message: "Please select an option!",
+                },
+              ]}
+            >
+              <Select placeholder="Select an income source" mode="multiple">
+                <Option value="salary">Salary</Option>
+                <Option value="parentalSupport">Parental support</Option>
+                <Option value="investmentIncome">Investment income</Option>
+                <Option value="freelance">Freelance</Option>
+                <Option value="other">Other</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item
+              className="username"
+              label="Goal"
+              name="goal"
+              rules={[
+                {
+                  required: true,
+                  message: "Please select an option!",
+                },
+              ]}
+            >
+              <Select placeholder="Select a recent goal">
+                <Option value="none">None</Option>
+                <Option value="saveMoney">Save money</Option>
+                <Option value="selfImprovement">Self-improvement</Option>
+                <Option value="buyHouse">Buy a house</Option>
+                <Option value="travel">Travel</Option>
+                <Option value="education">Education</Option>
+                <Option value="other">Other</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item
+              className="username"
+              label="Occupation"
+              name="occupation"
+              rules={[
+                {
+                  required: true,
+                  message: "Please select an option!",
+                },
+              ]}
+            >
+              <Select placeholder="Select your identity">
+                <Option value="student">Student</Option>
+                <Option value="employee">Employee</Option>
+                <Option value="unemployed">Unemployed</Option>
+                <Option value="freelancer">Freelancer</Option>
+                <Option value="retired">Retired</Option>
+                <Option value="other">Other</Option>
+              </Select>
+            </Form.Item>
+          </Form>
+        </Modal> */}
+        {this.state.openModal && <Information userId={this.state.userId} />}
       </>
     );
   }

@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useRef, useState } from "react";
+import axios from "axios";
 const canRecord = true; // 写个判断逻辑
 
 function ChatBotTest() {
@@ -21,56 +21,56 @@ function ChatBotTest() {
           recognition = new SpeechRecognition();
           recognition.continuous = false;
           recognition.interimResults = false;
-          recognition.lang = 'en-US';
+          recognition.lang = "en-US";
 
           recognition.onstart = () => {
-            console.log('start recording');
+            console.log("start recording");
           };
 
           recognition.onresult = (event) => {
-            console.log('onresult triggered');
+            console.log("onresult triggered");
             const transcript = event.results[0][0].transcript;
             console.log('recognized text:', transcript);
             // auto reply for text
             console.log('Preparing to send postMessage');
             ctx.postMessage({
-              type: 'text',
+              type: "text",
               content: {
                 text: `I heard: ${transcript}`,
               },
-              position: 'left',
+              position: "left",
             });
-            console.log('postMessage sent');
+            console.log("postMessage sent");
           };
 
           recognition.onerror = (event) => {
-            console.log('recognition error:', event.error);
+            console.log("recognition error:", event.error);
           };
 
           recognition.onend = () => {
-            console.log('stop recording');
+            console.log("stop recording");
           };
         } else {
-          console.log('SpeechRecognition not supported');
+          console.log("SpeechRecognition not supported");
         }
         return {
           // if support voice input
           canRecord: !!recognition,
           onStart() {
             if (recognition) {
-              console.log('Starting recognition');
+              console.log("Starting recognition");
               recognition.start();
             }
           },
           onEnd() {
             if (recognition) {
-              console.log('Stopping recognition');
+              console.log("Stopping recognition");
               recognition.stop();
             }
           },
           onCancel() {
             if (recognition) {
-              console.log('Cancelling recognition');
+              console.log("Cancelling recognition");
               recognition.stop();
             }
           },
@@ -81,40 +81,40 @@ function ChatBotTest() {
         // default support voice input
         inputType: canRecord ? 'voice' : 'text',
         navbar: {
-          title: 'Doggle 🐾',
+          title: "Doggle 🐾",
         },
         toolbar: [
           {
-            type: 'image',
-            icon: 'image',
-            title: 'photo',
+            type: "image",
+            icon: "image",
+            title: "photo",
           },
           {
-            type: 'file',
-            icon: 'file',
-            title: 'file',
+            type: "file",
+            icon: "file",
+            title: "file",
           },
         ],
         robot: {
-          avatar: '//www.pnglog.com/xtTTFV.jpg',
+          avatar: "//www.pnglog.com/xtTTFV.jpg",
         },
         messages: [
           // text auto reply
           {
-            type: 'text',
+            type: "text",
             content: {
               text: "Woof woof! 🐾 I'm Doggle, your best bookkeeping pup! 💰 Let's keep track of your finances together! 🐶✨",
             },
           },
           // card info
           {
-            type: 'card',
+            type: "card",
             content: {
-              code: 'promotion',
+              code: "promotion",
               data: {
                 array: [
                   {
-                    type: 'recommend',
+                    type: "recommend",
                     list: [
                       {
                         title: 'What features does doggle support?',
@@ -127,12 +127,12 @@ function ChatBotTest() {
                         content: 'How to start bookkeeping with doggle?',
                       },
                       {
-                        title: 'How to view my bills?',
-                        content: 'How to view my bills?',
+                        title: "How to view my bills?",
+                        content: "How to view my bills?",
                       },
                       {
-                        title: 'How to edit or delete bills?',
-                        content: 'How to edit or delete bills?',
+                        title: "How to edit or delete bills?",
+                        content: "How to edit or delete bills?",
                       },
                     ],
                   },
@@ -143,10 +143,10 @@ function ChatBotTest() {
         ],
         // quick autoreply
         quickReplies: [
-          { name: 'Spent $50 on taxi' },
-          { name: 'Spent $20 on dinner last week' },
+          { name: "Spent $50 on taxi" },
+          { name: "Spent $20 on dinner last week" },
           {
-            name: 'Received $5000 salary yesterday, spent $50 on haircut, and $70 on groceries',
+            name: "Received $5000 salary yesterday, spent $50 on haircut, and $70 on groceries",
           },
         ],
       },
@@ -161,67 +161,69 @@ function ChatBotTest() {
          * @return {object}
          */
         send: function (msg) {
-          console.log('Send method called');
-          console.log('Message:', msg);
+          console.log("Send method called");
+          console.log("Message:", msg);
 
           return new Promise((resolve) => {
             setTimeout(() => {
               let responseText;
 
               switch (msg.content.text) {
-                case 'Spent $50 on taxi':
+                case "Spent $50 on taxi":
                   responseText =
-                    'Recorded. 🐾\nBill 1\nDate: 2024-07-19\nCategory: Transport\n' +
-                    'Expense: $50\nDescription: Taxi\nAccount Book: Default account book';
+                    "Recorded. 🐾\nBill 1\nDate: 2024-07-19\nCategory: Transport\n" +
+                    "Expense: $50\nDescription: Taxi\nAccount Book: Default account book";
                   break;
-                case 'Spent $20 on dinner last week':
+                case "Spent $20 on dinner last week":
                   responseText =
-                    'Recorded. 🐾\nBill 1\nDate: 2024-07-12\nCategory: Meal\n' +
-                    'Expense: $20\nDescription: dinner last week\nAccount Book: Default account book';
+                    "Recorded. 🐾\nBill 1\nDate: 2024-07-12\nCategory: Meal\n" +
+                    "Expense: $20\nDescription: dinner last week\nAccount Book: Default account book";
                   break;
-                case 'Received $5000 salary yesterday, spent $50 on haircut, and $70 on groceries':
+                case "Received $5000 salary yesterday, spent $50 on haircut, and $70 on groceries":
                   responseText =
-                    'Recorded. 🐾\nBill 1\nDate: 2024-07-18\nCategory: Salary\nIncome: $5000\n' +
-                    'Description: salary yesterday\nAccount Book: Default account book\n' +
-                    'Bill 2\nDate: 2024-07-18\nCategory: Beauty\nExpense: $50\n' +
-                    'Description: haircut\nAccount Book: Default account book\n' +
-                    'Bill 3\nDate: 2024-07-18\nCategory: Shopping\nExpense: $70\n' +
-                    'Description: groceries\nAccount Book: Default account book';
+                    "Recorded. 🐾\nBill 1\nDate: 2024-07-18\nCategory: Salary\nIncome: $5000\n" +
+                    "Description: salary yesterday\nAccount Book: Default account book\n" +
+                    "Bill 2\nDate: 2024-07-18\nCategory: Beauty\nExpense: $50\n" +
+                    "Description: haircut\nAccount Book: Default account book\n" +
+                    "Bill 3\nDate: 2024-07-18\nCategory: Shopping\nExpense: $70\n" +
+                    "Description: groceries\nAccount Book: Default account book";
                   break;
+
                 case 'What features does doggle support?':
                   responseText =
-                    'I can help you with voice input 🎤, image recognition 📸, and file text recognition 📄. ' +
-                    'I also love analyzing your bills based on your personal info, helping you understand your spending habits, ' +
-                    'and giving you pawsome suggestions, woof! 🐶✨';
+                    "I can help you with voice input 🎤, image recognition 📸, and file text recognition 📄. " +
+                    "I also love analyzing your bills based on your personal info, helping you understand your spending habits, " +
+                    "and giving you pawsome suggestions, woof! 🐶✨";
                   break;
+
                 case 'How to start bookkeeping with doggle?':
                   responseText =
-                    'First, fill in some basic info about yourself 💗. Then you can start bookkeeping! ' +
-                    'When you log an expense or income, just provide the date, event, and amount 📝. ' +
-                    'You can type it in or even bark it to me 🐾. Got a receipt? Snap a pic and upload it 📸. ' +
-                    'For bank statements, just upload the Excel or PDF file 📂. ' +
-                    'Let’s get your finances in order, woof! 🐶✨';
+                    "First, fill in some basic info about yourself 💗. Then you can start bookkeeping! " +
+                    "When you log an expense or income, just provide the date, event, and amount 📝. " +
+                    "You can type it in or even bark it to me 🐾. Got a receipt? Snap a pic and upload it 📸. " +
+                    "For bank statements, just upload the Excel or PDF file 📂. " +
+                    "Let’s get your finances in order, woof! 🐶✨";
                   break;
-                case 'How to view my bills?':
+                case "How to view my bills?":
                   responseText =
-                    ' You can sniff out bill analysis on the dashboard page anytime to understand the ' +
-                    'proportion of spending categories, and daily, weekly, and monthly income and expenditure 📊. ' +
-                    'For detailed bills each day, just wag your way to the calendar page and click on the date 🗓️. ' +
-                    'Pawsome, woof! 🐶✨';
+                    " You can sniff out bill analysis on the dashboard page anytime to understand the " +
+                    "proportion of spending categories, and daily, weekly, and monthly income and expenditure 📊. " +
+                    "For detailed bills each day, just wag your way to the calendar page and click on the date 🗓️. " +
+                    "Pawsome, woof! 🐶✨";
                   break;
-                case 'How to edit or delete bills?':
+                case "How to edit or delete bills?":
                   responseText =
-                    'Need to edit or delete bills? No worries! 🐾 If the bill was entered through conversation, ' +
-                    'just reply with the modification or deletion ✅.' +
-                    'On the calendar page 📅, click on a specific date, find the bill entry, and then swipe left to edit or delete it manually 📝. ' +
-                    'Easy peasy, woof woof! 🐶✨';
+                    "Need to edit or delete bills? No worries! 🐾 If the bill was entered through conversation, " +
+                    "just reply with the modification or deletion ✅." +
+                    "On the calendar page 📅, click on a specific date, find the bill entry, and then swipe left to edit or delete it manually 📝. " +
+                    "Easy peasy, woof woof! 🐶✨";
                   break;
                 default:
                   responseText = `Received: ${msg.content.text}`;
               }
 
               resolve({
-                type: 'text',
+                type: "text",
                 content: {
                   text: responseText,
                 },
@@ -243,18 +245,18 @@ function ChatBotTest() {
                   const file = e.files[0];
                   // show photo message
                   ctx.appendMessage({
-                    type: 'image',
+                    type: "image",
                     content: {
                       picUrl: URL.createObjectURL(file),
                     },
-                    position: 'right',
+                    position: "right",
                   });
                   ctx.postMessage({
-                    type: 'text',
+                    type: "text",
                     content: {
                       text: `Photo received`,
                     },
-                    position: 'left',
+                    position: "left",
                   });
                 }
               },
@@ -271,37 +273,37 @@ function ChatBotTest() {
               const file = event.target.files[0];
               if (file) {
                 const allowedTypes = [
-                  'application/pdf',
-                  'application/vnd.ms-excel',
-                  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                  'application/msword',
-                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                  "application/pdf",
+                  "application/vnd.ms-excel",
+                  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                  "application/msword",
+                  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                 ];
                 if (allowedTypes.includes(file.type)) {
                   // check file 
                   ctx.appendMessage({
-                    type: 'file',
+                    type: "file",
                     content: {
                       fileName: file.name,
                       fileType: file.type,
                     },
-                    position: 'right',
+                    position: "right",
                   });
 
                   // auto reply
                   ctx.postMessage({
-                    type: 'text',
+                    type: "text",
                     content: {
                       text: `file ${file.name} received`,
                     },
-                    position: 'left',
+                    position: "left",
                   });
                 } else {
                   ctx.postMessage({
-                    type: 'text',
+                    type: "text",
                     content:
                       "Woof woof! 🐾 This file type isn't my favorite! Please upload a PDF, Excel, or Word file. 🐶✨",
-                    position: 'left',
+                    position: "left",
                   });
                 }
               }
@@ -316,7 +318,7 @@ function ChatBotTest() {
     bot.run();
   }, []);
 
-  return <div style={{ height: '100%' }} ref={wrapper} />;
+  return <div style={{ height: "100%" }} ref={wrapper} />;
 }
 
 export default ChatBotTest;
