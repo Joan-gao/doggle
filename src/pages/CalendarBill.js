@@ -1636,9 +1636,10 @@ const CalendarBill = () => {
   const [day, setDay] = useState("18-7");
   const [column, setColumn] = useState(initialColumns);
   const [financeData, setFinanceData] = useState(initialFinanceData);
+  const [currentUser, setCurrentUser] = useState(null);
   const [expense, setExpense] = useState(0);
   const [income, setIncome] = useState(0);
-
+  console.log(user);
   const getMonthLabel = (monthValue) => {
     const month = months.find((m) => m.value === monthValue);
     return month ? month.label : "Invalid month value";
@@ -1666,32 +1667,46 @@ const CalendarBill = () => {
     // 在这里处理删除逻辑，例如从数据中移除该记录
     console.log("Deleting:", record);
   };
-  useEffect(() => {
-    if (user.user && user.user.created_at) {
-      const createdAt = user.user.created_at;
-      const createdyear = parseInt(createdAt.substring(0, 4), 10);
-      const createdmonth = parseInt(createdAt.substring(5, 7), 10);
+  // useEffect(() => {
+  //   fetch("http://127.0.0.1:5000/user/get", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       "Access-Control-Allow-Origin": "*",
+  //     },
+  //     body: JSON.stringify({
+  //       uid: user.uid, // 根据实际用户ID字段名称调整
+  //     }),
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       console.log(data);
+  //       if (data.user && data.user.created_at) {
+  //         setCurrentUser(data.user);
+  //         const createdAt = data.user.created_at;
+  //         const createdyear = parseInt(createdAt.substring(0, 4), 10);
+  //         const createdmonth = parseInt(createdAt.substring(5, 7), 10);
 
-      setRegistrationYear(createdyear);
-      setRegistrationMonth(createdmonth);
-      console.log(registrationMonth, registrationYear);
-    }
-    fetch("http://127.0.0.1:5000/fetch/all-transactions ", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({
-        user: user.user, // 根据实际用户ID字段名称调整
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        storeTransactionData(data);
-      });
-  }, []);
+  //         setRegistrationYear(createdyear);
+  //         setRegistrationMonth(createdmonth);
+  //       }
+  //     });
+  //   fetch("http://127.0.0.1:5000/fetch/all-transactions ", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       "Access-Control-Allow-Origin": "*",
+  //     },
+  //     body: JSON.stringify({
+  //       user: currentUser, // 根据实际用户ID字段名称调整
+  //     }),
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       console.log(data);
+  //       storeTransactionData(data);
+  //     });
+  // }, []);
 
   useEffect(() => {
     isMounted.current = true;
@@ -1706,11 +1721,15 @@ const CalendarBill = () => {
           if (isMounted.current) {
             setColumn([]);
             setFinanceData([]);
+            setExpense(0);
+            setIncome(0);
           }
         } else if (registrationMonth > month || currentMonth < month) {
           if (isMounted.current) {
             setColumn([]);
             setFinanceData([]);
+            setExpense(0);
+            setIncome(0);
           }
         } else {
           const dayPart = day.split("-")[0];
@@ -1719,16 +1738,16 @@ const CalendarBill = () => {
             const selectedDate = `${year}-${month}-${dayPart}`;
             const formattedDate = moment(selectedDate).format("YYYY-MM-DD");
 
-            if (localStorage.getItem(formattedDate)) {
-              let item = localStorage.getItem(formattedDate);
-              // let item = transactionItem.by_date[formattedDate];
+            if (transactionItem.by_date[formattedDate]) {
+              // let item = localStorage.getItem(formattedDate);
+              let item = transactionItem.by_date[formattedDate];
               console.log(item);
-              let parsedItem = JSON.parse(item);
+              //   let parsedItem = JSON.parse(item);
 
               if (isMounted.current) {
-                setFinanceData(parsedItem.financeData);
-                setIncome(parsedItem.income);
-                setExpense(parsedItem.expense);
+                setFinanceData(item.financeData);
+                setIncome(item.income);
+                setExpense(item.expense);
               }
             } else {
               if (isMounted.current) {
@@ -1741,16 +1760,16 @@ const CalendarBill = () => {
             const selectedMonth = `${year}-${month}`;
             const formattedMonth = moment(selectedMonth).format("YYYY-MM");
 
-            if (localStorage.getItem(formattedMonth)) {
-              let item = localStorage.getItem(formattedMonth);
-              //  let item = transactionItem.by_month[formattedMonth];
-              let parsedItem = JSON.parse(item);
+            if (transactionItem.by_month[formattedMonth]) {
+              // item = localStorage.getItem(formattedMonth);
+              let item = transactionItem.by_month[formattedMonth];
+              // let parsedItem = JSON.parse(item);
               console.log(item);
 
               if (isMounted.current) {
-                setFinanceData(parsedItem.financeData);
-                setIncome(parsedItem.income);
-                setExpense(parsedItem.expense);
+                setFinanceData(item.financeData);
+                setIncome(item.income);
+                setExpense(item.expense);
               }
             } else {
               if (isMounted.current) {
