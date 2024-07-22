@@ -16,7 +16,6 @@ import Billing from "./pages/Billing";
 import Profile from "./pages/Profile";
 import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
-import Chatbot from "./pages/Chatbot";
 import Main from "./components/layout/Main";
 import CalendarBill from "./pages/CalendarBill.js";
 import "antd/dist/antd.css";

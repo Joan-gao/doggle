@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import Chat, { Bubble, useMessages } from "@chatui/core";
 import "@chatui/core/dist/index.css";
-import "../assets/styles/chatui-theme.css";
+// import "../assets/styles/chatui-theme.css";
 import CardComponent from "../components/chabot/CardComponent";
 import {
   initialMessages,
