@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 const canRecord = true; // 写个判断逻辑
 
-function ChatBotTest() {
+function ChatBot() {
   const wrapper = useRef();
   const messagesEndRef = useRef(null);
   const [messages, setMessages] = useState([]);
@@ -321,4 +321,4 @@ function ChatBotTest() {
   return <div style={{ height: "100%" }} ref={wrapper} />;
 }
 
-export default ChatBotTest;
+export default ChatBot;
