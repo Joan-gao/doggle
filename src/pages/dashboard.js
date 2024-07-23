@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useGlobalContext } from "../context/GlobalProvider";
+import { useStore, useAuth } from "../context/UserAuth";
 
 import {
   Card,
@@ -770,7 +771,7 @@ const SelectBar = ({ isMonthly, onMonthChange, onYearChange }) => (
 );
 
 function Dashboard() {
-  const { user, isLogged } = useGlobalContext();
+  // const { user, isLogged } = useGlobalContext();
   const { Title, Text } = Typography;
   const [activeKey, setActiveKey] = useState("1");
   const [currentType, setCurrentType] = useState("expense");
@@ -793,6 +794,8 @@ function Dashboard() {
   const [barExpenseSeries, setBarExpenseSeries] = useState([]);
   const [barExpenseCategory, setBarExpenseCategory] = useState([]);
   const [listData, setListData] = useState(initiallistData);
+  useAuth();
+  const { user, loading } = useStore();
 
   const getMonthLabel = (monthValue) => {
     const month = months.find((m) => m.value === monthValue);
@@ -812,16 +815,17 @@ function Dashboard() {
     //   .then((response) => response.json())
     //   .then((data) => {
     //     console.log(data);
-    //     if (data.user && data.user.created_at) {
-    //       const createdAt = data.user.created_at;
-    //       const createdyear = parseInt(createdAt.substring(0, 4), 10);
-    //       const createdmonth = parseInt(createdAt.substring(5, 7), 10);
-    //       setRegistrationYear(createdyear);
-    //       console.log(registrationYear);
-    //       setRegistrationMonth(createdmonth);
-    //       console.log(registrationMonth);
-    //     }
-    //   });
+
+    if (user) {
+      const createdAt = user.user.created_at;
+      const createdyear = parseInt(createdAt.substring(0, 4), 10);
+      const createdmonth = parseInt(createdAt.substring(5, 7), 10);
+      setRegistrationYear(createdyear);
+      console.log(registrationYear);
+      setRegistrationMonth(createdmonth);
+      console.log(registrationMonth);
+    }
+    // });
     //调用AI组装所需要数据
   }, []);
   useEffect(() => {

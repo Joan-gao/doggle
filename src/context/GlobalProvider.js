@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import axios from "axios";
 const GlobalContext = createContext();
 export const useGlobalContext = () => useContext(GlobalContext);
 const GlobalProvider = ({ children }) => {
@@ -9,17 +10,44 @@ const GlobalProvider = ({ children }) => {
 
   useEffect(() => {
     const auth = getAuth();
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        setUser(user);
+    const fetchUserData = async (firebaseUser) => {
+      if (firebaseUser) {
+        const uid = firebaseUser.uid;
+        try {
+          const response = await axios.post(
+            "http://127.0.0.1:5000/user/get",
+            {
+              uid: uid,
+            },
+
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+              },
+            }
+          );
+          console.log(response.data);
+          setUser(response.data);
+        } catch (error) {
+          console.error("Failed to fetch user data:", error);
+        }
       } else {
-        setIsLogged(false);
         setUser(null);
       }
-      setLoading(false);
-    });
+    };
 
-    // 清除订阅
+    const unsubscribe = onAuthStateChanged(auth, fetchUserData);
+
+    // Check current user on initial load
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      fetchUserData(currentUser).then(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
+
+    return () => unsubscribe();
   }, []);
 
   return (
