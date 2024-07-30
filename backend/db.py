@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-
+from _decimal import Decimal
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import extract
 from model.model import *
@@ -557,3 +557,189 @@ def getTransactionsByUser(user):
             "by_date": dict(result_by_date),
             "by_month": dict(result_by_month)
         }
+
+
+def get_expense_income_data(user):
+    categories = {
+        1: "Salary income",
+        2: "Bonus income",
+        3: "Investment Income income",
+        4: "Other Income income",
+        5: "Business income",
+        6: "Part-time Job income",
+        7: "Buying and Selling income",
+        8: "Housing expense",
+        9: "Food expense",
+        10: "Transportation expense",
+        11: "Entertainment expense",
+        12: "Utilities expense",
+        13: "Health expense",
+        14: "Insurance expense",
+        15: "Education expense",
+        16: "Other Expenses expense",
+        17: "Investment Expens expense",
+        18: "Shopping expense",
+        19: "Grocery expense"
+    }
+    with session_scope() as session:
+        currentUser = user.get("user")
+        print(currentUser)
+        date_str = currentUser.get("created_at")
+        parsed_date = datetime.strptime(date_str, '%a, %d %b %Y %H:%M:%S %Z')
+        registered_at = parsed_date.strftime('%Y-%m-%d')
+        user_id = currentUser.get("id")
+        # user_id=user.get("id")
+        # registered_at =user.get("created_at")
+        transactions = session.query(Transaction).filter(
+            Transaction.transaction_date >= registered_at,
+            Transaction.user_id == user_id,
+            Transaction.is_shown != 1
+        ).all()
+        expense_data = {
+            'monthly': {},
+            'yearly': {
+                'countData': {'today': '', 'title': '$0', 'persent': '+25%', 'color': '#ed4242'},
+                'chartTitle': 'Expense Yearly Trend',
+                'categoriesTitle': 'Expense Yearly Categories',
+                'average': '$0',
+                'sortedData': [],
+                'expenseDonutChart': [],
+                'expenseLineChartSeries': [{'name': 'Monthly Expense', 'data': [0] * 12}],
+                'expenseLineChartCategory': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct',
+                                             'Nov', 'Dec'],
+                'expenseBarChartSeries': [{'name': 'Monthly Expense', 'data': [0] * 12}],
+                'expenseBarChartCategory': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov',
+                                            'Dec']
+            }
+        }
+
+        income_data = {
+            'monthly': {},
+            'yearly': {
+                'countData': {'today': '', 'title': '$0', 'persent': '+25%', 'color': '#28a745'},
+                'chartTitle': 'Income Yearly Trend',
+                'categoriesTitle': 'Income Yearly Categories',
+                'average': '$0',
+                'sortedData': [],
+                'incomeDonutChart': [],
+                'incomeLineChartSeries': [{'name': 'Monthly Income', 'data': [0] * 12}],
+                'incomeLineChartCategory': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov',
+                                            'Dec'],
+                'incomeBarChartSeries': [{'name': 'Monthly Income', 'data': [0] * 12}],
+                'incomeBarChartCategory': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov',
+                                           'Dec']
+            }
+        }
+
+        monthly_expenses = defaultdict(lambda: defaultdict(Decimal))
+        yearly_expenses = defaultdict(Decimal)
+        monthly_incomes = defaultdict(lambda: defaultdict(Decimal))
+        yearly_incomes = defaultdict(Decimal)
+
+        daily_expense_details = defaultdict(lambda: defaultdict(Decimal))
+        daily_income_details = defaultdict(lambda: defaultdict(Decimal))
+
+        for transaction in transactions:
+            amount = transaction.amount
+            date = transaction.transaction_date
+            day = date.day
+            month = date.strftime('%b')
+            year = date.year
+            category_id = transaction.category_id
+            category_name = categories[category_id]
+
+            if "income" in category_name:
+                monthly_incomes[month][category_name] += amount
+                yearly_incomes[category_name] += amount
+                daily_income_details[month][day] += amount
+            else:
+                monthly_expenses[month][category_name] += amount
+                yearly_expenses[category_name] += amount
+                daily_expense_details[month][day] += amount
+
+        # Process monthly data
+        for month, categories in monthly_expenses.items():
+            sorted_data = [{'category': k, 'transactions': 1,
+                            'amount': float(v)} for k, v in categories.items()]
+            expense_data['monthly'][month] = {
+                'countData': {
+                    'today': f"Total {len(daily_expense_details[month])} expenses",
+                    'title': f"${sum(categories.values()):.2f}",
+                    'persent': '+10%',  # Example percentage
+                    'color': '#ed4242',
+                },
+                'chartTitle': 'Expense Monthly Trend',
+                'categoriesTitle': 'Expense Monthly Categories',
+                'average': f"${sum(categories.values()) / len(daily_expense_details[month]):.2f}",
+                'sortedData': sorted_data,
+                'expenseDonutChart': [{'type': k, 'value': float(v)} for k, v in categories.items()],
+                'expenseLineChartSeries': [{'name': 'Daily Expense',
+                                            'data': [float(daily_expense_details[month][day]) for day in
+                                                     sorted(daily_expense_details[month].keys())]}],
+                'expenseLineChartCategory': [str(day) for day in sorted(daily_expense_details[month].keys())],
+                'expenseBarChartSeries': [{'name': 'Daily Expense',
+                                           'data': [float(daily_expense_details[month][day]) for day in
+                                                    sorted(daily_expense_details[month].keys())]}],
+                'expenseBarChartCategory': [str(day) for day in sorted(daily_expense_details[month].keys())]
+            }
+
+        for month, categories in monthly_incomes.items():
+            sorted_data = [{'category': k, 'transactions': 1,
+                            'amount': float(v)} for k, v in categories.items()]
+            income_data['monthly'][month] = {
+                'countData': {
+                    'today': f"Total {len(daily_income_details[month])} incomes",
+                    'title': f"${sum(categories.values()):.2f}",
+                    'persent': '+10%',  # Example percentage
+                    'color': '#28a745',
+                },
+                'chartTitle': 'Income Monthly Trend',
+                'categoriesTitle': 'Income Monthly Categories',
+                'average': f"${sum(categories.values()) / len(daily_income_details[month]):.2f}",
+                'sortedData': sorted_data,
+                'incomeDonutChart': [{'type': k, 'value': float(v)} for k, v in categories.items()],
+                'incomeLineChartSeries': [{'name': 'Daily Income',
+                                           'data': [float(daily_income_details[month][day]) for day in
+                                                    sorted(daily_income_details[month].keys())]}],
+                'incomeLineChartCategory': [str(day) for day in sorted(daily_income_details[month].keys())],
+                'incomeBarChartSeries': [{'name': 'Daily Income',
+                                          'data': [float(daily_income_details[month][day]) for day in
+                                                   sorted(daily_income_details[month].keys())]}],
+                'incomeBarChartCategory': [str(day) for day in sorted(daily_income_details[month].keys())]
+            }
+
+        # Process yearly data
+        income_data['yearly']['countData'][
+            'today'] = f"Total {sum(len(v) for v in daily_income_details.values())} incomes"
+        income_data['yearly']['title'] = f"${sum(yearly_incomes.values()):.2f}"
+        income_data['yearly']['average'] = f"${
+            sum(yearly_incomes.values()) / 12:.2f}"
+        income_data['yearly']['sortedData'] = [{'category': k, 'transactions': 1, 'amount': float(v)} for k, v in
+                                               yearly_incomes.items()]
+        income_data['yearly']['incomeDonutChart'] = [
+            {'type': k, 'value': float(v)} for k, v in yearly_incomes.items()]
+        income_data['yearly']['incomeLineChartSeries'][0]['data'] = [
+            sum(daily_income_details[month].values()) if month in daily_income_details else 0 for month in
+            income_data['yearly']['incomeLineChartCategory']]
+        income_data['yearly']['incomeBarChartSeries'][0]['data'] = [
+            sum(daily_income_details[month].values()) if month in daily_income_details else 0 for month in
+            income_data['yearly']['incomeBarChartCategory']]
+
+        expense_data['yearly']['countData'][
+            'today'] = f"Total {sum(len(v) for v in daily_expense_details.values())} expenses"
+        expense_data['yearly']['title'] = f"${
+            sum(yearly_expenses.values()):.2f}"
+        expense_data['yearly']['average'] = f"${
+            sum(yearly_expenses.values()) / 12:.2f}"
+        expense_data['yearly']['sortedData'] = [{'category': k, 'transactions': 1, 'amount': float(v)} for k, v in
+                                                yearly_expenses.items()]
+        expense_data['yearly']['expenseDonutChart'] = [{'type': k, 'value': float(v)} for k, v in
+                                                       yearly_expenses.items()]
+        expense_data['yearly']['expenseLineChartSeries'][0]['data'] = [
+            sum(daily_expense_details[month].values()) if month in daily_expense_details else 0 for month in
+            expense_data['yearly']['expenseLineChartCategory']]
+        expense_data['yearly']['expenseBarChartSeries'][0]['data'] = [
+            sum(daily_expense_details[month].values()) if month in daily_expense_details else 0 for month in
+            expense_data['yearly']['expenseBarChartCategory']]
+
+        return expense_data, income_data
