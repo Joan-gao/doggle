@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useStore, useAuth } from "../context/UserAuth";
 import moment from "moment";
 import {
   Card,
@@ -1650,7 +1651,7 @@ function Home() {
     },
   ];
   const isMounted = useRef(true);
-  const { user, isLogged } = useGlobalContext();
+  // const { user, isLogged } = useGlobalContext();
   const [registrationYear, setRegistrationYear] = useState(2024);
   const [registrationMonth, setRegistrationMonth] = useState(1);
   const [month, setMonth] = useState(1);
@@ -1661,7 +1662,8 @@ function Home() {
   const [budget, setBudget] = useState(0);
   const [income, setIncome] = useState(0);
   const { Title, Text } = Typography;
-
+  useAuth();
+  const { user, loading } = useStore();
   const balance = income - expense;
   const remainingBudget = budget - expense;
   const count = [

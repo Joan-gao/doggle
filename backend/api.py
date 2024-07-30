@@ -121,5 +121,13 @@ def getAllTransactionsByUser():
     return jsonify(result)
 
 
+@app.route('/transaction/analysis', methods=['POST'])
+def transactionAnalysis():
+    user = request.json.get("user")
+
+    result = get_expense_income_data(user)
+    return jsonify(result)
+
+
 if __name__ == '__main__':
     app.run(debug=True)

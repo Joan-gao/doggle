@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useGlobalContext } from "../context/GlobalProvider";
+import { useStore, useAuth } from "../context/UserAuth";
 
 import {
   Card,
@@ -162,7 +162,7 @@ const expenseEmptyData = {
   },
 };
 
-const incomeDataFromdb = {
+const incomeDataTestFromdb = {
   Feb: {
     countData: {
       today: "Total 3 incomes",
@@ -220,7 +220,7 @@ const incomeDataFromdb = {
   },
 };
 
-const expenseDataFromdb = {
+const expenseDataTestFromdb = {
   Jan: {
     countData: {
       today: "Total 11 expenses",
@@ -770,7 +770,7 @@ const SelectBar = ({ isMonthly, onMonthChange, onYearChange }) => (
 );
 
 function Dashboard() {
-  const { user, isLogged } = useGlobalContext();
+  // const { user, isLogged } = useGlobalContext();
   const { Title, Text } = Typography;
   const [activeKey, setActiveKey] = useState("1");
   const [currentType, setCurrentType] = useState("expense");
@@ -793,37 +793,65 @@ function Dashboard() {
   const [barExpenseSeries, setBarExpenseSeries] = useState([]);
   const [barExpenseCategory, setBarExpenseCategory] = useState([]);
   const [listData, setListData] = useState(initiallistData);
+  const [userloaded, setUserLoaded] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [expenseDataFromdb, setExpenseDataFromdb] = useState(
+    expenseDataTestFromdb
+  );
+  const [incomeDataFromdb, setIncomeDataFromdb] =
+    useState(incomeDataTestFromdb);
+  useAuth();
+  const { user, loading } = useStore();
 
   const getMonthLabel = (monthValue) => {
     const month = months.find((m) => m.value === monthValue);
     return month ? month.label : "Invalid month value";
   };
+
+  const updateTransactionItem = (data) => {
+    setIncomeDataFromdb(data[1]);
+    setExpenseDataFromdb(data[0]);
+  };
   useEffect(() => {
-    // fetch("http://127.0.0.1:5000/user/get", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     "Access-Control-Allow-Origin": "*",
-    //   },
-    //   body: JSON.stringify({
-    //     uid: user.uid, // 根据实际用户ID字段名称调整
-    //   }),
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     console.log(data);
-    //     if (data.user && data.user.created_at) {
-    //       const createdAt = data.user.created_at;
-    //       const createdyear = parseInt(createdAt.substring(0, 4), 10);
-    //       const createdmonth = parseInt(createdAt.substring(5, 7), 10);
-    //       setRegistrationYear(createdyear);
-    //       console.log(registrationYear);
-    //       setRegistrationMonth(createdmonth);
-    //       console.log(registrationMonth);
-    //     }
-    //   });
-    //调用AI组装所需要数据
-  }, []);
+    if (userloaded) {
+      fetch("http://127.0.0.1:5000/transaction/analysis", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify({
+          user: currentUser, // 根据实际用户ID字段名称调整
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          updateTransactionItem(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching transactions:", error);
+        });
+    }
+  }, [userloaded, currentUser]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (user && !userloaded) {
+        const createdAt = user.user.created_at;
+
+        const createdyear = parseInt(createdAt.substring(0, 4), 10);
+        const createdmonth = parseInt(createdAt.substring(5, 7), 10);
+
+        setRegistrationYear(createdyear);
+        setRegistrationMonth(createdmonth);
+        setCurrentUser(user);
+        setUserLoaded(true); // Indicate that user data is loaded
+        clearInterval(interval); // Stop polling once user data is loaded
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [currentUser, userloaded, user]);
   useEffect(() => {
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth() + 1;
@@ -1005,6 +1033,10 @@ function Dashboard() {
     activeKey,
     registrationMonth,
     registrationYear,
+    expenseDataFromdb,
+    expenseDataState,
+    incomeDataFromdb,
+    incomeDataState,
   ]);
   const displayData =
     currentType === "expense"
