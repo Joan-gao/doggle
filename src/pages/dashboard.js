@@ -1033,6 +1033,10 @@ function Dashboard() {
     activeKey,
     registrationMonth,
     registrationYear,
+    expenseDataFromdb,
+    expenseDataState,
+    incomeDataFromdb,
+    incomeDataState,
   ]);
   const displayData =
     currentType === "expense"
