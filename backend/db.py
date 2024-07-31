@@ -730,8 +730,7 @@ def get_expense_income_data(user):
         income_data['yearly']['countData'][
             'today'] = f"Total {sum(len(v) for v in daily_income_details.values())} incomes"
         income_data['yearly']['title'] = f"${sum(yearly_incomes.values()):.2f}"
-        income_data['yearly']['average'] = f"${
-            sum(yearly_incomes.values()) / 12:.2f}"
+        income_data['yearly']['average'] = f"${sum(yearly_incomes.values()) / 12:.2f}"
         income_data['yearly']['sortedData'] = [{'category': k, 'transactions': 1, 'amount': float(v)} for k, v in
                                                yearly_incomes.items()]
         income_data['yearly']['incomeDonutChart'] = [
@@ -745,10 +744,8 @@ def get_expense_income_data(user):
 
         expense_data['yearly']['countData'][
             'today'] = f"Total {sum(len(v) for v in daily_expense_details.values())} expenses"
-        expense_data['yearly']['title'] = f"${
-            sum(yearly_expenses.values()):.2f}"
-        expense_data['yearly']['average'] = f"${
-            sum(yearly_expenses.values()) / 12:.2f}"
+        expense_data['yearly']['title'] = f"${sum(yearly_expenses.values()):.2f}"
+        expense_data['yearly']['average'] = f"${sum(yearly_expenses.values()) / 12:.2f}"
         expense_data['yearly']['sortedData'] = [{'category': k, 'transactions': 1, 'amount': float(v)} for k, v in
                                                 yearly_expenses.items()]
         expense_data['yearly']['expenseDonutChart'] = [{'type': k, 'value': float(v)} for k, v in

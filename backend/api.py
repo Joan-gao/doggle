@@ -2,22 +2,41 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from db import *
-
+from gemini_fune_tune_util.util import analyzer_func, categorizer_func
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
+@app.route("/test", methods=['GET'])
+def test_func():
+    return {"reply": request.get('input')}
 
-@app.route("/info/<int:user_id>")
-def get_all_financial_info(user_id):
+
+@app.route("/info/<int:user_id>", methods=['POST', 'OPTIONS'])
+def get_all_financial_info_and_analyze(user_id):
+    if request.method == 'OPTIONS':
+        return '', 200
+    user_input = request.json.get('input')
     transaction_info = getOverAllTransactionAnalyze(user_id)
     goal, budget = getBudget_and_goal(user_id)
     
-    return jsonify({
+    user_info_string =  str({
         "transaction_info": transaction_info,
         "goal": goal,
         "budget": budget
     })
+
+    print(user_info_string)
+    print(type(user_info_string))
+    prompt = """" You need to act as an financial expert to give customer professional and 
+            custormized advice based on following user information in json format: """
+    
+    post_prompt = "based on above information, answer the question: " + str(user_input)
+    reply = analyzer_func(prompt + user_info_string + post_prompt)
+    print(reply)
+    return reply
+
+
 
 
 

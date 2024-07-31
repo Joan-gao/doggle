@@ -15,22 +15,48 @@ function ChatBot() {
   console.log(user);
 
   const apiUrl = process.env.REACT_APP_fine_tuned_gemini_api_url + "/api/analyzer";
-  async function postData(apiUrl, postData) {
+  async function postData(apiUrl, user_input) {
     try {
       const response = await axios.post(apiUrl, {
-        input: postData
+        input: user_input,
       }, {
         headers: {
-          'Content-Type': 'application/json'
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
         }
       });
   
-      return JSON.stringify(response.data.output); // Optionally, return JSON string of the data
+      return JSON.stringify(response.data); // Optionally, return JSON string of the data
     } catch (error) {
       console.error('There was a problem with the Axios request:', error);
       return "there is an error"; // Return the error message
     }
   }
+
+  // async function postData(apiUrl, user_input) {
+  //   try {
+  //     const response = await fetch(apiUrl, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       },
+  //       body: JSON.stringify({ input: user_input })
+  //     });
+  
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+  
+  //     const data = await response.json();
+  //     return JSON.stringify(data.output); // Optionally, return JSON string of the data
+  //   } catch (error) {
+  //     console.error('There was a problem with the fetch request:', error);
+  //     return "there is an error"; // Return the error message
+  //   }
+  // }
+  
 
   async function getdata(apiUrl) {
     try {
@@ -280,17 +306,30 @@ function ChatBot() {
                     "Easy peasy, woof woof! 🐶✨";
                   break;
             default:
-              const user_transaction_info = await getdata('http://127.0.0.1:5000/info/11', '');
-              console.log(user_transaction_info);
-
+              // console.log(postData('http://127.0.0.1:5000/test', 'hello'));
+              fetch('http://127.0.0.1:5000/info/11', {
+                method: 'POST',
+                headers: {
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Origin": "*",
+                },
+                body: JSON.stringify({ input: "some input data" })
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
+            
+              const reply = await postData('http://127.0.0.1:5000/info/11', msg.content.text);
+              // testFetch()
+              console.log(reply);
               if (msg.content.type === "photo"){ //
                 console.log('photo type');
               } else if (msg.content.type === "file"){
                 console.log('file type');
-                responseText = await postData("http://127.0.0.1:5000/upload", 'post', msg);
+                responseText = await postData("http://127.0.0.1:5000/upload", msg);
               } else{
                 console.log('text type');
-                responseText = await postData(apiUrl, msg.content.text);  // Await the async function to get the response
+                responseText = reply;  // Await the async function to get the response
               }
           }
         
