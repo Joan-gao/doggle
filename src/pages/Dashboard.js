@@ -808,50 +808,50 @@ function Dashboard() {
     return month ? month.label : "Invalid month value";
   };
 
-  const updateTransactionItem = (data) => {
-    setIncomeDataFromdb(data[1]);
-    setExpenseDataFromdb(data[0]);
-  };
-  useEffect(() => {
-    if (userloaded) {
-      fetch("http://127.0.0.1:5000/transaction/analysis", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-        body: JSON.stringify({
-          user: currentUser, // 根据实际用户ID字段名称调整
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
-          updateTransactionItem(data);
-        })
-        .catch((error) => {
-          console.error("Error fetching transactions:", error);
-        });
-    }
-  }, [userloaded, currentUser]);
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (user && !userloaded) {
-        const createdAt = user.user.created_at;
+  // const updateTransactionItem = (data) => {
+  //   setIncomeDataFromdb(data[1]);
+  //   setExpenseDataFromdb(data[0]);
+  // };
+  // useEffect(() => {
+  //   if (userloaded) {
+  //     fetch("http://127.0.0.1:5000/transaction/analysis", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "Access-Control-Allow-Origin": "*",
+  //       },
+  //       body: JSON.stringify({
+  //         user: currentUser, // 根据实际用户ID字段名称调整
+  //       }),
+  //     })
+  //       .then((response) => response.json())
+  //       .then((data) => {
+  //         console.log(data);
+  //         updateTransactionItem(data);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching transactions:", error);
+  //       });
+  //   }
+  // }, [userloaded, currentUser]);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     if (user && !userloaded) {
+  //       const createdAt = user.user.created_at;
 
-        const createdyear = parseInt(createdAt.substring(0, 4), 10);
-        const createdmonth = parseInt(createdAt.substring(5, 7), 10);
+  //       const createdyear = parseInt(createdAt.substring(0, 4), 10);
+  //       const createdmonth = parseInt(createdAt.substring(5, 7), 10);
 
-        setRegistrationYear(createdyear);
-        setRegistrationMonth(createdmonth);
-        setCurrentUser(user);
-        setUserLoaded(true); // Indicate that user data is loaded
-        clearInterval(interval); // Stop polling once user data is loaded
-      }
-    }, 2000);
+  //       setRegistrationYear(createdyear);
+  //       setRegistrationMonth(createdmonth);
+  //       setCurrentUser(user);
+  //       setUserLoaded(true); // Indicate that user data is loaded
+  //       clearInterval(interval); // Stop polling once user data is loaded
+  //     }
+  //   }, 2000);
 
-    return () => clearInterval(interval);
-  }, [currentUser, userloaded, user]);
+  //   return () => clearInterval(interval);
+  // }, [currentUser, userloaded, user]);
   useEffect(() => {
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth() + 1;

@@ -83,7 +83,7 @@ def categorize_transactions(transactions, categories):
     # Initialize dictionaries to hold counts and category types
     income = {}
     expense = {}
-
+    total_cost = {}
     # Count transactions per category_id, using the category name as the key
     for transaction in transactions:
         category_id = transaction['category_id']
@@ -93,13 +93,20 @@ def categorize_transactions(transactions, categories):
             )[:-1], categories[category_id].split()[-1]
             # Join to handle names consisting of multiple words
             category_name = ' '.join(category_name)
-
+            print("Hello: " + f"{transaction}")
             # Count based on category type
+            if category_name not in total_cost:
+                total_cost[category_name] = float(transaction["amount"])
+            else:
+                total_cost[category_name] += float(transaction["amount"])
+
             if category_type == 'income':
                 income[category_name] = income.get(category_name, 0) + 1
             elif category_type == 'expense':
                 expense[category_name] = expense.get(category_name, 0) + 1
-
+    
+    print("total cost")
+    print(total_cost)
     # Calculate percentages
     total_income = sum(income.values())
     total_expense = sum(expense.values())
@@ -112,12 +119,40 @@ def categorize_transactions(transactions, categories):
     # Prepare the summary dictionary
     summary = {
         'total_income_transactions': total_income,
-        'total_expense_transactions': total_expense
+        'total_expense_transactions': total_expense,
+        'total_cost_category': total_cost,
     }
 
     return income_percent, expense_percent, summary
 
 # Get overall transaction analysis
+
+def getBudget_and_goal(user_id):
+    with session_scope() as session:
+        today = datetime.today()
+
+        goals = session.query(SavingGoal).filter(
+            SavingGoal.user_id == user_id
+        ).all()
+
+        budget = session.query(Budget).filter(
+            Budget.user_id == user_id   
+        ).all()
+
+        goal_result = [{
+            'target_amount': t.target_amount,
+            'target_date': t.target_date,
+            'target': t.target,
+            'created_at': t.created_at
+        } for t in goals]
+
+        budget_result = [{
+            'budget_amount': t.budget_amount,
+        } for t in budget]
+
+        return goal_result, budget_result
+
+
 
 
 def getOverAllTransactionAnalyze(user_id):
@@ -142,14 +177,16 @@ def getOverAllTransactionAnalyze(user_id):
             Transaction.transaction_date < last_day_of_year.strftime(
                 '%Y-%m-%d')
         ).all()
-
+        # print("transaction result: ")
+        # print(transactions)
         # Convert the results into a list of serializable dictionaries
         transaction_result = [{
             'transaction_id': t.transaction_id,
             'category_id': t.category_id,
-
+            'amount': t.amount
         } for t in transactions]
 
+        # print(transaction_result)
         # Assume categories is defined somewhere in your app
         income_percent, expense_percent, summary = categorize_transactions(
             transaction_result, categories)
@@ -314,25 +351,6 @@ def get_transactions(user_id, year, month=None):
                 '%m', Transaction.transaction_date) == str(month).zfill(2))
 
         return query.all()
-
-
-def categorize_transactions(transactions):
-    income_transactions = [
-        t for t in transactions if categories[t.category_id].endswith("income")]
-    expense_transactions = [
-        t for t in transactions if categories[t.category_id].endswith("expense")]
-
-    def aggregate_by_category(transactions):
-        data = {}
-        for t in transactions:
-            category = categories[t.category_id].split()[0]
-            if category not in data:
-                data[category] = {"amount": 0, "transactions": 0}
-            data[category]["amount"] += t.amount
-            data[category]["transactions"] += 1
-        return data
-
-    return aggregate_by_category(income_transactions), aggregate_by_category(expense_transactions)
 
 
 def top_categories(transactions_by_category):

@@ -8,9 +8,17 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 
-@app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
+@app.route("/info/<int:user_id>")
+def get_all_financial_info(user_id):
+    transaction_info = getOverAllTransactionAnalyze(user_id)
+    goal, budget = getBudget_and_goal(user_id)
+    
+    return jsonify({
+        "transaction_info": transaction_info,
+        "goal": goal,
+        "budget": budget
+    })
+
 
 
 # Get overall transactions by usesr_id
