@@ -8,6 +8,9 @@ import hashlib
 from sqlalchemy import create_engine, func
 from sqlalchemy.orm import sessionmaker
 from collections import defaultdict
+import logging
+import json
+
 # 配置数据库 URI
 DATABASE_URI = 'mysql+pymysql://root:root123456@35.226.135.14/Finance'
 
@@ -16,7 +19,7 @@ engine = create_engine(DATABASE_URI, echo=True)
 
 # SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # 初始化数据库
-
+logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def init_db():
     Base.metadata.create_all(bind=engine)
@@ -41,7 +44,6 @@ def session_scope():
     finally:
         session.close()
 
-
 categories = {
     1: "Salary income",
     2: "Bonus income",
@@ -65,6 +67,66 @@ categories = {
 }
 # Generate Password Hash
 
+
+def add_transaction(user_id, category_id, transaction_date, description, amount, note='', is_shown=1):
+    try:
+        with session_scope() as session:
+            new_transaction = Transaction(
+                user_id=user_id,
+                category_id=category_id,
+                transaction_date=transaction_date,
+                description=description,
+                amount=amount,
+                note=note,
+                is_shown=is_shown
+            )
+            
+            session.add(new_transaction)
+            return new_transaction
+    except Exception as e:
+        logging.error("Error occurred while adding transaction: %s", e)
+        raise
+
+def update_transaction(user_id, transaction_date, amount, new_info_dict):
+    with session_scope() as session:
+        transaction = session.query(Transaction).filter_by(user_id=user_id, transaction_date=transaction_date, amount=amount).one_or_none()
+        if transaction is None:
+            return None
+        
+        for key, value in new_info_dict.items():
+            if hasattr(transaction, key) and transaction[key] != "None":
+                setattr(transaction, key, value)
+        
+        session.commit()
+        return transaction
+    
+def format_transaction(transaction):
+    return f"Transaction(id={transaction.transaction_id}, user_id={transaction.user_id}, category_id={transaction.category_id}, transaction_date={transaction.transaction_date}, description='{transaction.description}', amount={transaction.amount})"
+
+def format_transactions(transactions):
+    return [format_transaction(transaction) for transaction in transactions]
+
+def search_transaction(user_id, transaction_date, amount):
+    with session_scope() as session:
+        transaction = session.query(Transaction).filter_by(user_id=user_id, transaction_date=transaction_date, amount=amount).all()
+        if transaction is None:
+            return None
+        
+        session.commit()
+        return format_transactions(transaction)
+    
+def remove_transaction(user_id, transaction_date, amount):
+    with session_scope() as session:
+        print(user_id, transaction_date, amount)
+        transaction = session.query(Transaction).filter_by(user_id=user_id, transaction_date=transaction_date, amount=amount).one_or_none()
+        if transaction is None:
+            return None
+        
+
+        transaction_info = format_transaction(transaction) if transaction != None else None
+        session.delete(transaction)
+        session.commit()
+        return transaction_info
 
 def generate_hash(input_string):
     # 创建 SHA-256 哈希对象

@@ -1,7 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useStore, useAuth } from "../context/UserAuth";
 import axios from "axios";
-import { NodeExpandOutlined } from "@ant-design/icons";
+import { ImportOutlined, NodeExpandOutlined } from "@ant-design/icons";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import dotenv from "dotenv";
+import * as fs from "fs";
+// import { REPL_MODE_STRICT } from "reply";
+
 const canRecord = true; // 写个判断逻辑
 
 function ChatBot() {
@@ -9,12 +14,45 @@ function ChatBot() {
   const messagesEndRef = useRef(null);
   const [messages, setMessages] = useState([]);
 
+  dotenv.config();
+  const genAI = new GoogleGenerativeAI("AIzaSyD6jWmAmnJqKjRsKZcUPup8oHMzBtAmqC0");
+  const gemini_pro_vision = genAI.getGenerativeModel({model: "gemini-pro-vision"});
+  const gemini_flash = genAI.getGenerativeModel({model: "models/gemini-1.5-flash"});
+  const gemini_pro = genAI.getGenerativeModel({model: "models/gemini-pro"});
+
+  const chat = gemini_flash.startChat({
+    history: [],
+    generationConfig: {
+      maxOutputTokens: 500,
+    },
+  });
+
   // get user id
   useAuth();
   const { user } = useStore();
   console.log(user);
 
-  const apiUrl = process.env.REACT_APP_fine_tuned_gemini_api_url + "/api/analyzer";
+  async function blobUrlToBase64(blobUrl) {
+    const response = await fetch(blobUrl);
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  async function fileToGenerativePart(filePath, mimeType) {
+    const data = blobUrlToBase64(filePath);
+    return {
+      inlineData: {
+        data,
+        mimeType,
+      },
+    };
+  }
+
   async function postData(apiUrl, user_input) {
     try {
       const response = await axios.post(apiUrl, {
@@ -27,35 +65,13 @@ function ChatBot() {
           },
         }
       });
-  
+      console.log(response.data);
       return JSON.stringify(response.data); // Optionally, return JSON string of the data
     } catch (error) {
       console.error('There was a problem with the Axios request:', error);
       return "there is an error"; // Return the error message
     }
   }
-
-  // async function postData(apiUrl, user_input) {
-  //   try {
-  //     const response = await fetch(apiUrl, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       },
-  //       body: JSON.stringify({ input: user_input })
-  //     });
-  
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! status: ${response.status}`);
-  //     }
-  
-  //     const data = await response.json();
-  //     return JSON.stringify(data.output); // Optionally, return JSON string of the data
-  //   } catch (error) {
-  //     console.error('There was a problem with the fetch request:', error);
-  //     return "there is an error"; // Return the error message
-  //   }
-  // }
   
 
   async function getdata(apiUrl) {
@@ -73,28 +89,43 @@ function ChatBot() {
     }
   }
 
-  async function uploadFileToServer(file, url) {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    fetch(url, {
+  async function uploadFile(formData, url) {
+    try {
+      const response = await fetch(url, {
         method: 'POST',
-        body: JSON.stringify({ input: formData })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();  // Assuming the server responds with JSON
-    })
-    .then(data => {
-        console.log('File upload successful:', data);
-    })
-    .catch(error => {
-        console.error('Error uploading file:', error);
-    });
-}
-
+        body: formData
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+  
+      // Save the returned data into a variable
+      const analysisResult = data;
+  
+      // Handle the response from the server
+      console.log('Success:', analysisResult);
+  
+      return analysisResult.reply; // Return the result if needed
+    } catch (error) {
+      console.error('Error:', error);
+      return null; // Handle the error appropriately, possibly returning null or a specific error value
+    }
+  }
+  
+  // Example usage:
+  const formData = new FormData();
+  // Append your file and other data to formData here
+  
+  uploadFile(formData).then(result => {
+    if (result) {
+      console.log('Analysis Result:', result);
+    } else {
+      console.log('Failed to upload and analyze the file.');
+    }
+  });
 
   useEffect(() => {
     const bot = new window.ChatSDK({
@@ -306,31 +337,70 @@ function ChatBot() {
                     "Easy peasy, woof woof! 🐶✨";
                   break;
             default:
-              // console.log(postData('http://127.0.0.1:5000/test', 'hello'));
-              fetch('http://127.0.0.1:5000/info/11', {
-                method: 'POST',
-                headers: {
-                  "Content-Type": "application/json",
-                  "Access-Control-Allow-Origin": "*",
-                },
-                body: JSON.stringify({ input: "some input data" })
-            })
-            .then(response => response.json())
-            .then(data => console.log(data))
-            .catch(error => console.error('Error:', error));
-            
-              const reply = await postData('http://127.0.0.1:5000/info/11', msg.content.text);
-              // testFetch()
-              console.log(reply);
-              if (msg.content.type === "photo"){ //
-                console.log('photo type');
-              } else if (msg.content.type === "file"){
-                console.log('file type');
-                responseText = await postData("http://127.0.0.1:5000/upload", msg);
+              let reply;
+              let str = msg.content.text;
+              str = str.split(' ');
+              let firstword = str[0];
+
+              if (firstword === 'Spent' || firstword === 'spent'){
+                console.log('Spent');
+                reply = await postData("http://127.0.0.1:5000/add_transaction/11", msg.content.text);
+                reply = JSON.parse(reply).data;
+                console.log(reply);
+              } else if (firstword === 'Update' || firstword === 'update'){
+                console.log('Update');
+                reply = await postData("http://127.0.0.1:5000/update_transaction/11", msg.content.text);
+                reply = JSON.parse(reply).data;
+                console.log(reply);
+              } else if (firstword === 'Delete' || firstword === 'delete'){
+                console.log('Delete');
+                reply = await postData("http://127.0.0.1:5000/delete_transaction/11", msg.content.text);
+                reply = JSON.parse(reply).data;
+                console.log(reply);
+              } else if (firstword === 'Search' || firstword === 'Search'){
+                console.log('Search');
+                reply = await postData("http://127.0.0.1:5000/search_transaction/11", msg.content.text);
+                reply = JSON.parse(reply).data;
+                console.log(reply);
               } else{
-                console.log('text type');
-                responseText = reply;  // Await the async function to get the response
+                if (msg.content.type === "photo"){ //
+                  console.log('photo type');
+                  const prompt = "describe the image";
+  
+                  const imageParts = [fileToGenerativePart(msg.content.url, "image/jpeg")]
+  
+                  const result = await gemini_pro_vision.generateContent([prompt, ...imageParts]);
+                  const response = await result.response;
+                  const text = response.text();
+  
+                  responseText = text;
+  
+                } else if (msg.content.type === "file"){
+                  console.log('file type');
+                  reply = await uploadFile(msg.content.formData, "http://127.0.0.1:5000/upload_file/11");
+                  console.log(reply);
+                } else{
+                  const res_1 = await gemini_pro.generateContent("Can you tell me whether the following text is a general question or financial (categorize anything relate to money and finance into finance question): " + msg.content.text
+                    + "just return 1 for general question 2 for financial question without anything else"
+                  );
+  
+                  const question_type = res_1.response.text();
+                  console.log(question_type);
+  
+                  if (question_type === "1" || question_type.indexOf("General") != -1){
+                    reply = await chat.sendMessage(msg.content.text);
+                    const response = await reply.response;
+                    const text = response.text()
+                    reply = text;
+                    console.log(reply);
+                  } else if (question_type === "2" || question_type.indexOf("Financial") != -1) {
+                    reply = await postData('http://127.0.0.1:5000/info/11', msg.content.text);
+                    reply = JSON.parse(reply).data;
+                    console.log(reply);
+                  }
+                }
               }
+              responseText = "🐾🐾 " + reply + " Woof Woof 🐶✨";  // Await the async function to get the response
           }
         
           return new Promise((resolve) => {
@@ -357,6 +427,7 @@ function ChatBot() {
                   // h5 upload
                   const file = e.files[0];
                   // show photo message
+                  
                   ctx.appendMessage({
                     type: "image",
                     content: {
@@ -368,7 +439,7 @@ function ChatBot() {
                     type: "text",
                     content: {
                       text: `Photo received`,
-                      type: 'photo'
+                      type: 'photo',
                     },
                     position: "left",
                   });
@@ -404,13 +475,16 @@ function ChatBot() {
                     },
                     position: "right",
                   });
-
+                  
+                  const formData = new FormData();
+                  formData.append('file', file);
                   // auto reply
                   ctx.postMessage({
                     type: "text",
                     content: {
-                      text: `file ${file.name} received`,
-                      type: 'file'
+                      text: `file ${file.name} received it might takes 1-2 mintues to process your file`,
+                      type: 'file',
+                      formData: formData
                     },
                     position: "left",
                   });
