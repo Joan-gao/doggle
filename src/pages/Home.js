@@ -1758,9 +1758,13 @@ function Home() {
     const interval = setInterval(() => {
       if (user && !userloaded) {
         const createdAt = user.user.created_at;
+        const date = new Date(createdAt);
 
-        const createdyear = parseInt(createdAt.substring(0, 4), 10);
-        const createdmonth = parseInt(createdAt.substring(5, 7), 10);
+        // 提取本地时间的年份和月份
+        const createdyear = date.getFullYear();
+        const createdmonth = date.getMonth() + 1;
+        // const createdyear = parseInt(createdAt.substring(0, 4), 10);
+        // const createdmonth = parseInt(createdAt.substring(5, 7), 10);
 
         setRegistrationYear(createdyear);
         setRegistrationMonth(createdmonth);

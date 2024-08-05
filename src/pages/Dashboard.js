@@ -810,9 +810,12 @@ function Dashboard() {
     const interval = setInterval(() => {
       if (user) {
         const createdAt = user.user.created_at;
+        console.log("createdAt", createdAt);
+        const date = new Date(createdAt);
 
-        const createdyear = parseInt(createdAt.substring(0, 4), 10);
-        const createdmonth = parseInt(createdAt.substring(5, 7), 10);
+        // 提取本地时间的年份和月份
+        const createdyear = date.getFullYear();
+        const createdmonth = date.getMonth() + 1;
 
         setRegistrationYear(createdyear);
         setRegistrationMonth(createdmonth);
@@ -847,14 +850,21 @@ function Dashboard() {
         });
     }
   }, [userloaded, currentUser]);
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth() + 1;
+  const currentYear = currentDate.getFullYear();
   useEffect(() => {
     isMounted.current = true;
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth() + 1;
-    const currentYear = currentDate.getFullYear();
+    // const currentDate = new Date();
+    // const currentMonth = currentDate.getMonth() + 1;
+    // const currentYear = currentDate.getFullYear();
 
     const monthLabel = getMonthLabel(month);
-
+    console.log("currentYear", currentYear);
+    console.log("currentMonth", currentMonth);
+    console.log("registrationMonth", registrationMonth);
+    console.log("registrationYear", registrationYear);
+    console.log("selectedYear", year);
     // 调用后端查询用户的注册日期，然后根据用户的注册日期判断选择的月份年份是否是有效的，如果是无效的，则直接都为空不进一步向后端请求数据
     const updateData = () => {
       if (activeKey === "2") {
