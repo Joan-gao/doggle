@@ -1676,27 +1676,6 @@ const CalendarBill = () => {
   };
 
   const handleEdit = (record) => {
-    // 在这里处理编辑逻辑，例如显示一个编辑表单
-    // fetch("http://127.0.0.1:5000/api/edit/transaction", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     "Access-Control-Allow-Origin": "*",
-    //   },
-    //   body: JSON.stringify({
-    //     transaction_id: "",
-    //     category_id: "",
-    //     amount: 0, // 根据实际用户ID字段名称调整
-    //   }),
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     console.log(data);
-    //     updateTransactionItem(data);
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error fetching transactions:", error);
-    //   });
     setOpen(true);
     setEditingRecord(record);
 
