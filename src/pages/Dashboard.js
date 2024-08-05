@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useStore, useAuth } from "../context/UserAuth";
 
@@ -795,23 +795,35 @@ function Dashboard() {
   const [listData, setListData] = useState(initiallistData);
   const [userloaded, setUserLoaded] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  const [expenseDataFromdb, setExpenseDataFromdb] = useState(
-    expenseDataTestFromdb
-  );
-  const [incomeDataFromdb, setIncomeDataFromdb] =
-    useState(incomeDataTestFromdb);
+  const [expenseDataFromdb, setExpenseDataFromdb] = useState(expenseEmptyData);
+  const [incomeDataFromdb, setIncomeDataFromdb] = useState(incomeEmptyData);
   useAuth();
   const { user, loading } = useStore();
+  const isMounted = useRef(true);
 
   const getMonthLabel = (monthValue) => {
     const month = months.find((m) => m.value === monthValue);
     return month ? month.label : "Invalid month value";
   };
 
-  const updateTransactionItem = (data) => {
-    setIncomeDataFromdb(data[1]);
-    setExpenseDataFromdb(data[0]);
-  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (user) {
+        const createdAt = user.user.created_at;
+
+        const createdyear = parseInt(createdAt.substring(0, 4), 10);
+        const createdmonth = parseInt(createdAt.substring(5, 7), 10);
+
+        setRegistrationYear(createdyear);
+        setRegistrationMonth(createdmonth);
+        setCurrentUser(user);
+        setUserLoaded(true); // Indicate that user data is loaded
+        clearInterval(interval); // Stop polling once user data is loaded
+      }
+    }, 2000);
+
+    // return () => clearInterval(interval);
+  }, [currentUser, userloaded, user]);
   useEffect(() => {
     if (userloaded) {
       fetch("http://127.0.0.1:5000/transaction/analysis", {
@@ -827,7 +839,8 @@ function Dashboard() {
         .then((response) => response.json())
         .then((data) => {
           console.log(data);
-          updateTransactionItem(data);
+          setExpenseDataFromdb(data[0]);
+          setIncomeDataFromdb(data[1]);
         })
         .catch((error) => {
           console.error("Error fetching transactions:", error);
@@ -835,24 +848,7 @@ function Dashboard() {
     }
   }, [userloaded, currentUser]);
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (user && !userloaded) {
-        const createdAt = user.user.created_at;
-
-        const createdyear = parseInt(createdAt.substring(0, 4), 10);
-        const createdmonth = parseInt(createdAt.substring(5, 7), 10);
-
-        setRegistrationYear(createdyear);
-        setRegistrationMonth(createdmonth);
-        setCurrentUser(user);
-        setUserLoaded(true); // Indicate that user data is loaded
-        clearInterval(interval); // Stop polling once user data is loaded
-      }
-    }, 2000);
-
-    return () => clearInterval(interval);
-  }, [currentUser, userloaded, user]);
-  useEffect(() => {
+    isMounted.current = true;
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth() + 1;
     const currentYear = currentDate.getFullYear();
@@ -860,110 +856,145 @@ function Dashboard() {
     const monthLabel = getMonthLabel(month);
 
     // 调用后端查询用户的注册日期，然后根据用户的注册日期判断选择的月份年份是否是有效的，如果是无效的，则直接都为空不进一步向后端请求数据
-    if (month && year && registrationMonth && registrationYear) {
+    const updateData = () => {
       if (activeKey === "2") {
         if (currentYear < year || registrationYear > year) {
-          setShowProgress(false);
-          if (currentType === "expense") {
-            setExpenseDataState(expenseEmptyData);
-            setDounghtExpenseData([]);
-            setLineExpenseCategory([]);
-            setLineExpenseSeries([]);
-            setBarExpenseCategory([]);
-            setBarExpenseSeries([]);
-          } else {
-            setIncomeDataState(incomeEmptyData);
+          if (isMounted.current) {
             setShowProgress(false);
-            setDounghtIncomeData([]);
-            setLineIncomeCategory([]);
-            setLineIncomeSeries([]);
-            setBarIncomeCategory([]);
-            setBarIncomeSeries([]);
+          }
+
+          if (currentType === "expense") {
+            if (isMounted.current) {
+              setExpenseDataState(expenseEmptyData);
+              setDounghtExpenseData([]);
+              setLineExpenseCategory([]);
+              setLineExpenseSeries([]);
+              setBarExpenseCategory([]);
+              setBarExpenseSeries([]);
+            }
+          } else {
+            if (isMounted.current) {
+              setIncomeDataState(incomeEmptyData);
+              setShowProgress(false);
+              setDounghtIncomeData([]);
+              setLineIncomeCategory([]);
+              setLineIncomeSeries([]);
+              setBarIncomeCategory([]);
+              setBarIncomeSeries([]);
+            }
           }
         } else {
           setShowProgress(true);
           if (currentType === "expense") {
-            setExpenseDataState(expenseDataFromdb);
-            setListData(expenseDataFromdb.yearly.sortedData);
-            setDounghtExpenseData(expenseDataFromdb.yearly.expenseDonutChart);
-            setLineExpenseCategory(
-              expenseDataFromdb.yearly.expenseLineChartCategory
-            );
-            setLineExpenseSeries(
-              expenseDataFromdb.yearly.expenseLineChartSeries
-            );
-            setBarExpenseCategory(
-              expenseDataFromdb.yearly.expenseBarChartCategory
-            );
-            setBarExpenseSeries(expenseDataFromdb.yearly.expenseBarChartSeries);
+            if (isMounted.current) {
+              setExpenseDataState(expenseDataFromdb);
+              setListData(expenseDataFromdb.yearly.sortedData);
+              setDounghtExpenseData(expenseDataFromdb.yearly.expenseDonutChart);
+              setLineExpenseCategory(
+                expenseDataFromdb.yearly.expenseLineChartCategory
+              );
+              setLineExpenseSeries(
+                expenseDataFromdb.yearly.expenseLineChartSeries
+              );
+              setBarExpenseCategory(
+                expenseDataFromdb.yearly.expenseBarChartCategory
+              );
+              setBarExpenseSeries(
+                expenseDataFromdb.yearly.expenseBarChartSeries
+              );
+            }
           } else {
-            setIncomeDataState(incomeDataFromdb);
-            setListData(incomeDataFromdb.yearly.sortedData);
-            setDounghtIncomeData(incomeDataFromdb.yearly.incomeDonutChart);
-            setLineIncomeCategory(
-              incomeDataFromdb.yearly.incomeLineChartCategory
-            );
-            setLineIncomeSeries(incomeDataFromdb.yearly.incomeLineChartSeries);
-            setBarIncomeCategory(
-              incomeDataFromdb.yearly.incomeBarChartCategory
-            );
-            setBarIncomeSeries(incomeDataFromdb.yearly.incomeBarChartSeries);
+            if (isMounted.current) {
+              setIncomeDataState(incomeDataFromdb);
+              setListData(incomeDataFromdb.yearly.sortedData);
+              setDounghtIncomeData(incomeDataFromdb.yearly.incomeDonutChart);
+              setLineIncomeCategory(
+                incomeDataFromdb.yearly.incomeLineChartCategory
+              );
+              setLineIncomeSeries(
+                incomeDataFromdb.yearly.incomeLineChartSeries
+              );
+              setBarIncomeCategory(
+                incomeDataFromdb.yearly.incomeBarChartCategory
+              );
+              setBarIncomeSeries(incomeDataFromdb.yearly.incomeBarChartSeries);
+            }
           }
         }
       } else if (activeKey === "1") {
         if (currentYear < year || registrationYear > year) {
-          setShowProgress(false);
-          if (currentType === "expense") {
-            setExpenseDataState(expenseEmptyData);
-            setDounghtExpenseData([]);
-            setLineExpenseCategory([]);
-            setLineExpenseSeries([]);
-            setBarExpenseCategory([]);
-            setBarExpenseSeries([]);
-          } else {
-            setIncomeDataState(incomeEmptyData);
+          if (isMounted.current) {
             setShowProgress(false);
-            setDounghtIncomeData([]);
-            setLineIncomeCategory([]);
-            setLineIncomeSeries([]);
-            setBarIncomeCategory([]);
-            setBarIncomeSeries([]);
+          }
+
+          if (currentType === "expense") {
+            if (isMounted.current) {
+              setExpenseDataState(expenseEmptyData);
+              setDounghtExpenseData([]);
+              setLineExpenseCategory([]);
+              setLineExpenseSeries([]);
+              setBarExpenseCategory([]);
+              setBarExpenseSeries([]);
+            }
+          } else {
+            if (isMounted.current) {
+              setIncomeDataState(incomeEmptyData);
+              setShowProgress(false);
+              setDounghtIncomeData([]);
+              setLineIncomeCategory([]);
+              setLineIncomeSeries([]);
+              setBarIncomeCategory([]);
+              setBarIncomeSeries([]);
+            }
           }
         } else if (registrationMonth > month || currentMonth < month) {
-          setShowProgress(false);
+          if (isMounted.current) {
+            setShowProgress(false);
+          }
+
           if (currentType === "expense") {
-            setExpenseDataState(expenseEmptyData);
+            if (isMounted.current) {
+              setExpenseDataState(expenseEmptyData);
+            }
           } else {
-            setIncomeDataState(incomeEmptyData);
+            if (isMounted.current) {
+              setIncomeDataState(incomeEmptyData);
+            }
           }
         } else {
-          if (monthLabel) {
-            console.log("Get in this method", monthLabel);
-            if (currentType === "expense") {
+          // if (monthLabel) {
+          if (currentType === "expense") {
+            if (isMounted.current) {
               setExpenseDataState({
                 ...expenseDataState,
                 monthly:
-                  expenseDataFromdb[monthLabel] || expenseEmptyData.monthly,
+                  expenseDataFromdb.monthly[monthLabel] ||
+                  expenseEmptyData.monthly,
               });
-              if (expenseDataFromdb[monthLabel]) {
+            }
+
+            if (expenseDataFromdb.monthly[monthLabel]) {
+              if (isMounted.current) {
                 setShowProgress(true);
-                setListData(expenseDataFromdb[monthLabel].sortedData);
+                setListData(expenseDataFromdb.monthly[monthLabel].sortedData);
                 setDounghtExpenseData(
-                  expenseDataFromdb[monthLabel].expenseDonutChart
+                  expenseDataFromdb.monthly[monthLabel].expenseDonutChart
                 );
                 setLineExpenseCategory(
-                  expenseDataFromdb[monthLabel].expenseLineChartCategory
+                  expenseDataFromdb.monthly[monthLabel].expenseLineChartCategory
                 );
                 setLineExpenseSeries(
-                  expenseDataFromdb[monthLabel].expenseLineChartSeries
+                  expenseDataFromdb.monthly[monthLabel].expenseLineChartSeries
                 );
                 setBarExpenseCategory(
-                  expenseDataFromdb[monthLabel].expenseBarChartCategory
+                  expenseDataFromdb.monthly[monthLabel].expenseBarChartCategory
                 );
                 setBarExpenseSeries(
-                  expenseDataFromdb[monthLabel].expenseBarChartSeries
+                  expenseDataFromdb.monthly[monthLabel].expenseBarChartSeries
                 );
-              } else {
+              }
+            } else {
+              if (isMounted.current) {
                 setShowProgress(false);
                 setDounghtExpenseData([]);
                 setLineExpenseCategory([]);
@@ -971,31 +1002,39 @@ function Dashboard() {
                 setBarExpenseCategory([]);
                 setBarExpenseSeries([]);
               }
-            } else {
+            }
+          } else {
+            if (isMounted.current) {
               setIncomeDataState({
                 ...incomeDataState,
                 monthly:
-                  incomeDataFromdb[monthLabel] || incomeEmptyData.monthly,
+                  incomeDataFromdb.monthly[monthLabel] ||
+                  incomeEmptyData.monthly,
               });
-              if (incomeDataFromdb[monthLabel]) {
+            }
+
+            if (incomeDataFromdb.monthly[monthLabel]) {
+              if (isMounted.current) {
                 setShowProgress(true);
-                setListData(incomeDataFromdb[monthLabel].sortedData);
+                setListData(incomeDataFromdb.monthly[monthLabel].sortedData);
                 setDounghtIncomeData(
-                  incomeDataFromdb[monthLabel].incomeDonutChart
+                  incomeDataFromdb.monthly[monthLabel].incomeDonutChart
                 );
                 setLineIncomeCategory(
-                  incomeDataFromdb[monthLabel].incomeLineChartCategory
+                  incomeDataFromdb.monthly[monthLabel].incomeLineChartCategory
                 );
                 setLineIncomeSeries(
-                  incomeDataFromdb[monthLabel].incomeLineChartSeries
+                  incomeDataFromdb.monthly[monthLabel].incomeLineChartSeries
                 );
                 setBarIncomeCategory(
-                  incomeDataFromdb[monthLabel].incomeBarChartCategory
+                  incomeDataFromdb.monthly[monthLabel].incomeBarChartCategory
                 );
                 setBarIncomeSeries(
-                  incomeDataFromdb[monthLabel].incomeBarChartSeries
+                  incomeDataFromdb.monthly[monthLabel].incomeBarChartSeries
                 );
-              } else {
+              }
+            } else {
+              if (isMounted.current) {
                 setShowProgress(false);
                 setDounghtIncomeData([]);
                 setLineIncomeCategory([]);
@@ -1004,28 +1043,18 @@ function Dashboard() {
                 setBarIncomeSeries([]);
               }
             }
-          } else {
-            if (currentType === "expense") {
-              setExpenseDataState({
-                ...expenseDataState,
-                monthly: expenseEmptyData.monthly,
-              });
-            } else {
-              setIncomeDataState({
-                ...incomeDataState,
-                monthly: incomeEmptyData.monthly,
-              });
-            }
           }
         }
       }
-    } else {
-      if (currentType === "expense") {
-        setExpenseDataState(expenseEmptyData);
-      } else {
-        setIncomeDataState(incomeEmptyData);
-      }
+    };
+
+    if (userloaded) {
+      console.log("User is loaded, proceeding to update data.");
+      updateData();
     }
+    return () => {
+      isMounted.current = false; // Cleanup function to set isMounted to false when component is unmounted
+    };
   }, [
     currentType,
     month,
@@ -1033,10 +1062,11 @@ function Dashboard() {
     activeKey,
     registrationMonth,
     registrationYear,
-    expenseDataFromdb,
-    expenseDataState,
-    incomeDataFromdb,
-    incomeDataState,
+    // expenseDataFromdb,
+    // expenseDataState,
+    // incomeDataFromdb,
+    // incomeDataState,
+    userloaded,
   ]);
   const displayData =
     currentType === "expense"
@@ -1046,19 +1076,45 @@ function Dashboard() {
       : activeKey === "1"
       ? incomeDataState?.monthly
       : incomeDataState?.yearly;
-  // 确保 displayData 始终有默认值
-  const safeDisplayData = displayData || {
-    countData: {
-      today: "",
-      title: "",
-      persent: "",
-      color: "",
-    },
-    chartTitle: "",
-    categoriesTitle: "",
-    average: "",
-    sortedData: [],
+  //确保 displayData 始终有默认值
+  const containsMultipleObjects = (obj) => {
+    // 提取 months 数组中的所有 label 值
+    const monthLabels = months.map((month) => month.label);
+
+    // 用于存储匹配的键
+    const matchingKeys = [];
+
+    // 遍历对象中的每一个键
+    for (const key in obj) {
+      if (
+        obj.hasOwnProperty(key) &&
+        typeof obj[key] === "object" &&
+        obj[key] !== null
+      ) {
+        // 如果当前键存在于 monthLabels 中，添加到匹配列表中
+        if (monthLabels.includes(key)) {
+          matchingKeys.push(key);
+        }
+      }
+    }
+
+    return matchingKeys;
   };
+  const safeDisplayData =
+    containsMultipleObjects(displayData).length > 0
+      ? {
+          countData: {
+            today: "",
+            title: "",
+            persent: "",
+            color: "",
+          },
+          chartTitle: "",
+          categoriesTitle: "",
+          average: "",
+          sortedData: [],
+        }
+      : displayData;
   console.log("SafeDisplayData", safeDisplayData);
 
   const totalAmount = listData.reduce(
@@ -1282,7 +1338,7 @@ function Dashboard() {
         </Col>
       </Row>
 
-      <CommonContent data={safeDisplayData} onSegmentChange={onSegmentChange} />
+      <CommonContent data={displayData} onSegmentChange={onSegmentChange} />
     </div>
   );
 }
