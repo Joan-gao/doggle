@@ -63,7 +63,7 @@ const EditTransaction = ({ transaction }) => {
   return (
     <Modal
       open={open}
-      title="Please enter your basic Info"
+      title="Please Enter Either The Amount or The Category "
       onCancel={handleCancel}
       footer={
         [
@@ -99,7 +99,7 @@ const EditTransaction = ({ transaction }) => {
             },
           ]}
         >
-          <Input placeholder="Pleaase enter the amount" />
+          <Input placeholder="Please enter the amount" />
         </Form.Item>
 
         <Form.Item

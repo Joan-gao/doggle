@@ -61,7 +61,7 @@ const BudgetSetting = ({ user }) => {
   return (
     <Modal
       open={open}
-      title="Please enter your basic Info"
+      title="Please Enter your Budget Amount"
       onCancel={handleCancel}
       footer={
         [
