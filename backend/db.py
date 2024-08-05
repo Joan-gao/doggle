@@ -173,10 +173,16 @@ def createUserInDB(email, password, uid, username):
                         password_hash=passwordhash, username=username)
         session.add(new_user)
         session.commit()
-        session.refresh(new_user)
+        user_data = {
+            "user_id": new_user.user_id,
+            "email": new_user.email,
+            "username": new_user.username
+        }
 
         print(f'User {email} created successfully!')
-        return new_user
+        return user_data
+
+        print(f'User {email} created successfully!')
 
 
 def updateUserInDB(userData):
