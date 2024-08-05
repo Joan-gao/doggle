@@ -45,6 +45,7 @@ const EditTransaction = ({ transaction }) => {
       .catch((error) => {
         console.error("Error fetching transactions:", error);
       });
+    setOpen(false);
   };
 
   const onFinish = (values) => {
