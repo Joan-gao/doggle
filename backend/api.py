@@ -129,5 +129,14 @@ def transactionAnalysis():
     return jsonify(result)
 
 
+@app.route('/api/set-budget', methods=['POST'])
+def budgetSetting():
+    user = request.json.get("user")
+    budgetAmout = request.json.get("amount")
+
+    result = setBudget(user, budgetAmout)
+    return jsonify(result)
+
+
 if __name__ == '__main__':
     app.run(debug=True)

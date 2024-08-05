@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useStore, useAuth } from "../context/UserAuth";
 import moment from "moment";
 import EditTransaction from "../components/other/EditTransaction";
+import BudgetSetting from "../components/other/BudgetSetting";
 import {
   Card,
   Col,
@@ -1785,7 +1786,8 @@ function Home() {
           "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify({
-          user: currentUser, // 根据实际用户ID字段名称调整
+          user: currentUser,
+          // 根据实际用户ID字段名称调整
         }),
       })
         .then((response) => response.json())
@@ -1868,6 +1870,7 @@ function Home() {
     <>
       <div className="layout-content">
         {infoOpen && <EditTransaction transaction={editingRecord} />}
+        {budgetOpen && <BudgetSetting transaction={editingRecord} />}
 
         <Space wrap className="space-container">
           <Select

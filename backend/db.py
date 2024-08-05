@@ -713,7 +713,7 @@ def get_expense_income_data(user):
             'today'] = f"Total {sum(len(v) for v in daily_income_details.values())} incomes"
         income_data['yearly']['title'] = f"${sum(yearly_incomes.values()):.2f}"
         income_data['yearly']['average'] = f"${
-            sum(yearly_incomes.values()) / 12:.2f}"
+            sum(yearly_incomes.values()) / 12: .2f}"
         income_data['yearly']['sortedData'] = [{'category': k, 'transactions': 1, 'amount': float(v)} for k, v in
                                                yearly_incomes.items()]
         income_data['yearly']['incomeDonutChart'] = [
@@ -728,9 +728,9 @@ def get_expense_income_data(user):
         expense_data['yearly']['countData'][
             'today'] = f"Total {sum(len(v) for v in daily_expense_details.values())} expenses"
         expense_data['yearly']['title'] = f"${
-            sum(yearly_expenses.values()):.2f}"
+            sum(yearly_expenses.values()): .2f}"
         expense_data['yearly']['average'] = f"${
-            sum(yearly_expenses.values()) / 12:.2f}"
+            sum(yearly_expenses.values()) / 12: .2f}"
         expense_data['yearly']['sortedData'] = [{'category': k, 'transactions': 1, 'amount': float(v)} for k, v in
                                                 yearly_expenses.items()]
         expense_data['yearly']['expenseDonutChart'] = [{'type': k, 'value': float(v)} for k, v in
@@ -743,3 +743,33 @@ def get_expense_income_data(user):
             expense_data['yearly']['expenseBarChartCategory']]
 
         return expense_data, income_data
+
+
+def setBudget(user, budgetAmount):
+    try:
+        with session_scope() as session:
+            currentUser = user.get("user")
+            print(currentUser)
+
+            user_id = currentUser.get("id")
+
+            budget_record = session.query(Budget).filter(
+                Budget.user_id == user_id).first()
+
+            if budget_record:
+                # 如果已有记录，则更新
+                budget_record.budget_amount = budgetAmount
+                print(
+                    f"Updated budget for user_id {user_id} with new amount {budgetAmount}.")
+            else:
+                # 如果没有记录，则添加新记录
+                budget_record = Budget(
+                    user_id=user_id, budget_amount=budgetAmount)
+                session.add(budget_record)
+                print(
+                    f"Added new budget for user_id {user_id} with amount {budgetAmount}.")
+            session.commit()
+
+            return {'status': "success"}
+    except:
+        return {'status': "fail"}
