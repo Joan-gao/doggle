@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useGlobalContext } from "../context/GlobalProvider";
 import { Card, Col, Row, Calendar, theme, Table } from "antd";
 import { useStore, useAuth } from "../context/UserAuth";
+import EditTransaction from "../components/other/EditTransaction";
 
 import moment from "moment";
 const months = [
@@ -1642,6 +1643,8 @@ const CalendarBill = () => {
   const [income, setIncome] = useState(0);
   const [transactionItem, setTransactionItem] = useState(null);
   const [userloaded, setUserLoaded] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [editingRecord, setEditingRecord] = useState(null);
   useAuth();
   const { user, loading } = useStore();
   // 确保在更新 `transactionItem` 时创建新的对象引用
@@ -1673,11 +1676,30 @@ const CalendarBill = () => {
   };
 
   const handleEdit = (record) => {
-    // 在这里处理编辑逻辑，例如显示一个编辑表单
+    setOpen(true);
+    setEditingRecord(record);
+
     console.log("Editing:", record);
   };
 
   const handleDelete = (record) => {
+    fetch("http://127.0.0.1:5000/api/delete/transaction", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: JSON.stringify({
+        transaction_id: record.transaction_id, // 根据实际用户ID字段名称调整
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error Deleting transactions:", error);
+      });
     console.log("Deleting:", record);
   };
 
@@ -1685,9 +1707,13 @@ const CalendarBill = () => {
     const interval = setInterval(() => {
       if (user && !userloaded) {
         const createdAt = user.user.created_at;
+        const date = new Date(createdAt);
 
-        const createdyear = parseInt(createdAt.substring(0, 4), 10);
-        const createdmonth = parseInt(createdAt.substring(5, 7), 10);
+        // 提取本地时间的年份和月份
+        const createdyear = date.getFullYear();
+        const createdmonth = date.getMonth() + 1;
+        // const createdyear = parseInt(createdAt.substring(0, 4), 10);
+        // const createdmonth = parseInt(createdAt.substring(5, 7), 10);
 
         setRegistrationYear(createdyear);
         setRegistrationMonth(createdmonth);
@@ -1765,16 +1791,15 @@ const CalendarBill = () => {
               setIncome(item.income);
               setExpense(item.expense);
             }
-            setFinanceData(item.financeData);
-            setIncome(item.income);
-            setExpense(item.expense);
+            // setFinanceData(item.financeData);
+            // setIncome(item.income);
+            // setExpense(item.expense);
+          } else {
+            setColumn([]);
+            setFinanceData([]);
+            setExpense(0);
+            setIncome(0);
           }
-          // } else {
-          //   setColumn([]);
-          //   setFinanceData([]);
-          //   setExpense(0);
-          //   setIncome(0);
-          // }
         } else {
           const selectedMonth = `${year}-${month}`;
           const formattedMonth = moment(selectedMonth).format("YYYY-MM");
@@ -1790,13 +1815,12 @@ const CalendarBill = () => {
               setIncome(item.income);
               setExpense(item.expense);
             }
+          } else {
+            setColumn([]);
+            setFinanceData([]);
+            setExpense(0);
+            setIncome(0);
           }
-          // } else {
-          //   setColumn([]);
-          //   setFinanceData([]);
-          //   setExpense(0);
-          //   setIncome(0);
-          // }
         }
 
         if (isMounted.current) {
@@ -1840,6 +1864,7 @@ const CalendarBill = () => {
   return (
     <>
       <div className="layout-content">
+        {open && <EditTransaction transaction={editingRecord} />}
         <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={12} lg={12} xl={10} className="mb-24">
             <Card bordered={false} className="criclebox h-full">

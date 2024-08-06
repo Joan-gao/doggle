@@ -6,6 +6,7 @@ import axios from "axios";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import "../../assets/styles/information.css";
 dayjs.extend(customParseFormat);
 const { Option } = Select;
 const dateFormat = "YYYY-MM-DD";
