@@ -5,8 +5,11 @@ from flask import Flask
 import filetype
 import os
 from gemini_fune_tune_util.oAuth import load_creds
+from flask_cors import CORS
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
 UPLOAD_FOLDER = 'uploads'
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -15,8 +18,6 @@ app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024 * 1024  # 限制文件大小�
 # 确保上传目录存在
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-creds = load_creds()
-genai.configure(credentials=creds)
 
 def read_yaml(yaml_file_path):
 
@@ -24,7 +25,11 @@ def read_yaml(yaml_file_path):
         config_data = yaml.safe_load(f.read())
     return config_data
 
-
+config_data = read_yaml("setting.yaml")
+app.config.update(config_data)
+GEMINI_API_KEY = app.config['COMMON']['GEMINI_API_KEY']
+genai.configure(api_key=GEMINI_API_KEY)
+# genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
 
 # Create the model
@@ -44,12 +49,7 @@ model = genai.GenerativeModel(
 )
 
 def geminiUploadFile(file_path):
-    config_data = read_yaml("setting.yaml")
-    app.config.update(config_data)
-    GEMINI_API_KEY = app.config['COMMON']['GEMINI_API_KEY']
 
-    # genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-    genai.configure(api_key=GEMINI_API_KEY)
 
     user_file = genai.upload_file(
     path=file_path, display_name="User finaical File")
@@ -67,14 +67,23 @@ def fileAnalyze(file):
     userFile = geminiUploadFile(file_path)
 
     if userFile is not None:
-        # print("Ready for analyze")
-        # response = model.generate_content([userFile, "describe the file"])
-        # print(response.text)
-        response = model.generate_content([userFile, "Find first 20 transactions information, it needs to include transaction_date (in YYYY-MM-DD format), description and amount (decimal number) information, return all the transactions in a valid json format without anything else"])
-        print(response.text)
-        return response.text
+        print("Ready for analyze")
+        summary = model.generate_content([userFile, "describe the file"])
+       
+        response = model.generate_content([userFile, "Find first 40 transactions information, it needs to include transaction_date (in YYYY-MM-DD format), description and amount (decimal number) information, return all the transactions in a valid json format without anything else"])
+        return summary.text, response.text
     else:
         print("Upload file to gemini fail")
 
+@app.route('/file_analyze', methods=['POST'])
+def file_analyze():
+    file = request.files['file']
+    summary, response_ = fileAnalyze(file)
 
-user_file = ''
+    return jsonify({
+            "summary": summary,
+            "response": response_
+        }), 200
+ 
+if __name__ == '__main__':
+    app.run(debug=True, port=5001)

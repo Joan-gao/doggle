@@ -233,11 +233,6 @@ def getOverAllTransactionAnalyze(user_id):
 
         transactions = session.query(Transaction).filter(
             Transaction.user_id == user_id,
-            Transaction.is_shown != 1,
-            Transaction.transaction_date >= first_day_of_year.strftime(
-                '%Y-%m-%d'),
-            Transaction.transaction_date < last_day_of_year.strftime(
-                '%Y-%m-%d')
         ).all()
         # print("transaction result: ")
         # print(transactions)
@@ -369,6 +364,22 @@ def assembaleData(monthDataDict, yearDataDict):
     }
 
 
+def get_user_info(uid):
+    with session_scope() as session:
+        user = session.query(User).filter(User.user_id==uid).first()
+        if user:
+            # Extract necessary data
+            user_data = {
+                'id': user.user_id,
+                'username': user.username,
+                'created_at': user.created_at,
+                'birth_date': user.birth_date,
+                'occupation': user.occupation,
+                'income_source': user.income_source,
+                'gender': user.gender
+            }
+            return user_data
+        return None
 def get_user_id_by_uid(uid):
     with session_scope() as session:
         user = session.query(User).filter_by(auth_uid=uid).first()
@@ -378,7 +389,10 @@ def get_user_id_by_uid(uid):
                 'id': user.user_id,
                 'username': user.username,
                 'created_at': user.created_at,
-                # 添加其他需要的属性
+                'birth_date': user.birth_date,
+                'occupation': user.occupation,
+                'income_source': user.income_source,
+                'gender': user.gender
             }
             return user_data
         return None

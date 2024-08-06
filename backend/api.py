@@ -3,9 +3,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from db import *
 from gemini_fune_tune_util.util import analyzer_func, categorizer_func, transaction_procossor, transaction_procossor_update, transaction_procossor_update
-from fileAnalyze import fileAnalyze
 import requests
 import json
+import re
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -18,6 +18,19 @@ def get_current_date():
     
     return formatted_date
 
+def is_valid_date(date_string):
+    # Define the pattern for YYYY-MM-DD
+    pattern = r'^\d{4}-\d{2}-\d{2}$'
+    
+    # Use re.match to check if the string matches the pattern
+    match = re.match(pattern, date_string)
+    
+    # Check if match is not None
+    if match is not None:
+        return True
+    else:
+        return False
+    
 @app.route('/add_transaction/<int:user_id>', methods=['POST'])
 def add_transaction_route(user_id):
 
@@ -26,7 +39,7 @@ def add_transaction_route(user_id):
         Transaction_string = request.json.get("input")
         json_string = transaction_procossor(Transaction_string).replace("json", "").replace("\n", " ").replace("```", "")
         transaction = json.loads(json_string)
-        print(Transaction_string)
+        print(json_string)
         prompt = "Please categorize this transaction into following one of "
         name_string = ""
         for name in categories.values():
@@ -40,10 +53,13 @@ def add_transaction_route(user_id):
         prompt += f"[{name_string}]"
 
         transaction_string = f'transaction_date: {transaction["transaction_date"]} description: {transaction["description"]} amount: {transaction["amount"]}'
+        print(transaction_string)
         category = categorizer_func(prompt + " Transaction: " + transaction_string + "just return the category name itself")
         category = category.strip("\n").strip(" ")
         category_id = categories_mapping[category]
-        transaction["transaction_date"] = get_current_date() if transaction["transaction_date"] == "None" else transaction["transaction_date"]
+        if not is_valid_date(transaction["transaction_date"]):
+            transaction["transaction_date"] = get_current_date()
+
         print(user_id, category_id, transaction["transaction_date"], transaction["description"], transaction["amount"])
         response = add_transaction(user_id, category_id, transaction["transaction_date"], transaction["description"], transaction["amount"])
         print(response)
@@ -116,59 +132,81 @@ def delete_transaction_route(user_id):
     
 @app.route('/upload_file/<int:user_id>', methods=['POST'])
 def upload_file(user_id):
-    if 'file' not in request.files:
-        return jsonify({"error": "No file part in the request"}), 400
-    
-    file = request.files['file']
-    
-    if file.filename == '':
-        return jsonify({"error": "No selected file"}), 400
-    
-    response = fileAnalyze(file).replace("json", "").replace("\n", " ").replace("```", "")
-    print(response)
-    transaction_dict = json.loads(response)
-    
-    prompt = "Please categorize this transaction into following one of "
-    name_string = ""
-    for name in categories.values():
-        name_string += name + ", "
-    
-    categories_mapping = {}
+    try:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file part in the request"}), 400
+        
+        file = request.files['file']
+        
+        if file.filename == '':
+            return jsonify({"error": "No selected file"}), 400
+        print(file)
+        # files_ = {'file': request.files['file']}
+        # Form the file tuple
+        files_ = {
+            'file': (file.filename, file.stream, file.content_type)
+        }
+        return_val = requests.post("http://127.0.0.1:5001/file_analyze", files=files_)
+        return_val_dict = return_val.json()
+        summary, response = return_val_dict["summary"], return_val_dict["response"]
+        response = response.replace("json", "").replace("\n", " ").replace("```", "")
+        print(response)
+        transaction_dict = json.loads(response)
+        
+        prompt = "Please categorize this transaction into following one of "
+        name_string = ""
+        for name in categories.values():
+            name_string += name + ", "
+        
+        categories_mapping = {}
 
-    for key, value in categories.items():
-        categories_mapping[value] = key
-    
-    prompt += f"[{name_string}]"
-    print(prompt)
-    for transaction in transaction_dict:
-        transaction_string = f'transaction_date: {transaction["transaction_date"]} description: {transaction["description"]} amount: {transaction["amount"]}'
-        category = categorizer_func(prompt + " Transaction: " + transaction_string + "just return the category name itself")
-        print(transaction)
-        print(category)
-        category = category.strip("\n").strip(" ")
-        category_id = categories_mapping[category]
-
-        add_transaction(user_id, category_id, transaction["transaction_date"], transaction["description"], transaction["amount"]) 
-    return jsonify({"reply": str(len(transaction_dict)) + " transactions has been added"})
+        for key, value in categories.items():
+            categories_mapping[value] = key
+        
+        prompt += f"[{name_string}]"
+        added_transaction_count = 0
+        for transaction in transaction_dict:
+            transaction_string = f'transaction_date: {transaction["transaction_date"]} description: {transaction["description"]} amount: {transaction["amount"]}'
+            category = categorizer_func(prompt + " Transaction: " + transaction_string + "just return the category name itself")
+            print(transaction)
+            print(category)
+            category = category.strip("\n").strip(" ")
+            if category in categories_mapping:
+                category_id = categories_mapping[category]
+            else:
+                continue
+            
+            
+            add_transaction(user_id, category_id, transaction["transaction_date"], transaction["description"], transaction["amount"]) 
+            added_transaction_count += 1
+        return jsonify({"reply": summary, "count": str(added_transaction_count)})
+    except Exception as e:
+        print(e)
+        return jsonify({"reply": "I am unable to analyze this file", "count": "0"})
 
 @app.route("/info/<int:user_id>", methods=['POST', 'OPTIONS'])
 def get_all_financial_info_and_analyze(user_id):
     if request.method == 'OPTIONS':
         return '', 200
     user_input = request.json.get('input')
+    print(user_id)
     transaction_info = getOverAllTransactionAnalyze(user_id)
     goal, budget = getBudget_and_goal(user_id)
-    
+    user_info = get_user_info(user_id)
+    user_info_ = "None"
+    if user_info != None:
+        user_info_ = {key: user_info[key] for key in ["birth_date", "occupation", "income_source", "gender"]}
     user_info_string =  str({
         "transaction_info": transaction_info,
         "goal": goal,
-        "budget": budget
+        "budget": budget,
+        "General_info": user_info_
     })
 
-    prompt = """" You need to act as an financial expert to give customer professional and 
-            custormized advice (Incorporate informal and friendly language and Include emojis, playful phrases, and a touch of humor)based on following user information in json format: """
+
+    prompt = """" You need to act as an financial expert to give customer professional and custormized advice (Incorporate informal and friendly language and Include emojis, playful phrases, and a touch of humor) based on following user information in json format: """
     
-    post_prompt = "based on above information, answer the question: " + str(user_input)
+    post_prompt = "based on above information (take user general information into account), answer the question: " + str(user_input)
     print(prompt + user_info_string + post_prompt)
     reply = analyzer_func(prompt + user_info_string + post_prompt).replace('\"', "")
     print(reply)
@@ -295,4 +333,4 @@ def transactionAnalysis():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5000)

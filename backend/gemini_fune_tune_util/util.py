@@ -1,6 +1,7 @@
 ## import 
 from .oAuth import load_creds
 import google.generativeai as genai
+from datetime import datetime
 
 # setup fine tuned ai bot
 creds = load_creds()
@@ -12,6 +13,14 @@ name = "analyzer-bys21ugc6n7d"
 analyzer = genai.GenerativeModel(model_name=f'tunedModels/{name}')
 
 # fune tuned ai bot api endpoint 
+def get_date():
+        # Get the current date and time
+    now = datetime.now()
+    
+    # Format the date as "YYYY-MM-DD"
+    formatted_date = now.strftime("%Y-%m-%d")
+    
+    return formatted_date
 
 def categorizer_func(input1):
     result = categorizer.generate_content(input1)
@@ -22,7 +31,7 @@ def analyzer_func(input2):
     return result.text
 
 def transaction_procossor(Transaction_string):
-    result = categorizer.generate_content("You need to extract information about this transaction, it needs to include transaction_date (in YYYY-MM-DD format), description and amount (decimal number) information, in case when it is not available return None for that field, return the output in json format " + Transaction_string)
+    result = categorizer.generate_content(f"You need to extract information about this transaction, it needs to include transaction_date (in YYYY-MM-DD format, you need to guess the correct date given today is {get_date()}), description and amount (decimal number) information, in case when it is not available return None for that field, return the output in json format " + Transaction_string)
     return result.text
 
 def transaction_procossor_update(Transaction_string):

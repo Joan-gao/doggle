@@ -30,7 +30,31 @@ function ChatBot() {
   // get user id
   useAuth();
   const { user } = useStore();
+
   console.log(user);
+  if (!user) {
+    window.location.href = '/';
+  }
+  console.log(user.user.id);
+
+  function getCurrentDateFormatted() {
+    // Create a new Date object for the current date and time
+    const currentDate = new Date();
+    
+    // Extract the year, month, and day
+    const year = currentDate.getFullYear();
+    let month = currentDate.getMonth() + 1; // Months are zero-based
+    let day = currentDate.getDate();
+    
+    // Ensure month and day are in two-digit format
+    month = month < 10 ? '0' + month : month;
+    day = day < 10 ? '0' + day : day;
+    
+    // Format the date as YYYY-MM-DD
+    const formattedDate = `${year}-${month}-${day}`;
+    
+    return formattedDate;
+}
 
   async function blobUrlToBase64(blobUrl) {
     const response = await fetch(blobUrl);
@@ -107,25 +131,13 @@ function ChatBot() {
   
       // Handle the response from the server
       console.log('Success:', analysisResult);
-  
-      return analysisResult.reply; // Return the result if needed
+      console.log(analysisResult.reply);
+      return { reply: analysisResult.reply, count: analysisResult.count };
     } catch (error) {
       console.error('Error:', error);
       return null; // Handle the error appropriately, possibly returning null or a specific error value
     }
   }
-  
-  // Example usage:
-  const formData = new FormData();
-  // Append your file and other data to formData here
-  
-  uploadFile(formData).then(result => {
-    if (result) {
-      console.log('Analysis Result:', result);
-    } else {
-      console.log('Failed to upload and analyze the file.');
-    }
-  });
 
   useEffect(() => {
     const bot = new window.ChatSDK({
@@ -266,7 +278,7 @@ function ChatBot() {
           { name: "Spent $50 on taxi" },
           { name: "Spent $20 on dinner last week" },
           {
-            name: "Received $5000 salary yesterday, spent $50 on haircut, and $70 on groceries",
+            name: "Delete date: 2024-08-05 amount: $100 description: dinner",
           },
         ],
       },
@@ -287,25 +299,6 @@ function ChatBot() {
           let responseText;
         
           switch (msg.content.text) {
-            case "Spent $50 on taxi":
-                  responseText =
-                    "Recorded. 🐾\nBill 1\nDate: 2024-07-19\nCategory: Transport\n" +
-                    "Expense: $50\nDescription: Taxi\nAccount Book: Default account book";
-                  break;
-            case "Spent $20 on dinner last week":
-                  responseText =
-                    "Recorded. 🐾\nBill 1\nDate: 2024-07-12\nCategory: Meal\n" +
-                    "Expense: $20\nDescription: dinner last week\nAccount Book: Default account book";
-                  break;
-            case "Received $5000 salary yesterday, spent $50 on haircut, and $70 on groceries":
-                  responseText =
-                    "Recorded. 🐾\nBill 1\nDate: 2024-07-18\nCategory: Salary\nIncome: $5000\n" +
-                    "Description: salary yesterday\nAccount Book: Default account book\n" +
-                    "Bill 2\nDate: 2024-07-18\nCategory: Beauty\nExpense: $50\n" +
-                    "Description: haircut\nAccount Book: Default account book\n" +
-                    "Bill 3\nDate: 2024-07-18\nCategory: Shopping\nExpense: $70\n" +
-                    "Description: groceries\nAccount Book: Default account book";
-                  break;
 
             case 'What features does doggle support?':
                   responseText =
@@ -341,44 +334,50 @@ function ChatBot() {
               let str = msg.content.text;
               str = str.split(' ');
               let firstword = str[0];
-
+              console.log(user);
               if (firstword === 'Spent' || firstword === 'spent'){
                 console.log('Spent');
-                reply = await postData("http://127.0.0.1:5000/add_transaction/11", msg.content.text);
+                reply = await postData("http://127.0.0.1:5000/add_transaction/" + user.user.id, msg.content.text);
                 reply = JSON.parse(reply).data;
                 console.log(reply);
               } else if (firstword === 'Update' || firstword === 'update'){
                 console.log('Update');
-                reply = await postData("http://127.0.0.1:5000/update_transaction/11", msg.content.text);
+                reply = await postData("http://127.0.0.1:5000/update_transaction/" + user.user.id, msg.content.text);
                 reply = JSON.parse(reply).data;
                 console.log(reply);
               } else if (firstword === 'Delete' || firstword === 'delete'){
                 console.log('Delete');
-                reply = await postData("http://127.0.0.1:5000/delete_transaction/11", msg.content.text);
+                reply = await postData("http://127.0.0.1:5000/delete_transaction/" + user.user.id, msg.content.text);
                 reply = JSON.parse(reply).data;
                 console.log(reply);
-              } else if (firstword === 'Search' || firstword === 'Search'){
+              } else if (firstword === 'Search' || firstword === 'search'){
                 console.log('Search');
-                reply = await postData("http://127.0.0.1:5000/search_transaction/11", msg.content.text);
+                reply = await postData("http://127.0.0.1:5000/search_transaction/" + user.user.id, msg.content.text);
                 reply = JSON.parse(reply).data;
                 console.log(reply);
               } else{
-                if (msg.content.type === "photo"){ //
-                  console.log('photo type');
-                  const prompt = "describe the image";
+                // if (msg.content.type === "photo"){ //
+                //   console.log('photo type');
+                //   const prompt = "describe the image";
   
-                  const imageParts = [fileToGenerativePart(msg.content.url, "image/jpeg")]
+                //   const imageParts = [fileToGenerativePart(msg.content.url, "image/jpeg")]
   
-                  const result = await gemini_pro_vision.generateContent([prompt, ...imageParts]);
-                  const response = await result.response;
-                  const text = response.text();
+                //   const result = await gemini_pro_vision.generateContent([prompt, ...imageParts]);
+                //   const response = await result.response;
+                //   const text = response.text();
   
-                  responseText = text;
+                //   responseText = text;
   
-                } else if (msg.content.type === "file"){
+                // } else 
+                if (msg.content.type === "file" || msg.content.type === "photo"){
                   console.log('file type');
-                  reply = await uploadFile(msg.content.formData, "http://127.0.0.1:5000/upload_file/11");
-                  console.log(reply);
+                  const return_obj = await uploadFile(msg.content.formData, "http://127.0.0.1:5000/upload_file/" + + user.user.id);
+                  reply = return_obj.reply;
+                  if (return_obj.count === "0"){
+                    //
+                  } else{
+                    reply += `\n\n${return_obj.count} transactions has been added`
+                  }
                 } else{
                   const res_1 = await gemini_pro.generateContent("Can you tell me whether the following text is a general question or financial (categorize anything relate to money and finance into finance question): " + msg.content.text
                     + "just return 1 for general question 2 for financial question without anything else"
@@ -388,13 +387,13 @@ function ChatBot() {
                   console.log(question_type);
   
                   if (question_type === "1" || question_type.indexOf("General") != -1){
-                    reply = await chat.sendMessage(msg.content.text);
+                    reply = await chat.sendMessage(msg.content.text + "(Incorporate informal and friendly language and Include emojis, playful phrases, and a touch of humor)");
                     const response = await reply.response;
                     const text = response.text()
                     reply = text;
                     console.log(reply);
                   } else if (question_type === "2" || question_type.indexOf("Financial") != -1) {
-                    reply = await postData('http://127.0.0.1:5000/info/11', msg.content.text);
+                    reply = await postData('http://127.0.0.1:5000/info/' + user.user.id, msg.content.text);
                     reply = JSON.parse(reply).data;
                     console.log(reply);
                   }
@@ -435,11 +434,15 @@ function ChatBot() {
                     },
                     position: "right",
                   });
+
+                  const formData = new FormData();
+                  formData.append('file', file);
                   ctx.postMessage({
                     type: "text",
                     content: {
                       text: `Photo received`,
                       type: 'photo',
+                      formData: formData,
                     },
                     position: "left",
                   });
