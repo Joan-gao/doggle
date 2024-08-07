@@ -68,7 +68,7 @@ categories = {
 # Generate Password Hash
 
 
-def add_transaction(user_id, category_id, transaction_date, description, amount, note='', is_shown=1):
+def add_transaction(user_id, category_id, transaction_date, description, amount, note='', is_shown=0):
     try:
         with session_scope() as session:
             new_transaction = Transaction(
