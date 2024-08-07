@@ -3,7 +3,7 @@
 #!/bin/bash
 
 # Start the Cloud SQL Proxy
-./bin/cloud_sql_proxy -dir=/cloudsql -instances=$GSP_INSTANCES -credential_file=app.json &
+./cloud_sql_proxy -dir=/cloudsql -instances=$GSP_INSTANCES -credential_file=app.json &
 
 # Wait for the proxy to start
 sleep 5
