@@ -26,7 +26,7 @@ import {
   Typography,
   Switch,
 } from "antd";
-
+import { useStore, useAuth } from "../../context/UserAuth";
 import {
   SearchOutlined,
   StarOutlined,
@@ -264,9 +264,14 @@ function Header({
   const [sidenavType, setSidenavType] = useState("transparent");
 
   useEffect(() => window.scrollTo(0, 0));
-
+  // const [showSignIn, setShowSignin] = useState(true);
   const showDrawer = () => setVisible(true);
   const hideDrawer = () => setVisible(false);
+  useAuth();
+  // const { user, loading } = useStore();
+  // if (user) {
+  //   setShowSignin(false);
+  // }
 
   return (
     <>
@@ -400,10 +405,12 @@ function Header({
               </div>
             </div>
           </Drawer>
+
           <Link to="/sign-in" className="btn-sign-in">
             {profile}
             <span>Sign in</span>
           </Link>
+
           <Input
             className="header-search"
             placeholder="Type here..."

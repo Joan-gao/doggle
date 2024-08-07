@@ -16,7 +16,7 @@ import { Layout, Drawer, Affix } from "antd";
 import Sidenav from "./Sidenav";
 import Header from "./Header";
 import Footer from "./Footer";
-
+import { useStore, useAuth } from "../../context/UserAuth";
 const { Header: AntHeader, Content, Sider } = Layout;
 
 function Main({ children }) {
@@ -25,12 +25,16 @@ function Main({ children }) {
   const [sidenavColor, setSidenavColor] = useState("#1890ff");
   const [sidenavType, setSidenavType] = useState("transparent");
   const [fixed, setFixed] = useState(false);
-
+  // const [showSignIn, setShowSignin] = useState(true);
   const openDrawer = () => setVisible(!visible);
   const handleSidenavType = (type) => setSidenavType(type);
   const handleSidenavColor = (color) => setSidenavColor(color);
   const handleFixedNavbar = (type) => setFixed(type);
-
+  // useAuth();
+  // const { user, loading } = useStore();
+  // if (user) {
+  //   setShowSignin(false);
+  // }
   let { pathname } = useLocation();
   pathname = pathname.replace("/", "");
 
@@ -105,6 +109,7 @@ function Main({ children }) {
                 handleSidenavColor={handleSidenavColor}
                 handleSidenavType={handleSidenavType}
                 handleFixedNavbar={handleFixedNavbar}
+                // showSignIn={showSignIn}
               />
             </AntHeader>
           </Affix>
@@ -117,6 +122,7 @@ function Main({ children }) {
               handleSidenavColor={handleSidenavColor}
               handleSidenavType={handleSidenavType}
               handleFixedNavbar={handleFixedNavbar}
+              // showSignIn={showSignIn}
             />
           </AntHeader>
         )}
