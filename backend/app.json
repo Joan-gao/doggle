@@ -1,6 +1,0 @@
-
-{
-  "scripts": {
-    "postdeploy": "./bin/cloud_sql_proxy"
-  }
-}

@@ -1,2 +1,2 @@
-web: ./cloud_sql_proxy -dir=/cloudsql -instances=$GSP_INSTANCES=tcp:3306 -credential_file=app.json & gunicorn --chdir  api:app
+web: ./start.sh
 
