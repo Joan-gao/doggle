@@ -1,12 +1,10 @@
-
-复制代码
 #!/bin/bash
 
-# Start the Cloud SQL Proxy
-./cloud_sql_proxy -dir=/cloudsql -instances=$GSP_INSTANCES -credential_file=app.json &
+# 启动 Cloud SQL Proxy
+./cloud_sql_proxy -dir=/cloudsql -instances=$GSP_INSTANCES -credential_file=/app/credentials.json &
 
-# Wait for the proxy to start
+# 等待代理启动
 sleep 5
 
-# Start your application
+# 启动应用程序
 gunicorn api:app
