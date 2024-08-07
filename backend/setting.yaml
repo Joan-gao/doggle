@@ -1,7 +1,7 @@
 COMMON: &common
   SECRET_KEY: insecure
   DEBUG: False
-  GEMINI_API_KEY: AIzaSyD6jWmAmnJqKjRsKZcUPup8oHMzBtAmqC0
+  GEMINI_API_KEY: AIzaSyA6JGQQqj2wR9Z8zeDwQ2l-FhKP8iedhEc
 
 DEVELOPMENT: &development
   <<: *common

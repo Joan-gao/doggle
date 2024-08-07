@@ -8,6 +8,9 @@ import hashlib
 from sqlalchemy import create_engine, func
 from sqlalchemy.orm import sessionmaker
 from collections import defaultdict
+import logging
+import json
+
 # 配置数据库 URI
 DATABASE_URI = 'mysql+pymysql://root:root123456@35.226.135.14/Finance'
 
@@ -16,7 +19,7 @@ engine = create_engine(DATABASE_URI, echo=True)
 
 # SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # 初始化数据库
-
+logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def init_db():
     Base.metadata.create_all(bind=engine)
@@ -40,7 +43,6 @@ def session_scope():
         raise
     finally:
         session.close()
-
 
 categories = {
     1: "Salary income",
@@ -66,6 +68,66 @@ categories = {
 # Generate Password Hash
 
 
+def add_transaction(user_id, category_id, transaction_date, description, amount, note='', is_shown=1):
+    try:
+        with session_scope() as session:
+            new_transaction = Transaction(
+                user_id=user_id,
+                category_id=category_id,
+                transaction_date=transaction_date,
+                description=description,
+                amount=amount,
+                note=note,
+                is_shown=is_shown
+            )
+            
+            session.add(new_transaction)
+            return new_transaction
+    except Exception as e:
+        logging.error("Error occurred while adding transaction: %s", e)
+        raise
+
+def update_transaction(user_id, transaction_date, amount, new_info_dict):
+    with session_scope() as session:
+        transaction = session.query(Transaction).filter_by(user_id=user_id, transaction_date=transaction_date, amount=amount).one_or_none()
+        if transaction is None:
+            return None
+        
+        for key, value in new_info_dict.items():
+            if hasattr(transaction, key) and transaction[key] != "None":
+                setattr(transaction, key, value)
+        
+        session.commit()
+        return transaction
+    
+def format_transaction(transaction):
+    return f"Transaction(id={transaction.transaction_id}, user_id={transaction.user_id}, category_id={transaction.category_id}, transaction_date={transaction.transaction_date}, description='{transaction.description}', amount={transaction.amount})"
+
+def format_transactions(transactions):
+    return [format_transaction(transaction) for transaction in transactions]
+
+def search_transaction(user_id, transaction_date, amount):
+    with session_scope() as session:
+        transaction = session.query(Transaction).filter_by(user_id=user_id, transaction_date=transaction_date, amount=amount).all()
+        if transaction is None:
+            return None
+        
+        session.commit()
+        return format_transactions(transaction)
+    
+def remove_transaction(user_id, transaction_date, amount):
+    with session_scope() as session:
+        print(user_id, transaction_date, amount)
+        transaction = session.query(Transaction).filter_by(user_id=user_id, transaction_date=transaction_date, amount=amount).one_or_none()
+        if transaction is None:
+            return None
+        
+
+        transaction_info = format_transaction(transaction) if transaction != None else None
+        session.delete(transaction)
+        session.commit()
+        return transaction_info
+
 def generate_hash(input_string):
     # 创建 SHA-256 哈希对象
     sha256 = hashlib.sha256()
@@ -83,7 +145,7 @@ def categorize_transactions(transactions, categories):
     # Initialize dictionaries to hold counts and category types
     income = {}
     expense = {}
-
+    total_cost = {}
     # Count transactions per category_id, using the category name as the key
     for transaction in transactions:
         category_id = transaction['category_id']
@@ -93,13 +155,20 @@ def categorize_transactions(transactions, categories):
             )[:-1], categories[category_id].split()[-1]
             # Join to handle names consisting of multiple words
             category_name = ' '.join(category_name)
-
+            print("Hello: " + f"{transaction}")
             # Count based on category type
+            if category_name not in total_cost:
+                total_cost[category_name] = float(transaction["amount"])
+            else:
+                total_cost[category_name] += float(transaction["amount"])
+
             if category_type == 'income':
                 income[category_name] = income.get(category_name, 0) + 1
             elif category_type == 'expense':
                 expense[category_name] = expense.get(category_name, 0) + 1
-
+    
+    print("total cost")
+    print(total_cost)
     # Calculate percentages
     total_income = sum(income.values())
     total_expense = sum(expense.values())
@@ -112,12 +181,40 @@ def categorize_transactions(transactions, categories):
     # Prepare the summary dictionary
     summary = {
         'total_income_transactions': total_income,
-        'total_expense_transactions': total_expense
+        'total_expense_transactions': total_expense,
+        'total_cost_category': total_cost,
     }
 
     return income_percent, expense_percent, summary
 
 # Get overall transaction analysis
+
+def getBudget_and_goal(user_id):
+    with session_scope() as session:
+        today = datetime.today()
+
+        goals = session.query(SavingGoal).filter(
+            SavingGoal.user_id == user_id
+        ).all()
+
+        budget = session.query(Budget).filter(
+            Budget.user_id == user_id   
+        ).all()
+
+        goal_result = [{
+            'target_amount': t.target_amount,
+            'target_date': t.target_date,
+            'target': t.target,
+            'created_at': t.created_at
+        } for t in goals]
+
+        budget_result = [{
+            'budget_amount': t.budget_amount,
+        } for t in budget]
+
+        return goal_result, budget_result
+
+
 
 
 def getOverAllTransactionAnalyze(user_id):
@@ -136,20 +233,17 @@ def getOverAllTransactionAnalyze(user_id):
 
         transactions = session.query(Transaction).filter(
             Transaction.user_id == user_id,
-            Transaction.is_shown != 1,
-            Transaction.transaction_date >= first_day_of_year.strftime(
-                '%Y-%m-%d'),
-            Transaction.transaction_date < last_day_of_year.strftime(
-                '%Y-%m-%d')
         ).all()
-
+        # print("transaction result: ")
+        # print(transactions)
         # Convert the results into a list of serializable dictionaries
         transaction_result = [{
             'transaction_id': t.transaction_id,
             'category_id': t.category_id,
-
+            'amount': t.amount
         } for t in transactions]
 
+        # print(transaction_result)
         # Assume categories is defined somewhere in your app
         income_percent, expense_percent, summary = categorize_transactions(
             transaction_result, categories)
@@ -276,6 +370,22 @@ def assembaleData(monthDataDict, yearDataDict):
     }
 
 
+def get_user_info(uid):
+    with session_scope() as session:
+        user = session.query(User).filter(User.user_id==uid).first()
+        if user:
+            # Extract necessary data
+            user_data = {
+                'id': user.user_id,
+                'username': user.username,
+                'created_at': user.created_at,
+                'birth_date': user.birth_date,
+                'occupation': user.occupation,
+                'income_source': user.income_source,
+                'gender': user.gender
+            }
+            return user_data
+        return None
 def get_user_id_by_uid(uid):
     with session_scope() as session:
         user = session.query(User).filter_by(auth_uid=uid).first()
@@ -285,7 +395,10 @@ def get_user_id_by_uid(uid):
                 'id': user.user_id,
                 'username': user.username,
                 'created_at': user.created_at,
-                # 添加其他需要的属性
+                'birth_date': user.birth_date,
+                'occupation': user.occupation,
+                'income_source': user.income_source,
+                'gender': user.gender
             }
             return user_data
         return None
@@ -320,25 +433,6 @@ def get_transactions(user_id, year, month=None):
                 '%m', Transaction.transaction_date) == str(month).zfill(2))
 
         return query.all()
-
-
-def categorize_transactions(transactions):
-    income_transactions = [
-        t for t in transactions if categories[t.category_id].endswith("income")]
-    expense_transactions = [
-        t for t in transactions if categories[t.category_id].endswith("expense")]
-
-    def aggregate_by_category(transactions):
-        data = {}
-        for t in transactions:
-            category = categories[t.category_id].split()[0]
-            if category not in data:
-                data[category] = {"amount": 0, "transactions": 0}
-            data[category]["amount"] += t.amount
-            data[category]["transactions"] += 1
-        return data
-
-    return aggregate_by_category(income_transactions), aggregate_by_category(expense_transactions)
 
 
 def top_categories(transactions_by_category):
@@ -718,8 +812,7 @@ def get_expense_income_data(user):
         income_data['yearly']['countData'][
             'today'] = f"Total {sum(len(v) for v in daily_income_details.values())} incomes"
         income_data['yearly']['title'] = f"${sum(yearly_incomes.values()):.2f}"
-        income_data['yearly']['average'] = f"${
-            sum(yearly_incomes.values()) / 12: .2f}"
+        income_data['yearly']['average'] = f"${sum(yearly_incomes.values()) / 12:.2f}"
         income_data['yearly']['sortedData'] = [{'category': k, 'transactions': 1, 'amount': float(v)} for k, v in
                                                yearly_incomes.items()]
         income_data['yearly']['incomeDonutChart'] = [
@@ -733,10 +826,8 @@ def get_expense_income_data(user):
 
         expense_data['yearly']['countData'][
             'today'] = f"Total {sum(len(v) for v in daily_expense_details.values())} expenses"
-        expense_data['yearly']['title'] = f"${
-            sum(yearly_expenses.values()): .2f}"
-        expense_data['yearly']['average'] = f"${
-            sum(yearly_expenses.values()) / 12: .2f}"
+        expense_data['yearly']['title'] = f"${sum(yearly_expenses.values()):.2f}"
+        expense_data['yearly']['average'] = f"${sum(yearly_expenses.values()) / 12:.2f}"
         expense_data['yearly']['sortedData'] = [{'category': k, 'transactions': 1, 'amount': float(v)} for k, v in
                                                 yearly_expenses.items()]
         expense_data['yearly']['expenseDonutChart'] = [{'type': k, 'value': float(v)} for k, v in
