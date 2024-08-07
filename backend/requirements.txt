@@ -6,3 +6,4 @@ firebase
 google_auth_oauthlib
 pymysql
 filetype
+gunicorn
