@@ -606,12 +606,15 @@ def edit_transaction(transaction_id, category_id, amount):
 
 def getTransactionsByUser(user):
     with session_scope() as session:
-
-        registered_at = datetime.strptime(user.get("created_at"), '%Y-%m-%d')
-        user_id = user.get("user_id")
+        currentUser = user.get("user")
+        print(currentUser)
+        date_str = currentUser.get("created_at")
+        parsed_date = datetime.strptime(date_str, '%a, %d %b %Y %H:%M:%S %Z')
+        registered_at = parsed_date.strftime('%Y-%m-%d')
+        user_id = currentUser.get("id")
 
         transactions = session.query(Transaction).filter(
-            Transaction.transaction_date >= registered_at.strftime('%Y-%m-%d'),
+            # Transaction.transaction_date >= registered_at,
             Transaction.user_id == user_id,
             Transaction.is_shown != 1
         ).all()
@@ -691,7 +694,7 @@ def get_expense_income_data(user):
         # user_id=user.get("id")
         # registered_at =user.get("created_at")
         transactions = session.query(Transaction).filter(
-            Transaction.transaction_date >= registered_at,
+            # Transaction.transaction_date >= registered_at,
             Transaction.user_id == user_id,
             Transaction.is_shown != 1
         ).all()

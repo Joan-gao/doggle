@@ -1659,7 +1659,7 @@ function Home() {
   const [month, setMonth] = useState(1);
   const [year, setYear] = useState(2024);
   const [column, setColumn] = useState(initialColumns);
-  const [financeData, setFinanceData] = useState(initialfinanceData);
+  const [financeData, setFinanceData] = useState([]);
   const [expense, setExpense] = useState(0);
   const [budget, setBudget] = useState(0);
   const [transactionItem, setTransactionItem] = useState(null);
@@ -1808,47 +1808,47 @@ function Home() {
 
     //具体逻辑
     const updateData = async () => {
-      if (currentYear < year || registrationYear > year) {
+      // if (currentYear < year || registrationYear > year) {
+      //   if (isMounted.current) {
+      //     setColumn([]);
+      //     setFinanceData([]);
+      //     setExpense(0);
+      //     setIncome(0);
+      //   }
+      // } else if (registrationMonth > month || currentMonth < month) {
+      //   if (isMounted.current) {
+      //     setColumn([]);
+      //     setFinanceData([]);
+      //     setExpense(0);
+      //     setIncome(0);
+      //   }
+      // } else {
+      const selectedMonth = `${year}-${month}`;
+      const formattedMonth = moment(selectedMonth).format("YYYY-MM");
+
+      if (transactionItem.by_month[formattedMonth]) {
+        // let item = localStorage.getItem(formattedMonth);
+        let item = transactionItem.by_month[formattedMonth];
+        //let parsedItem = JSON.parse(item);
+        console.log(item);
+
         if (isMounted.current) {
-          setColumn([]);
-          setFinanceData([]);
-          setExpense(0);
-          setIncome(0);
-        }
-      } else if (registrationMonth > month || currentMonth < month) {
-        if (isMounted.current) {
-          setColumn([]);
-          setFinanceData([]);
-          setExpense(0);
-          setIncome(0);
+          setFinanceData(item.financeData);
+          setIncome(item.income);
+          setExpense(item.expense);
         }
       } else {
-        const selectedMonth = `${year}-${month}`;
-        const formattedMonth = moment(selectedMonth).format("YYYY-MM");
-
-        if (transactionItem.by_month[formattedMonth]) {
-          // let item = localStorage.getItem(formattedMonth);
-          let item = transactionItem.by_month[formattedMonth];
-          //let parsedItem = JSON.parse(item);
-          console.log(item);
-
-          if (isMounted.current) {
-            setFinanceData(item.financeData);
-            setIncome(item.income);
-            setExpense(item.expense);
-          }
-        } else {
-          if (isMounted.current) {
-            setFinanceData([]);
-            setExpense(0);
-            setIncome(0);
-          }
-        }
-
         if (isMounted.current) {
-          setColumn(initialColumns);
+          setFinanceData([]);
+          setExpense(0);
+          setIncome(0);
         }
       }
+
+      if (isMounted.current) {
+        setColumn(initialColumns);
+      }
+      // }
     };
     if (userloaded && transactionItem) {
       console.log("User is loaded, proceeding to update data.");
