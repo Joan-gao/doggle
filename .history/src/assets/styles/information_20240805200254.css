@@ -1,0 +1,46 @@
+/* Make sure the modal overlay takes full screen and centers the modal */
+.custom-modal .ant-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+/* Ensure the modal content is centered and responsive */
+.custom-modal .ant-modal-content {
+    width: 95vw;
+    /* Almost full viewport width */
+    max-width: 480px;
+    /* Set a maximum width for larger screens */
+    padding: 16px;
+    border-radius: 8px;
+    margin: 0 auto;
+    /* Center the modal horizontally */
+    box-sizing: border-box;
+}
+
+/* Make form items full width */
+.custom-form-item .ant-input,
+.custom-form-item .ant-select-selector,
+.custom-form-item .ant-picker {
+    width: 100%;
+}
+
+/* Additional adjustments for small screens */
+@media (max-width: 576px) {
+    .custom-modal .ant-modal-content {
+        width: 95vw;
+        /* Use most of the viewport width */
+        padding: 16px;
+        margin: 0 auto;
+        /* Center the modal */
+    }
+
+    .custom-form .ant-form-item-label {
+        font-size: 14px;
+    }
+
+    .custom-form .ant-btn {
+        font-size: 14px;
+    }
+}

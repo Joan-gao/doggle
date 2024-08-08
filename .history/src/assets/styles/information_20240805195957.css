@@ -1,0 +1,32 @@
+/* Style for the custom modal */
+
+
+/* Full-width input fields */
+.custom-form .ant-form-item {
+    margin-bottom: 16px;
+}
+
+/* Responsive modal width */
+@media (max-width: 768px) {
+    .custom-modal .ant-modal-content {
+        width: 90vw;
+        margin: 0 auto;
+    }
+
+    .custom-form {
+        width: 100%;
+    }
+
+    .custom-form-item {
+        width: 100%;
+    }
+}
+
+.custom-modal .ant-modal-content {
+    padding: 16px;
+    border-radius: 8px;
+    max-width: 100%;
+    width: 90vw;
+    /* Adjust width for mobile view */
+    margin: 0 auto;
+}
