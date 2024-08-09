@@ -45,7 +45,7 @@ This project developed an AI-powered web app for managing personal finances, fea
 ## Chatbot User Interaction Examples
 
 1. **Common Q&A**
-- **User: What features do doggle support?**
+- **User: What features does doggle support?**
 - **Response**: I can help you with voice input 🎤, image recognition 📸, and file text recognition 📄. I also love analyzing your bills based on your personal info, helping you understand your spending habits, and giving you pawsome suggestions, woof! 🐶✨
 - **User: How to start bookkeeping with doggle?**
 - **Response**: First, fill in some basic info about yourself 💗. Then you can start bookkeeping! When you log an expense or income, just provide the date, event, and amount 📝. You can type it in or even bark it to me 🐾. Got a receipt? Snap a pic and upload it 📸. For bank statements, just upload the Excel or PDF file 📂. Let’s get your finances in order, woof! 🐶✨
