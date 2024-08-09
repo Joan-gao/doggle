@@ -65,7 +65,7 @@ This project developed an AI-powered web app for managing personal finances, fea
 3. **Querying Detailed Income and Expense Data**
  - **User: How much did I spend on takeout this month?**
  - **Response1**: You spent $300 on takeout this month, which is $50 more than your average spending this year, woof woof! 🐶✨
- - User: How much did I earn on this year?
+ - **User: How much did I earn on this year?**
  - **Response2**: So far, you earned $80,000 from your job and $5,000 from your online e-shop business this year, which is $10,000 more than last year! **👩‍💻** Keep going, woof woof! 🐶✨
 
 4. **Purchase Recommendations**
