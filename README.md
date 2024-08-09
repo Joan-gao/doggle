@@ -8,7 +8,7 @@ This project developed an AI-powered web app for managing personal finances, fea
 1. **Frontend**: React, JavaScript
 2. **UI Libraries**: Ant Design, ChatUI
 3. **Backend**: Flask
-4. **Database**: Firebase
+4. **Database**: Firebase, Google Cloud MySQL
 5. **AI Integration**: Finetuned Gemini APIs
 6. **Hosting**: Firebase, Heroku
 
