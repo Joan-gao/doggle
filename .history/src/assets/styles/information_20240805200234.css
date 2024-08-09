@@ -1,0 +1,34 @@
+/* Center the modal and adjust the width for mobile devices */
+.custom-modal .ant-modal-content {
+display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+/* Full-width inputs and select elements */
+.custom-form-item .ant-input,
+.custom-form-item .ant-select-selector,
+.custom-form-item .ant-picker {
+    width: 100%;
+}
+
+/* Additional adjustments for small screens */
+@media (max-width: 576px) {
+    .custom-modal .ant-modal-content {
+        width: 95vw;
+        /* Use most of the viewport width */
+        margin: 0 auto;
+        /* Center the modal */
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .custom-form .ant-form-item-label {
+        font-size: 14px;
+    }
+
+    .custom-form .ant-btn {
+        font-size: 14px;
+    }
+}

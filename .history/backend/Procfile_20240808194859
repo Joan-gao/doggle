@@ -1,0 +1,1 @@
+web: heroku config:set INSTANCE_CONNECTION_NAME=daring-leaf-429310-c8:us-central1:personal-bank --app doogle

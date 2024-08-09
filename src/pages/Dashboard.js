@@ -829,7 +829,7 @@ function Dashboard() {
   }, [currentUser, userloaded, user]);
   useEffect(() => {
     if (userloaded) {
-      fetch("http://127.0.0.1:5000/transaction/analysis", {
+      fetch("https://doogle-1c3b68536bb7.herokuapp.com//transaction/analysis", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

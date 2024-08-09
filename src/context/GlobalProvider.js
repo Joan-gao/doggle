@@ -15,7 +15,7 @@ const GlobalProvider = ({ children }) => {
         const uid = firebaseUser.uid;
         try {
           const response = await axios.post(
-            "http://127.0.0.1:5000/user/get",
+            "https://doogle-1c3b68536bb7.herokuapp.com/user/get",
             {
               uid: uid,
             },

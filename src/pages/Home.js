@@ -1733,7 +1733,7 @@ function Home() {
     setTransactionItem((prev) => ({ ...prev, ...data }));
   };
   const handleDelete = (record) => {
-    fetch("http://127.0.0.1:5000/api/delete/transaction", {
+    fetch("https://doogle-1c3b68536bb7.herokuapp.com/api/delete/transaction", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -1779,17 +1779,20 @@ function Home() {
   }, [currentUser, userloaded, user]);
   useEffect(() => {
     if (userloaded) {
-      fetch("http://127.0.0.1:5000/fetch/all-transactions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-        body: JSON.stringify({
-          user: currentUser,
-          // 根据实际用户ID字段名称调整
-        }),
-      })
+      fetch(
+        "https://doogle-1c3b68536bb7.herokuapp.com//fetch/all-transactions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+          body: JSON.stringify({
+            user: currentUser,
+            // 根据实际用户ID字段名称调整
+          }),
+        }
+      )
         .then((response) => response.json())
         .then((data) => {
           console.log(data);
