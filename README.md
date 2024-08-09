@@ -5,12 +5,12 @@
 This project developed an AI-powered web app for managing personal finances, featuring intuitive visual displays and an AI chatbot designed as a playful bookkeeping puppy. The chatbot supports voice, text, image, and file inputs, using finetuned Gemini APIs for bill processing and personalized financial advice. This app enhances traditional budgeting tools, making them faster, smarter, and more personalized with advanced AI.
 
 ## **Technologies Use**
-**Frontend**: React, JavaScript
-**UI Libraries**: Ant Design, ChatUI
-**Backend**: Flask
-**Database**: Firebase
-**AI Integration**: Finetuned Gemini APIs
-**Hosting**: Firebase, Heroku
+1. **Frontend**: React, JavaScript
+2. **UI Libraries**: Ant Design, ChatUI
+3. **Backend**: Flask
+4. **Database**: Firebase
+5. **AI Integration**: Finetuned Gemini APIs
+6. **Hosting**: Firebase, Heroku
 
 ## **Core Features**
 
