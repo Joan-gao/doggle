@@ -36,7 +36,7 @@ This project developed an AI-powered web app for managing personal finances, fea
 
 ## Technical Highlights
 
-1. **Secure User Authentication**: Utilizes Firebase for secure sign-in/sign-up, ensuring data privacy and enabling CRUD operations for user information and bill records while providing personalized financial insights based on user-provided details.
+1. **Secure User Authentication**: Utilizes Firebase and Google Cloud SQL for secure sign-in/sign-up, ensuring data privacy and enabling CRUD operations for user information and bill records while providing personalized financial insights based on user-provided details.
 
 2. **Comprehensive Data Visualization**: Offers a clear overview and detailed analysis of income, expenses, and budget trends with dynamic visualizations, allowing easy modifications and management of financial entries by month, year, or day.
 
