@@ -337,22 +337,22 @@ function ChatBot() {
               console.log(user);
               if (firstword === 'Spent' || firstword === 'spent'){
                 console.log('Spent');
-                reply = await postData("http://127.0.0.1:5000/add_transaction/" + user.user.id, msg.content.text);
+                reply = await postData("https://doogle-1c3b68536bb7.herokuapp.com/add_transaction/" + user.user.id, msg.content.text);
                 reply = JSON.parse(reply).data;
                 console.log(reply);
               } else if (firstword === 'Update' || firstword === 'update'){
                 console.log('Update');
-                reply = await postData("http://127.0.0.1:5000/update_transaction/" + user.user.id, msg.content.text);
+                reply = await postData("https://doogle-1c3b68536bb7.herokuapp.com/update_transaction/" + user.user.id, msg.content.text);
                 reply = JSON.parse(reply).data;
                 console.log(reply);
               } else if (firstword === 'Delete' || firstword === 'delete'){
                 console.log('Delete');
-                reply = await postData("http://127.0.0.1:5000/delete_transaction/" + user.user.id, msg.content.text);
+                reply = await postData("https://doogle-1c3b68536bb7.herokuapp.com/delete_transaction/" + user.user.id, msg.content.text);
                 reply = JSON.parse(reply).data;
                 console.log(reply);
               } else if (firstword === 'Search' || firstword === 'search'){
                 console.log('Search');
-                reply = await postData("http://127.0.0.1:5000/search_transaction/" + user.user.id, msg.content.text);
+                reply = await postData("https://doogle-1c3b68536bb7.herokuapp.com/search_transaction/" + user.user.id, msg.content.text);
                 reply = JSON.parse(reply).data;
                 console.log(reply);
               } else{
@@ -371,7 +371,7 @@ function ChatBot() {
                 // } else 
                 if (msg.content.type === "file" || msg.content.type === "photo"){
                   console.log('file type');
-                  const return_obj = await uploadFile(msg.content.formData, "http://127.0.0.1:5000/upload_file/" + + user.user.id);
+                  const return_obj = await uploadFile(msg.content.formData, "https://doogle-1c3b68536bb7.herokuapp.com/upload_file/" + + user.user.id);
                   reply = return_obj.reply;
                   if (return_obj.count === "0"){
                     //
@@ -393,7 +393,7 @@ function ChatBot() {
                     reply = text;
                     console.log(reply);
                   } else if (question_type === "2" || question_type.indexOf("Financial") != -1) {
-                    reply = await postData('http://127.0.0.1:5000/info/' + user.user.id, msg.content.text);
+                    reply = await postData('https://doogle-1c3b68536bb7.herokuapp.com/info/' + user.user.id, msg.content.text);
                     reply = JSON.parse(reply).data;
                     console.log(reply);
                   }

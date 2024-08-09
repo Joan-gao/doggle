@@ -168,7 +168,7 @@ def upload_file(user_id):
             'file': (file.filename, file.stream, file.content_type)
         }
         return_val = requests.post(
-            "http://127.0.0.1:5001/file_analyze", files=files_)
+            "https://doogle-1c3b68536bb7.herokuapp.com/file_analyze", files=files_)
         return_val_dict = return_val.json()
         summary, response = return_val_dict["summary"], return_val_dict["response"]
         response = response.replace("json", "").replace(
