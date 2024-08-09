@@ -70,7 +70,7 @@ This project developed an AI-powered web app for managing personal finances, fea
 
 4. **Purchase Recommendations**
  - **User: I saw a pair of shoes on sale for $400, should I buy them?**
- - **Response1**:  Yes! You got a raise this month, and it’s been six months since your last big purchase. 💰 Your shopping expenses are in check, so if you love those shoes and the discount is great! 👟 Go for it,  woof! 🐶✨
+ - **Response1**:  Yes! You got a raise this month, and it’s been six months since your last big purchase. 💰 Your shopping expenses are in check, so if you love those shoes and the discount is great 👟, go for it,  woof! 🐶✨
  - **Response2**: No, you've already bought three pairs of shoes this month and overshot your shopping budget, that’s a lot! **😥** Plus, your goal is to save money, so it’s smarter to hold off on this purchase, woof! 🐶✨
  - **User: With my current savings, can I save $50,000 in three years?**
  - **Response1**: Yes! You’ve been saving $1,500 each month, so reaching your goal is totally doable. 💰 With your salary increase and lower rent, you might even save more! 💪 You’re on track to meet your goal in three years, woof! 🐶✨
