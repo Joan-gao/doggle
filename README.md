@@ -42,7 +42,7 @@ This project developed an AI-powered web app for managing personal finances, fea
 
 3. **AI-Powered Chatbot**: Integrate an AI chatbot using finetuned Gemini models for real-time bill classification and personalized spending suggestions. Through prompt engineering, the chatbot is designed as a cute bookkeeping puppy that uses playful language to reduce financial management stress.
 
-## Chatbot User Interaction Examples
+## Chatbot Use Examples
 
 1. **Common Q&A**
 - **User: What features does doggle support?**
