@@ -1,40 +1,70 @@
-<h1 align="center">Doogle</h1>
+<h1 align="center">Doogle: Your Best AI Personal Finance helper🐶✨</h1>
 
 ## **Introduction**
 
-This project developed an EventPage design platform that streamlines the entire process from creation to publication. Integrating ChatGPT and Midjourney enables efficient image generation and smart copywriting, significantly lowering design barriers. Users can add interactive elements like text, stickers, and buttons to enhance live stream engagement and conversion rates. The platform is designed to optimize the TikTok live streaming experience, making event page creation quick and easy.
+This project developed an AI-powered web app for managing personal finances, featuring intuitive visual displays and an AI chatbot designed as a playful bookkeeping puppy. The chatbot supports voice, text, image, and file inputs, using finetuned Gemini APIs for bill processing and personalized financial advice. This app enhances traditional budgeting tools, making them faster, smarter, and more personalized with advanced AI.
 
 ## **Technologies Use**
-
-1. **Frontend**: React, Typescript, JavaScript, Tailwind css
-2. **UI Toolkit**: Ant Design
-3. **Backend**: Flask
-4. **AI Integration**: ChatGPT API, Midjourney API
-5. **Hosting**: Firebase, Heroku
+**Frontend**: React, JavaScript
+**UI Libraries**: Ant Design, ChatUI
+**Backend**: Flask
+**Database**: Firebase
+**AI Integration**: Finetuned Gemini APIs
+**Hosting**: Firebase, Heroku
 
 ## **Core Features**
 
-1. **GeneratePage**
+1. **SigninPage/SignupPage**
 
-- **Functionality**: Users can choose between creation and examples. In creation, they fill out a form describing their event poster idea, select a style (real or anime), and choose a size (1:1 or 16:9). They can also view and apply example event pages for reference and further modification.
+- **Functionality**: Require sign-in or sign-up for secure cloud storage of bill data. Collect personal details like age, gender, occupation, income sources, and financial goals to enable personalized financial advice from the AI bot.
 
-2. **ChatPage**
+2. **HomePage**
 
-- **Functionality**: After submitting the form, users enter the chat page to interact with the Midjourney AI bot. The bot generates descriptions and image examples based on the user's input. Users can modify prompts or regenerate images before selecting and moving to the next step.
+- **Functionality**: Display an overview of financial data, showing total income, expenses, and remaining budget by month and year. Provide a table for modifying or deleting individual expense and income entries.
+  
+3. **DashboardPage**
 
-3. **DesignPage**
+- **Functionality**: Provides detailed analysis of financial data. Users can select a month and year to view trends in income and expenses, with options to display data in line or bar charts.
 
-- **Functionality**: Provides a toolbar for editing the event page, allowing users to add text, components, music, and copywriting. Users can edit button titles and links for interactive elements like live subscriptions and coupon collections. Once editing is complete, they can publish directly to their TikTok video page.
+4. **CalendarPage**
+
+- **Functionality**: Displays daily transaction data. By selecting a specific date on the calendar, users can view all income and expenses for that day in a table format, with options to modify or delete individual entries.
+
+5. **ChatbotPage**
+
+- **Functionality**: Offer an AI chatbot puppy for handling common FAQs, voice and text bill data inputs, image and file uploads, and understanding. Utilize finetuned Gemini APIs for chatbot style setting, processing, and CRUD operations, while providing personalized financial advice.
 
 ## Technical Highlights
 
-1. **Precise Image Generation**: Integrating Midjourney API and ChatGPT API to enable precise text-to-prompt-to-image generation. ChatGPT converts user descriptions into professional prompts for Midjourney, which then generates the images. It also supports image-to-image functionality for detailed modifications.
+1. **Secure User Authentication**: Utilizes Firebase for secure sign-in/sign-up, ensuring data privacy and enabling CRUD operations for user information and bill records while providing personalized financial insights based on user-provided details.
 
-2. **Interactive Component Manipulation**: Utilizing React-RND for interactive component manipulation, allowing users to freely drag, resize, and scale elements on the DesignPage.
+2. **Comprehensive Data Visualization**: Offers a clear overview and detailed analysis of income, expenses, and budget trends with dynamic visualizations, allowing easy modifications and management of financial entries by month, year, or day.
 
-3. **Advanced Interactive Behaviors**: Enabling users to define interactive behaviors by customizing button titles and links, as well as adding advanced interactions such as generating QR codes, triggering pop-ups for live stream subscriptions, and displaying coupon messages, providing ideas for future interactive features.
+3. **AI-Powered Chatbot**: Integrates an AI chatbot using finetuned Gemini models for real-time bill classification and personalized spending suggestions. Through prompt engineering, the chatbot is designed as a cute bookkeeping puppy that uses playful language to reduce financial management stress.
 
-4. **Smart Copywriting**: Leveraging ChatGPT API to refine user drafts using prompt engineering, the smart copywriting feature generates TikTok-style content and adds relevant tags to enhance video engagement.
+## Chatbot User Interaction Examples
+
+1. **Common Q&A**
+- **User: What features do doggle support?**
+- **Response**: I can help you with voice input 🎤, image recognition 📸, and file text recognition 📄. I also love analyzing your bills based on your personal info, helping you understand your spending habits, and giving you pawsome suggestions, woof! 🐶✨
+- **User: How to start bookkeeping with doggle?**
+- **Response**: First, fill in some basic info about yourself 💗. Then you can start bookkeeping! When you log an expense or income, just provide the date, event, and amount 📝. You can type it in or even bark it to me 🐾. Got a receipt? Snap a pic and upload it 📸. For bank statements, just upload the Excel or PDF file 📂. Let’s get your finances in order, woof! 🐶✨
+- **User: How to view my bills?**
+- **Response**: You can sniff out bill analysis on the dashboard page anytime to understand the proportion of spending categories, and daily, weekly, and monthly income and expenditure 📊. For detailed bills each day, just wag your way to the calendar page and click on the date 🗓️. Pawsome, woof! 🐶✨
+- **User: How to edit or delete bills?**
+- **Response**: Need to edit or delete bills? No worries! 🐾 If the bill was entered through conversation, just reply with the modification or deletion ✅. On the calendar page 📅, click on a specific date, find the bill entry, and then swipe left to edit or delete it manually 📝. Easy peasy, woof woof! 🐶✨
+1. **Querying Detailed Income and Expense Data**
+ - **User: How much did I spend on takeout this month?**
+ - **Response1**: You spent $300 on takeout this month, which is $50 more than your average spending this year, woof woof! 🐶✨
+ - User: How much did I earn on this year?
+ - **Response2**: So far, you earned $80,000 from your job and $5,000 from your online e-shop business this year, which is $10,000 more than last year! **👩‍💻** Keep going, woof woof! 🐶✨
+2. **Purchase Recommendations**
+ - **User: I saw a pair of shoes on sale for $200, should I buy them?**
+ - **Response1**:  Yes! You got a raise this month, and it’s been six months since your last big purchase. 💰 Your shopping expenses are in check, so if you love those shoes and the discount is great! 👟 Go for it,  woof! 🐶✨
+ - **Response2**: No, you've already bought three pairs of shoes this month and overshot your shopping budget, that’s a lot! **😥** Plus, your goal is to save money, so it’s smarter to hold off on this purchase, woof! 🐶✨
+ - **User: With my current savings, can I save $50,000 in three years?**
+ - **Response1**: Yes! You’ve been saving $1,500 each month, so reaching your goal is totally doable. 💰 With your salary increase and lower rent, you might even save more! 💪 You’re on track to meet your goal in three years, woof! 🐶✨
+ - **Response2**:  No, even though your salary increased, moving to a pricier city has doubled your expenses. 😥 Your monthly savings have dropped from $1500 to $800. 💸 If this trend continues, it will be tough to reach your goal in three years.  But don't worry, we'll find a way, woof! 🐶✨
 
 ## How to Run
 
@@ -87,17 +117,10 @@ flask --app ChatPage run
 
 ## Links
 
-- ([Figma](https://www.figma.com/design/K4paycUTmDi1UPivG5Y3qi/tiktok-evenpage-design-platform?node-id=0-1&t=I4h6lhU1aygq2q2R-1))
-- ([Devpost](https://devpost.com/software/livedesign-pro?ref_content=user-portfolio&ref_feature=in_progress))
 - ([Demo Video](https://youtu.be/8D57UD3cWfo?si=xhHj6ELR5Tlrhy4y))
-- ([Pitch Deck](https://www.canva.com/design/DAGMy3KWt34/r8Qw1g8AmZSO9iggOdx7Ow/edit?utm_content=DAGMy3KWt34&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton))
 
 ## Contributors
 
-- **Xinyi Gao** [[Linkedin](https://www.linkedin.com/in/xinyi-gao-cn/)][[GitHub](https://github.com/Joan-gao)]: Product Design, UI/UX Design, Front-end Development
-- **Viet Doan** [[Linkedin](https://www.linkedin.com/in/viet-doan-vqd/)][[GitHub](https://github.com/viet-doan)]: UI/UX Design, Front-end Development
-- **Li Cui** [[Linkedin](https://www.linkedin.com/in/li-cui-73809027b)][[GitHub](https://github.com/amandaliberaann)]: AI Integration, Backend Development
-
-## Credits
-
-The TikTok UI Clone was created by [s-shemmee](https://github.com/s-shemmee).
+- **Xinyi Gao** [[Linkedin](https://www.linkedin.com/in/xinyi-gao-cn/)][[GitHub](https://github.com/Joan-gao)]: Product Design, UI/UX Design, Full-stack Development
+- **Li Cui** [[Linkedin](https://www.linkedin.com/in/li-cui-73809027b)][[GitHub](https://github.com/amandaliberaann)]: Full-Stack Development
+- **Jiacheng Li** [[Linkedin](https://www.linkedin.com/in/jiacheng-li-b17b41242/)][[GitHub](https://github.com/ljc0359)]: AI Finetuned, Backend Development
