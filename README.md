@@ -24,11 +24,11 @@ This project developed an AI-powered web app for managing personal finances, fea
   
 3. **DashboardPage**
 
-- **Functionality**: Provides detailed analysis of financial data. Users can select a month and year to view trends in income and expenses, with options to display data in line or bar charts.
+- **Functionality**: Provide detailed analysis of financial data. Users can select a month and year to view trends in income and expenses, with options to display data in line or bar charts.
 
 4. **CalendarPage**
 
-- **Functionality**: Displays daily transaction data. By selecting a specific date on the calendar, users can view all income and expenses for that day in a table format, with options to modify or delete individual entries.
+- **Functionality**: Display daily transaction data. By selecting a specific date on the calendar, users can view all income and expenses for that day in a table format, with options to modify or delete individual entries.
 
 5. **ChatbotPage**
 
@@ -36,11 +36,11 @@ This project developed an AI-powered web app for managing personal finances, fea
 
 ## Technical Highlights
 
-1. **Secure User Authentication**: Utilizes Firebase and Google Cloud SQL for secure sign-in/sign-up, ensuring data privacy and enabling CRUD operations for user information and bill records while providing personalized financial insights based on user-provided details.
+1. **Secure User Authentication**: Utilize Firebase and Google Cloud SQL for secure sign-in/sign-up, ensuring data privacy and enabling CRUD operations for user information and bill records while providing personalized financial insights based on user-provided details.
 
-2. **Comprehensive Data Visualization**: Offers a clear overview and detailed analysis of income, expenses, and budget trends with dynamic visualizations, allowing easy modifications and management of financial entries by month, year, or day.
+2. **Comprehensive Data Visualization**: Offer a clear overview and detailed analysis of income, expenses, and budget trends with dynamic visualizations, allowing easy modifications and management of financial entries by month, year, or day.
 
-3. **AI-Powered Chatbot**: Integrates an AI chatbot using finetuned Gemini models for real-time bill classification and personalized spending suggestions. Through prompt engineering, the chatbot is designed as a cute bookkeeping puppy that uses playful language to reduce financial management stress.
+3. **AI-Powered Chatbot**: Integrate an AI chatbot using finetuned Gemini models for real-time bill classification and personalized spending suggestions. Through prompt engineering, the chatbot is designed as a cute bookkeeping puppy that uses playful language to reduce financial management stress.
 
 ## Chatbot User Interaction Examples
 
