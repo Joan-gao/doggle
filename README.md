@@ -1,143 +1,103 @@
-# [Muse Ant Design Dashboard](https://demos.creative-tim.com/muse-ant-design-dashboard/#/dashboard?ref=readme-madd)
+<h1 align="center">Doogle</h1>
 
-![version](https://img.shields.io/badge/version-1.0.0-blue.svg) [![GitHub issues open](https://img.shields.io/github/issues/creativetimofficial/muse-ant-design-dashboard.svg)](https://github.com/creativetimofficial/muse-ant-design-dashboard/issues?q=is%3Aopen+is%3Aissue) [![GitHub issues closed](https://img.shields.io/github/issues-closed-raw/creativetimofficial/material-tailwind-dashboard-react.svg?maxAge=2592000)](https://github.com/creativetimofficial/muse-ant-design-dashboard/issues?q=is%3Aissue+is%3Aclosed)
+## **Introduction**
 
-![Image](https://s3.amazonaws.com/creativetim_bucket/products/496/original/opt_md_ant_react_thumbnail.jpg?1629182839)
+This project developed an EventPage design platform that streamlines the entire process from creation to publication. Integrating ChatGPT and Midjourney enables efficient image generation and smart copywriting, significantly lowering design barriers. Users can add interactive elements like text, stickers, and buttons to enhance live stream engagement and conversion rates. The platform is designed to optimize the TikTok live streaming experience, making event page creation quick and easy.
 
-Muse Ant Design Dashboard is a _free_ Admin Template based on two popular front-end technologies: _Ant Design & React_. It was built to simplify the developer's work and is comes with a fresh design inspired by Ant Design. All its components are built to fit perfectly with each other, while aligning to the Ant Design concepts.
+## **Technologies Use**
 
-Save weeks of time and build your perfect dashboard with this powerful template! It features 120 fully coded components and 7 example pages if you want to get inspiration or just show something directly to your clients. This beautiful admin also comes with 5 color filter choices for both the sidebar and the cards (blue, green, red, yellow and black), an option to have a transparent or fill sidebar and an option to have a fixed navbar.
+1. **Frontend**: React, Typescript, JavaScript, Tailwind css
+2. **UI Toolkit**: Ant Design
+3. **Backend**: Flask
+4. **AI Integration**: ChatGPT API, Midjourney API
+5. **Hosting**: Firebase, Heroku
 
-## Table of Contents
+## **Core Features**
 
-- [Versions](#versions)
-- [Demo](#demo)
-- [Quick Start](#quick-start)
-- [Documentation](#documentation)
-- [File Structure](#file-structure)
-- [Browser Support](#browser-support)
-- [Resources](#resources)
-- [Reporting Issues](#reporting-issues)
-- [Technical Support or Questions](#technical-support-or-questions)
-- [Licensing](#licensing)
-- [Useful Links](#useful-links)
+1. **GeneratePage**
 
-## Versions
+- **Functionality**: Users can choose between creation and examples. In creation, they fill out a form describing their event poster idea, select a style (real or anime), and choose a size (1:1 or 16:9). They can also view and apply example event pages for reference and further modification.
 
-[<img src="https://github.com/creativetimofficial/public-assets/blob/master/logos/react.jpg?raw=true" width="60" height="60" />](https://www.creative-tim.com/product/material-tailwind-dashboard-react?ref=readme-madd)
-React
+2. **ChatPage**
 
-## Demo
+- **Functionality**: After submitting the form, users enter the chat page to interact with the Midjourney AI bot. The bot generates descriptions and image examples based on the user's input. Users can modify prompts or regenerate images before selecting and moving to the next step.
 
-- [Dashboard](https://demos.creative-tim.com/muse-ant-design-dashboard/#/dashboard?ref=readme-madd)
-- [Tables](https://demos.creative-tim.com/muse-ant-design-dashboard/#/tables?ref=readme-madd)
-- [Billing](https://demos.creative-tim.com/muse-ant-design-dashboard/#/billing?ref=readme-madd)
-- [RTL](https://demos.creative-tim.com/muse-ant-design-dashboard/#/rtl?ref=readme-madd)
-- [Profile](https://demos.creative-tim.com/muse-ant-design-dashboard/#/profile?ref=readme-madd)
-- [Sign In](https://demos.creative-tim.com/muse-ant-design-dashboard/#/sign-in?ref=readme-madd)
-- [Sign Up](https://demos.creative-tim.com/muse-ant-design-dashboard/#/sign-up?ref=readme-madd)
+3. **DesignPage**
 
-## Quick start
+- **Functionality**: Provides a toolbar for editing the event page, allowing users to add text, components, music, and copywriting. Users can edit button titles and links for interactive elements like live subscriptions and coupon collections. Once editing is complete, they can publish directly to their TikTok video page.
 
-Quick start options:
+## Technical Highlights
 
-- Download from [Creative Tim](https://www.creative-tim.com/product/muse-ant-design-dashboard?ref=readme-madd).
+1. **Precise Image Generation**: Integrating Midjourney API and ChatGPT API to enable precise text-to-prompt-to-image generation. ChatGPT converts user descriptions into professional prompts for Midjourney, which then generates the images. It also supports image-to-image functionality for detailed modifications.
 
-## Terminal Commands
+2. **Interactive Component Manipulation**: Utilizing React-RND for interactive component manipulation, allowing users to freely drag, resize, and scale elements on the DesignPage.
 
-1. Download and Install NodeJs LTS version from [NodeJs Official Page](https://nodejs.org/en/download/).
-2. Navigate to the root / directory and run npm install or (yarn install, if you're using yarn) to install our local dependencies.
+3. **Advanced Interactive Behaviors**: Enabling users to define interactive behaviors by customizing button titles and links, as well as adding advanced interactions such as generating QR codes, triggering pop-ups for live stream subscriptions, and displaying coupon messages, providing ideas for future interactive features.
 
-## Documentation
+4. **Smart Copywriting**: Leveraging ChatGPT API to refine user drafts using prompt engineering, the smart copywriting feature generates TikTok-style content and adds relevant tags to enhance video engagement.
 
-Muse Ant Design Dashboard build using Material Tailwind and the documentation of Material Tailwind is hosted at [website](https://demos.creative-tim.com/muse-ant-design-dashboard/#/docs/overview?ref=readme-madd).
+## How to Run
 
-### What's included
+1. **Frontend**
 
-Within the download you'll find the following directories and files:
+- Install dependencies
 
-```
-Muse Ant Design Dashboard
-    ├── muse-ant-design-dashboard
-    │   ├── public
-    │   │   ├── index.html
-    │   │   ├── favicon.png
-    │   │   ├── minifest.json
-    │   │   └── robots.txt
-    │   ├── src
-    │   │   ├── assets
-    │   │   │   ├── images
-    │   │   │   └── styles
-    │   │   ├── components
-    │   │   │   ├── chart
-    │   │   │   └── layout
-    │   │   ├── pages
-    │   │   │   ├── Billing.js
-    │   │   │   ├── Home.js
-    │   │   │   ├── Profile.js
-    │   │   │   ├── Rtl.js
-    │   │   │   ├── SignIn.js
-    │   │   │   ├── SignUp.js
-    │   │   │   └── Tables.js
-    │   │   ├── App.js
-    │   │   └── index.js
-    │   ├── CHANGELOG.md
-    │   ├── LICENSE
-    │   ├── package.json
-    │   ├── README.md
-    │   ├── .env
+```bash
+npm install
 ```
 
-## Browser Support
+- Start the frontend server
 
-At present, we officially aim to support the last two versions of the following browsers:
+```bash
+npm run start
+```
 
-<img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/chrome.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/firefox.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/edge.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/safari.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/opera.png" width="64" height="64">
+2. **Backend**
 
-## Resources
+- Navigate to the backend directory
 
-- [Live Preview](https://demos.creative-tim.com/muse-ant-design-dashboard/#/?ref=readme-madd)
-- [Download Page](https://www.creative-tim.com/product/material-tailwind-dashboard-react?ref=readme-madd)
-- Documentation is [here](https://material-tailwind.com/documentation/quick-start?ref=readme-madd)
-- [License Agreement](https://www.creative-tim.com/license?ref=readme-madd)
-- [Support](https://www.creative-tim.com/contact-us?ref=readme-madd)
-- Issues: [Github Issues Page](https://github.com/creativetimofficial/muse-ant-design-dashboard/issues)
+```bash
+cd backend
+```
 
-## Reporting Issues
+- Create a virtual environment
 
-We use GitHub Issues as the official bug tracker for the Muse Ant Design Dashboard. Here are some advices for our users that want to report an issue:
+```bash
+python3 -m venv .venv
+```
 
-1. Make sure that you are using the latest version of the Muse Ant Design Dashboard. Check the CHANGELOG from your dashboard on our [website](https://www.creative-tim.com/product/muse-ant-design-dashboard?ref=readme-madd).
-2. Providing us reproducible steps for the issue will shorten the time it takes for it to be fixed.
-3. Some issues may be browser specific, so specifying in what browser you encountered the issue might help.
+- Activate the virtual environment
 
-## Technical Support or Questions
+```bash
+.venv\Scripts\activate  # Windows
+source .venv/bin/activate  # macOS/Linux
+```
 
-If you have questions or need help integrating the product please [contact us](https://www.creative-tim.com/contact-us?ref=readme-madd) instead of opening an issue.
+- Install dependencies
 
-## Licensing
+```bash
+pip install -r requirements.txt
+```
 
-- Copyright 2021 [Creative Tim](https://www.creative-tim.com?ref=readme-madd)
-- Creative Tim [license](https://www.creative-tim.com/license?ref=readme-madd)
+- Run the Flask application
 
-## Useful Links
+```bash
+flask --app ChatPage run
+```
 
-- [More products](https://www.creative-tim.com/templates?ref=readme-madd) from Creative Tim
+## Links
 
-- [Tutorials](https://www.youtube.com/channel/UCVyTG4sCw-rOvB9oHkzZD1w)
+- ([Figma](https://www.figma.com/design/K4paycUTmDi1UPivG5Y3qi/tiktok-evenpage-design-platform?node-id=0-1&t=I4h6lhU1aygq2q2R-1))
+- ([Devpost](https://devpost.com/software/livedesign-pro?ref_content=user-portfolio&ref_feature=in_progress))
+- ([Demo Video](https://youtu.be/8D57UD3cWfo?si=xhHj6ELR5Tlrhy4y))
+- ([Pitch Deck](https://www.canva.com/design/DAGMy3KWt34/r8Qw1g8AmZSO9iggOdx7Ow/edit?utm_content=DAGMy3KWt34&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton))
 
-- [Freebies](https://www.creative-tim.com/templates/free?ref=readme-madd) from Creative Tim
+## Contributors
 
-- [Affiliate Program](https://www.creative-tim.com/affiliates/new?ref=readme-madd) (earn money)
+- **Xinyi Gao** [[Linkedin](https://www.linkedin.com/in/xinyi-gao-cn/)][[GitHub](https://github.com/Joan-gao)]: Product Design, UI/UX Design, Front-end Development
+- **Viet Doan** [[Linkedin](https://www.linkedin.com/in/viet-doan-vqd/)][[GitHub](https://github.com/viet-doan)]: UI/UX Design, Front-end Development
+- **Li Cui** [[Linkedin](https://www.linkedin.com/in/li-cui-73809027b)][[GitHub](https://github.com/amandaliberaann)]: AI Integration, Backend Development
 
-##### Social Media
+## Credits
 
-Twitter: <https://twitter.com/CreativeTim>
-
-Facebook: <https://www.facebook.com/CreativeTim>
-
-Dribbble: <https://dribbble.com/creativetim>
-
-Google+: <https://plus.google.com/+CreativetimPage>
-
-Instagram: <https://instagram.com/creativetimofficial>
+The TikTok UI Clone was created by [s-shemmee](https://github.com/s-shemmee).
