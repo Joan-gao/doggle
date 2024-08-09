@@ -112,7 +112,7 @@ pip install -r requirements.txt
 - Run the Flask application
 
 ```bash
-flask --app  api  run
+flask --app api run
 ```
 
 ## Links
