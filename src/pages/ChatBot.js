@@ -249,9 +249,9 @@ function ChatBot() {
                     type: "recommend",
                     list: [
                       {
-                        title: 'What features does doggle support?',
+                        title: 'What features do doggle support?',
                         hot: true,
-                        content: 'What features does doggle support?',
+                        content: 'What features do doggle support?',
                       },
                       {
                         title: 'How to start bookkeeping with doggle?',
@@ -300,7 +300,7 @@ function ChatBot() {
         
           switch (msg.content.text) {
 
-            case 'What features does doggle support?':
+            case 'What features do doggle support?':
                   responseText =
                     "I can help you with voice input 🎤, image recognition 📸, and file text recognition 📄. " +
                     "I also love analyzing your bills based on your personal info, helping you understand your spending habits, " +
