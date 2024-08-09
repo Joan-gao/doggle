@@ -12,14 +12,16 @@ import logging
 import json
 
 # 配置数据库 URI
-DATABASE_URI = 'mysql+pymysql://root:root123456@35.226.135.14/Finance'
+DATABASE_URI = 'mysql+pymysql://root:root123456@127.0.0.1:3306/Finance'
 
 # 创建 SQLAlchemy 引擎
 engine = create_engine(DATABASE_URI, echo=True)
 
 # SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # 初始化数据库
-logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.ERROR,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 def init_db():
     Base.metadata.create_all(bind=engine)
@@ -43,6 +45,7 @@ def session_scope():
         raise
     finally:
         session.close()
+
 
 categories = {
     1: "Salary income",
@@ -80,53 +83,62 @@ def add_transaction(user_id, category_id, transaction_date, description, amount,
                 note=note,
                 is_shown=is_shown
             )
-            
+
             session.add(new_transaction)
             return new_transaction
     except Exception as e:
         logging.error("Error occurred while adding transaction: %s", e)
         raise
 
+
 def update_transaction(user_id, transaction_date, amount, new_info_dict):
     with session_scope() as session:
-        transaction = session.query(Transaction).filter_by(user_id=user_id, transaction_date=transaction_date, amount=amount).one_or_none()
+        transaction = session.query(Transaction).filter_by(
+            user_id=user_id, transaction_date=transaction_date, amount=amount).one_or_none()
         if transaction is None:
             return None
-        
+
         for key, value in new_info_dict.items():
             if hasattr(transaction, key) and transaction[key] != "None":
                 setattr(transaction, key, value)
-        
+
         session.commit()
         return transaction
-    
+
+
 def format_transaction(transaction):
     return f"Transaction(id={transaction.transaction_id}, user_id={transaction.user_id}, category_id={transaction.category_id}, transaction_date={transaction.transaction_date}, description='{transaction.description}', amount={transaction.amount})"
+
 
 def format_transactions(transactions):
     return [format_transaction(transaction) for transaction in transactions]
 
+
 def search_transaction(user_id, transaction_date, amount):
     with session_scope() as session:
-        transaction = session.query(Transaction).filter_by(user_id=user_id, transaction_date=transaction_date, amount=amount).all()
+        transaction = session.query(Transaction).filter_by(
+            user_id=user_id, transaction_date=transaction_date, amount=amount).all()
         if transaction is None:
             return None
-        
+
         session.commit()
         return format_transactions(transaction)
-    
+
+
 def remove_transaction(user_id, transaction_date, amount):
     with session_scope() as session:
         print(user_id, transaction_date, amount)
-        transaction = session.query(Transaction).filter_by(user_id=user_id, transaction_date=transaction_date, amount=amount).one_or_none()
+        transaction = session.query(Transaction).filter_by(
+            user_id=user_id, transaction_date=transaction_date, amount=amount).one_or_none()
         if transaction is None:
             return None
-        
 
-        transaction_info = format_transaction(transaction) if transaction != None else None
+        transaction_info = format_transaction(
+            transaction) if transaction != None else None
         session.delete(transaction)
         session.commit()
         return transaction_info
+
 
 def generate_hash(input_string):
     # 创建 SHA-256 哈希对象
@@ -166,7 +178,7 @@ def categorize_transactions(transactions, categories):
                 income[category_name] = income.get(category_name, 0) + 1
             elif category_type == 'expense':
                 expense[category_name] = expense.get(category_name, 0) + 1
-    
+
     print("total cost")
     print(total_cost)
     # Calculate percentages
@@ -189,6 +201,7 @@ def categorize_transactions(transactions, categories):
 
 # Get overall transaction analysis
 
+
 def getBudget_and_goal(user_id):
     with session_scope() as session:
         today = datetime.today()
@@ -198,7 +211,7 @@ def getBudget_and_goal(user_id):
         ).all()
 
         budget = session.query(Budget).filter(
-            Budget.user_id == user_id   
+            Budget.user_id == user_id
         ).all()
 
         goal_result = [{
@@ -213,8 +226,6 @@ def getBudget_and_goal(user_id):
         } for t in budget]
 
         return goal_result, budget_result
-
-
 
 
 def getOverAllTransactionAnalyze(user_id):
@@ -372,7 +383,7 @@ def assembaleData(monthDataDict, yearDataDict):
 
 def get_user_info(uid):
     with session_scope() as session:
-        user = session.query(User).filter(User.user_id==uid).first()
+        user = session.query(User).filter(User.user_id == uid).first()
         if user:
             # Extract necessary data
             user_data = {
@@ -386,6 +397,8 @@ def get_user_info(uid):
             }
             return user_data
         return None
+
+
 def get_user_id_by_uid(uid):
     with session_scope() as session:
         user = session.query(User).filter_by(auth_uid=uid).first()

@@ -1,0 +1,2 @@
+#!/bin/sh
+web: cloud_sql_proxy -dir=/cloudsql -instances=$INSTANCE_CONNECTION_NAME=tcp:5432 -credential_file=credentials.json & gunicorn api:app

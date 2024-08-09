@@ -1,0 +1,1 @@
+web: /app/.heroku/bin/cloud_sql_proxy -dir=/cloudsql -instances=daring-leaf-429310-c8:us-central1:personal-bank=tcp:3306 -credential_file=credentials.json & gunicorn api:app
