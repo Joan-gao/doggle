@@ -69,7 +69,7 @@ This project developed an AI-powered web app for managing personal finances, fea
  - **Response**: So far, you earned $80,000 from your job and $5,000 from your online e-shop business this year, which is $10,000 more than last year! **👩‍💻** Keep going, woof woof! 🐶✨
 
 4. **Purchase Recommendations**
- - **User: I saw a pair of shoes on sale for $200, should I buy them?**
+ - **User: I saw a pair of shoes on sale for $400, should I buy them?**
  - **Response1**:  Yes! You got a raise this month, and it’s been six months since your last big purchase. 💰 Your shopping expenses are in check, so if you love those shoes and the discount is great! 👟 Go for it,  woof! 🐶✨
  - **Response2**: No, you've already bought three pairs of shoes this month and overshot your shopping budget, that’s a lot! **😥** Plus, your goal is to save money, so it’s smarter to hold off on this purchase, woof! 🐶✨
  - **User: With my current savings, can I save $50,000 in three years?**
