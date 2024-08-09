@@ -54,7 +54,7 @@ This project developed an AI-powered web app for managing personal finances, fea
 - **User: How to edit or delete bills?**
 - **Response**: Need to edit or delete bills? No worries! 🐾 If the bill was entered through conversation, just reply with the modification or deletion ✅. On the calendar page 📅, click on a specific date, find the bill entry, and then swipe left to edit or delete it manually 📝. Easy peasy, woof woof! 🐶✨
 
-2. **Bill Data CRUD Operations**
+2. **CRUD Operations**
  - **User: Received $5000 salary yesterday, spent $50 on haircut, and $70 on groceries**
  - **Response**: Recorded. 🐾 Bill 1 Date: 2024-07-18, Category: Salary, Income: $5000, Description: salary, Account Book: Default account book; Bill 2 Date: 2024-07-18, Category: Beauty, Expense: $50, Description: haircut, Account Book: Default account book, Bill 3 Date: 2024-07-18, Category: Shopping, Expense: $70, Description: groceries, Account Book: Default account book.
  - **User: Edited $5000 salary yesterday to $3000**
