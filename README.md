@@ -58,8 +58,7 @@ This project developed an AI-powered web app for managing personal finances, fea
  - **User: Received $5000 salary yesterday, spent $50 on haircut, and $70 on groceries**
  - **Response**: Recorded. 🐾 Bill 1 Date: 2024-07-18, Category: Salary, Income: $5000, Description: salary, Account Book: Default account book; Bill 2 Date: 2024-07-18, Category: Beauty, Expense: $50, Description: haircut, Account Book: Default account book, Bill 3 Date: 2024-07-18, Category: Shopping, Expense: $70, Description: groceries, Account Book: Default account book.
  - **User: Edited $5000 salary yesterday to $3000**
- - **Response**: Edited. 🐾 Bill 1 Date: 2024-07-18, Category: Salary, Income: $5000, Description: salary yesterday, Account Book: Default account book;
- - User: How much did I earn on this year?
+ - **Response**: Edited. 🐾 Bill 1 Date: 2024-07-18, Category: Salary, Income: $5000, Description: salary yesterday, Account Book: Default account book.
  - **User: delete $5000 salary yesterday, spent $50 on haircut, and $70 on groceries**
  - **Response**: Deleted. 🐾
 
