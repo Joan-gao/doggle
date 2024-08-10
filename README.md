@@ -1,4 +1,4 @@
-<h1 align="center">Doggle: Your Best AI Personal Finance helper🐶✨</h1>
+<h1 align="center">Doggle: Your Best AI Finance helper🐶✨</h1>
 
 ## **Introduction**
 
