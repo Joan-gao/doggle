@@ -1683,7 +1683,7 @@ const CalendarBill = () => {
   };
 
   const handleDelete = (record) => {
-    fetch("https://doogle-1c3b68536bb7.herokuapp.com//api/delete/transaction", {
+    fetch("https://doogle-1c3b68536bb7.herokuapp.com/api/delete/transaction", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

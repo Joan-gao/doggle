@@ -26,7 +26,7 @@ const EditTransaction = ({ transaction }) => {
   };
 
   const handleSubmit = async (transactionData) => {
-    fetch("http://127.0.0.1:5000/api/edit/transaction", {
+    fetch("https://doogle-1c3b68536bb7.herokuapp.com/api/edit/transaction", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

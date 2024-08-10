@@ -34,7 +34,7 @@ const Information = (userId) => {
 
   const handleSubmit = async (userData) => {
     const response = await axios.post(
-      "http://127.0.0.1:5000/user/update",
+      "https://doogle-1c3b68536bb7.herokuapp.com/user/update",
       { userData: userData },
       {
         headers: {
