@@ -157,7 +157,7 @@ export default class SignUp extends Component {
           console.log(user.uid, user.email);
           const response = await axios.post(
             // "https://tiktok-hackathon-app-6b6d56fcd0c7.herokuapp.com/edit",
-            "http://127.0.0.1:5000/user/create",
+            "https://doogle-1c3b68536bb7.herokuapp.com/user/create",
             {
               email: user.email,
               password: password,

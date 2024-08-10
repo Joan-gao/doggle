@@ -26,7 +26,7 @@ const BudgetSetting = ({ user }) => {
   };
 
   const handleSubmit = async (budgetData) => {
-    fetch("http://127.0.0.1:5000/api/api/set-budget", {
+    fetch("https://doogle-1c3b68536bb7.herokuapp.com/api/api/set-budget", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
