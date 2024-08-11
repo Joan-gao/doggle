@@ -429,11 +429,11 @@ function ChatBot() {
                   console.log("file type");
                   uploadFile(
                     msg.content.formData,
-                    "http://127.0.0.1:5000/upload_file/" +
+                    "https://doogle-1c3b68536bb7.herokuapp.com/upload_file/" +
                       +user.user.id
                   );
                   console.log("Wait for result");
-                  const return_obj = await check_file_status(msg.content.formData, "http://127.0.0.1:5000/get_file_analyze");
+                  const return_obj = await check_file_status(msg.content.formData, "https://doogle-1c3b68536bb7.herokuapp.com/get_file_analyze");
 
                   reply = return_obj.reply;
                   if (return_obj.count === "0") {
@@ -468,7 +468,7 @@ function ChatBot() {
                     question_type.indexOf("Financial") != -1
                   ) {
                     reply = await postData(
-                      "http://127.0.0.1:5000/info/" +
+                      "https://doogle-1c3b68536bb7.herokuapp.com/info/" +
                         user.user.id,
                       msg.content.text
                     );

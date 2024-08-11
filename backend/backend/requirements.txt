@@ -1,0 +1,6 @@
+IPython
+google.generativeai
+pyyaml
+flask
+flask_cors
+gunicorn
