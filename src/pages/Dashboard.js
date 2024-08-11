@@ -866,6 +866,202 @@ function Dashboard() {
     console.log("registrationYear", registrationYear);
     console.log("selectedYear", year);
     // 调用后端查询用户的注册日期，然后根据用户的注册日期判断选择的月份年份是否是有效的，如果是无效的，则直接都为空不进一步向后端请求数据
+    // const updateData = () => {
+    //   if (activeKey === "2") {
+    //     // if (currentYear < year || registrationYear > year) {
+    //     //   if (isMounted.current) {
+    //     //     setShowProgress(false);
+    //     //   }
+
+    //     //   if (currentType === "expense") {
+    //     //     if (isMounted.current) {
+    //     //       setExpenseDataState(expenseEmptyData);
+    //     //       setDounghtExpenseData([]);
+    //     //       setLineExpenseCategory([]);
+    //     //       setLineExpenseSeries([]);
+    //     //       setBarExpenseCategory([]);
+    //     //       setBarExpenseSeries([]);
+    //     //     }
+    //     //   } else {
+    //     //     if (isMounted.current) {
+    //     //       setIncomeDataState(incomeEmptyData);
+    //     //       setShowProgress(false);
+    //     //       setDounghtIncomeData([]);
+    //     //       setLineIncomeCategory([]);
+    //     //       setLineIncomeSeries([]);
+    //     //       setBarIncomeCategory([]);
+    //     //       setBarIncomeSeries([]);
+    //     //     }
+    //     //   }
+    //     // }
+    //     //  else {
+    //     setShowProgress(true);
+    //     if (currentType === "expense") {
+    //       if (isMounted.current) {
+    //         setExpenseDataState({
+    //           ...expenseDataState,
+    //           yearly: expenseDataFromdb.yearly || expenseEmptyData.yearly,
+    //         });
+    //         // setExpenseDataState(expenseDataFromdb);
+    //         setListData(expenseDataFromdb.yearly.sortedData);
+    //         setDounghtExpenseData(expenseDataFromdb.yearly.expenseDonutChart);
+    //         setLineExpenseCategory(
+    //           expenseDataFromdb.yearly.expenseLineChartCategory
+    //         );
+    //         setLineExpenseSeries(
+    //           expenseDataFromdb.yearly.expenseLineChartSeries
+    //         );
+    //         setBarExpenseCategory(
+    //           expenseDataFromdb.yearly.expenseBarChartCategory
+    //         );
+    //         setBarExpenseSeries(expenseDataFromdb.yearly.expenseBarChartSeries);
+    //       }
+    //     } else {
+    //       if (isMounted.current) {
+    //         setIncomeDataState({
+    //           ...incomeDataState,
+    //           yearly: incomeDataFromdb.yearly || incomeEmptyData.yearly,
+    //         });
+    //         //  setIncomeDataState(incomeDataFromdb);
+    //         setListData(incomeDataFromdb.yearly.sortedData);
+    //         setDounghtIncomeData(incomeDataFromdb.yearly.incomeDonutChart);
+    //         setLineIncomeCategory(
+    //           incomeDataFromdb.yearly.incomeLineChartCategory
+    //         );
+    //         setLineIncomeSeries(incomeDataFromdb.yearly.incomeLineChartSeries);
+    //         setBarIncomeCategory(
+    //           incomeDataFromdb.yearly.incomeBarChartCategory
+    //         );
+    //         setBarIncomeSeries(incomeDataFromdb.yearly.incomeBarChartSeries);
+    //       }
+    //     }
+    //     // }
+    //   } else if (activeKey === "1") {
+    //     // if (currentYear < year || registrationYear > year) {
+    //     //   if (isMounted.current) {
+    //     //     setShowProgress(false);
+    //     //   }
+
+    //     //   if (currentType === "expense") {
+    //     //     if (isMounted.current) {
+    //     //       setExpenseDataState(expenseEmptyData);
+    //     //       setDounghtExpenseData([]);
+    //     //       setLineExpenseCategory([]);
+    //     //       setLineExpenseSeries([]);
+    //     //       setBarExpenseCategory([]);
+    //     //       setBarExpenseSeries([]);
+    //     //     }
+    //     //   } else {
+    //     //     if (isMounted.current) {
+    //     //       setIncomeDataState(incomeEmptyData);
+    //     //       setShowProgress(false);
+    //     //       setDounghtIncomeData([]);
+    //     //       setLineIncomeCategory([]);
+    //     //       setLineIncomeSeries([]);
+    //     //       setBarIncomeCategory([]);
+    //     //       setBarIncomeSeries([]);
+    //     //     }
+    //     //   }
+    //     // } else if (registrationMonth > month || currentMonth < month) {
+    //     //   if (isMounted.current) {
+    //     //     setShowProgress(false);
+    //     //   }
+
+    //     //   if (currentType === "expense") {
+    //     //     if (isMounted.current) {
+    //     //       setExpenseDataState(expenseEmptyData);
+    //     //     }
+    //     //   } else {
+    //     //     if (isMounted.current) {
+    //     //       setIncomeDataState(incomeEmptyData);
+    //     //     }
+    //     //   }
+    //     // }
+    //     //  else {
+    //     // if (monthLabel) {
+    //     if (currentType === "expense") {
+    //       if (isMounted.current) {
+    //         setExpenseDataState({
+    //           ...expenseDataState,
+    //           monthly:
+    //             expenseDataFromdb.monthly[monthLabel] ||
+    //             expenseEmptyData.monthly,
+    //         });
+    //       }
+
+    //       if (expenseDataFromdb.monthly[monthLabel]) {
+    //         if (isMounted.current) {
+    //           setShowProgress(true);
+    //           setListData(expenseDataFromdb.monthly[monthLabel].sortedData);
+    //           setDounghtExpenseData(
+    //             expenseDataFromdb.monthly[monthLabel].expenseDonutChart
+    //           );
+    //           setLineExpenseCategory(
+    //             expenseDataFromdb.monthly[monthLabel].expenseLineChartCategory
+    //           );
+    //           setLineExpenseSeries(
+    //             expenseDataFromdb.monthly[monthLabel].expenseLineChartSeries
+    //           );
+    //           setBarExpenseCategory(
+    //             expenseDataFromdb.monthly[monthLabel].expenseBarChartCategory
+    //           );
+    //           setBarExpenseSeries(
+    //             expenseDataFromdb.monthly[monthLabel].expenseBarChartSeries
+    //           );
+    //         }
+    //       } else {
+    //         if (isMounted.current) {
+    //           setShowProgress(false);
+    //           setDounghtExpenseData([]);
+    //           setLineExpenseCategory([]);
+    //           setLineExpenseSeries([]);
+    //           setBarExpenseCategory([]);
+    //           setBarExpenseSeries([]);
+    //         }
+    //       }
+    //     } else {
+    //       if (isMounted.current) {
+    //         setIncomeDataState({
+    //           ...incomeDataState,
+    //           monthly:
+    //             incomeDataFromdb.monthly[monthLabel] || incomeEmptyData.monthly,
+    //         });
+    //       }
+
+    //       if (incomeDataFromdb.monthly[monthLabel]) {
+    //         if (isMounted.current) {
+    //           setShowProgress(true);
+    //           setListData(incomeDataFromdb.monthly[monthLabel].sortedData);
+    //           setDounghtIncomeData(
+    //             incomeDataFromdb.monthly[monthLabel].incomeDonutChart
+    //           );
+    //           setLineIncomeCategory(
+    //             incomeDataFromdb.monthly[monthLabel].incomeLineChartCategory
+    //           );
+    //           setLineIncomeSeries(
+    //             incomeDataFromdb.monthly[monthLabel].incomeLineChartSeries
+    //           );
+    //           setBarIncomeCategory(
+    //             incomeDataFromdb.monthly[monthLabel].incomeBarChartCategory
+    //           );
+    //           setBarIncomeSeries(
+    //             incomeDataFromdb.monthly[monthLabel].incomeBarChartSeries
+    //           );
+    //         }
+    //       } else {
+    //         if (isMounted.current) {
+    //           setShowProgress(false);
+    //           setDounghtIncomeData([]);
+    //           setLineIncomeCategory([]);
+    //           setLineIncomeSeries([]);
+    //           setBarIncomeCategory([]);
+    //           setBarIncomeSeries([]);
+    //         }
+    //       }
+    //     }
+    //     // }
+    //   }
+    // };
     const updateData = () => {
       if (activeKey === "2") {
         // if (currentYear < year || registrationYear > year) {
@@ -873,60 +1069,97 @@ function Dashboard() {
         //     setShowProgress(false);
         //   }
 
-        //   if (currentType === "expense") {
-        //     if (isMounted.current) {
-        //       setExpenseDataState(expenseEmptyData);
-        //       setDounghtExpenseData([]);
-        //       setLineExpenseCategory([]);
-        //       setLineExpenseSeries([]);
-        //       setBarExpenseCategory([]);
-        //       setBarExpenseSeries([]);
-        //     }
-        //   } else {
-        //     if (isMounted.current) {
-        //       setIncomeDataState(incomeEmptyData);
-        //       setShowProgress(false);
-        //       setDounghtIncomeData([]);
-        //       setLineIncomeCategory([]);
-        //       setLineIncomeSeries([]);
-        //       setBarIncomeCategory([]);
-        //       setBarIncomeSeries([]);
-        //     }
+        // if (currentType === "expense") {
+        //   if (isMounted.current) {
+        //     setExpenseDataState(expenseEmptyData);
+        //     setDounghtExpenseData([]);
+        //     setLineExpenseCategory([]);
+        //     setLineExpenseSeries([]);
+        //     setBarExpenseCategory([]);
+        //     setBarExpenseSeries([]);
         //   }
-        // }
-        //  else {
-        setShowProgress(true);
+        // } else {
+        //   if (isMounted.current) {
+        //     setIncomeDataState(incomeEmptyData);
+        //     setShowProgress(false);
+        //     setDounghtIncomeData([]);
+        //     setLineIncomeCategory([]);
+        //     setLineIncomeSeries([]);
+        //     setBarIncomeCategory([]);
+        //     setBarIncomeSeries([]);
+        //   }
+        //   }
+        // } else {
         if (currentType === "expense") {
           if (isMounted.current) {
-            setExpenseDataState(expenseDataFromdb);
-            setListData(expenseDataFromdb.yearly.sortedData);
-            setDounghtExpenseData(expenseDataFromdb.yearly.expenseDonutChart);
-            setLineExpenseCategory(
-              expenseDataFromdb.yearly.expenseLineChartCategory
-            );
-            setLineExpenseSeries(
-              expenseDataFromdb.yearly.expenseLineChartSeries
-            );
-            setBarExpenseCategory(
-              expenseDataFromdb.yearly.expenseBarChartCategory
-            );
-            setBarExpenseSeries(expenseDataFromdb.yearly.expenseBarChartSeries);
+            if (expenseDataFromdb[year]) {
+              setShowProgress(true);
+              setExpenseDataState({
+                ...expenseDataState,
+                yearly:
+                  expenseDataFromdb[year].yearly || expenseEmptyData.yearly,
+              });
+              setListData(expenseDataFromdb[year].yearly.sortedData);
+              setDounghtExpenseData(
+                expenseDataFromdb[year].yearly.expenseDonutChart
+              );
+              setLineExpenseCategory(
+                expenseDataFromdb[year].yearly.expenseLineChartCategory
+              );
+              setLineExpenseSeries(
+                expenseDataFromdb[year].yearly.expenseLineChartSeries
+              );
+              setBarExpenseCategory(
+                expenseDataFromdb[year].yearly.expenseBarChartCategory
+              );
+              setBarExpenseSeries(
+                expenseDataFromdb[year].yearly.expenseBarChartSeries
+              );
+            } else {
+              setShowProgress(true);
+              setExpenseDataState(expenseEmptyData);
+              setDounghtExpenseData([]);
+              setLineExpenseCategory([]);
+              setLineExpenseSeries([]);
+              setBarExpenseCategory([]);
+              setBarExpenseSeries([]);
+            }
           }
         } else {
           if (isMounted.current) {
-            setIncomeDataState(incomeDataFromdb);
-            setListData(incomeDataFromdb.yearly.sortedData);
-            setDounghtIncomeData(incomeDataFromdb.yearly.incomeDonutChart);
-            setLineIncomeCategory(
-              incomeDataFromdb.yearly.incomeLineChartCategory
-            );
-            setLineIncomeSeries(incomeDataFromdb.yearly.incomeLineChartSeries);
-            setBarIncomeCategory(
-              incomeDataFromdb.yearly.incomeBarChartCategory
-            );
-            setBarIncomeSeries(incomeDataFromdb.yearly.incomeBarChartSeries);
+            if (incomeDataFromdb[year]) {
+              setIncomeDataState({
+                ...incomeDataState,
+                yearly: incomeDataFromdb[year].yearly || incomeEmptyData.yearly,
+              });
+              setListData(incomeDataFromdb[year].yearly.sortedData);
+              setDounghtIncomeData(
+                incomeDataFromdb[year].yearly.incomeDonutChart
+              );
+              setLineIncomeCategory(
+                incomeDataFromdb[year].yearly.incomeLineChartCategory
+              );
+              setLineIncomeSeries(
+                incomeDataFromdb[year].yearly.incomeLineChartSeries
+              );
+              setBarIncomeCategory(
+                incomeDataFromdb[year].yearly.incomeBarChartCategory
+              );
+              setBarIncomeSeries(
+                incomeDataFromdb[year].yearly.incomeBarChartSeries
+              );
+            } else {
+              setShowProgress(false);
+              setIncomeDataState(incomeEmptyData);
+              setDounghtIncomeData([]);
+              setLineIncomeCategory([]);
+              setLineIncomeSeries([]);
+              setBarIncomeCategory([]);
+              setBarIncomeSeries([]);
+            }
           }
         }
+
         // }
       } else if (activeKey === "1") {
         // if (currentYear < year || registrationYear > year) {
@@ -973,37 +1206,45 @@ function Dashboard() {
         // if (monthLabel) {
         if (currentType === "expense") {
           if (isMounted.current) {
-            setExpenseDataState({
-              ...expenseDataState,
-              monthly:
-                expenseDataFromdb.monthly[monthLabel] ||
-                expenseEmptyData.monthly,
-            });
-          }
-
-          if (expenseDataFromdb.monthly[monthLabel]) {
-            if (isMounted.current) {
+            if (
+              expenseDataFromdb[year] &&
+              expenseDataFromdb[year].monthly[monthLabel]
+            ) {
               setShowProgress(true);
-              setListData(expenseDataFromdb.monthly[monthLabel].sortedData);
+              setExpenseDataState({
+                ...expenseDataState,
+                monthly:
+                  expenseDataFromdb[year].monthly[monthLabel] ||
+                  expenseEmptyData.monthly,
+              });
+
+              setShowProgress(true);
+              setListData(
+                expenseDataFromdb[year].monthly[monthLabel].sortedData
+              );
               setDounghtExpenseData(
-                expenseDataFromdb.monthly[monthLabel].expenseDonutChart
+                expenseDataFromdb[year].monthly[monthLabel].expenseDonutChart
               );
               setLineExpenseCategory(
-                expenseDataFromdb.monthly[monthLabel].expenseLineChartCategory
+                expenseDataFromdb[year].monthly[monthLabel]
+                  .expenseLineChartCategory
               );
               setLineExpenseSeries(
-                expenseDataFromdb.monthly[monthLabel].expenseLineChartSeries
+                expenseDataFromdb[year].monthly[monthLabel]
+                  .expenseLineChartSeries
               );
               setBarExpenseCategory(
-                expenseDataFromdb.monthly[monthLabel].expenseBarChartCategory
+                expenseDataFromdb[year].monthly[monthLabel]
+                  .expenseBarChartCategory
               );
               setBarExpenseSeries(
-                expenseDataFromdb.monthly[monthLabel].expenseBarChartSeries
+                expenseDataFromdb[year].monthly[monthLabel]
+                  .expenseBarChartSeries
               );
-            }
-          } else {
-            if (isMounted.current) {
+            } else {
               setShowProgress(false);
+              setExpenseDataState(expenseEmptyData);
+              setListData([]);
               setDounghtExpenseData([]);
               setLineExpenseCategory([]);
               setLineExpenseSeries([]);
@@ -1013,36 +1254,43 @@ function Dashboard() {
           }
         } else {
           if (isMounted.current) {
-            setIncomeDataState({
-              ...incomeDataState,
-              monthly:
-                incomeDataFromdb.monthly[monthLabel] || incomeEmptyData.monthly,
-            });
-          }
-
-          if (incomeDataFromdb.monthly[monthLabel]) {
-            if (isMounted.current) {
+            if (
+              incomeDataFromdb[year] &&
+              incomeDataFromdb[year].monthly[monthLabel]
+            ) {
               setShowProgress(true);
-              setListData(incomeDataFromdb.monthly[monthLabel].sortedData);
+              setIncomeDataState({
+                ...incomeDataState,
+                monthly:
+                  incomeDataFromdb[year].monthly[monthLabel] ||
+                  incomeEmptyData.monthly,
+              });
+
+              setShowProgress(true);
+              setListData(
+                incomeDataFromdb[year].monthly[monthLabel].sortedData
+              );
               setDounghtIncomeData(
-                incomeDataFromdb.monthly[monthLabel].incomeDonutChart
+                incomeDataFromdb[year].monthly[monthLabel].incomeDonutChart
               );
               setLineIncomeCategory(
-                incomeDataFromdb.monthly[monthLabel].incomeLineChartCategory
+                incomeDataFromdb[year].monthly[monthLabel]
+                  .incomeLineChartCategory
               );
               setLineIncomeSeries(
-                incomeDataFromdb.monthly[monthLabel].incomeLineChartSeries
+                incomeDataFromdb[year].monthly[monthLabel].incomeLineChartSeries
               );
               setBarIncomeCategory(
-                incomeDataFromdb.monthly[monthLabel].incomeBarChartCategory
+                incomeDataFromdb[year].monthly[monthLabel]
+                  .incomeBarChartCategory
               );
               setBarIncomeSeries(
-                incomeDataFromdb.monthly[monthLabel].incomeBarChartSeries
+                incomeDataFromdb[year].monthly[monthLabel].incomeBarChartSeries
               );
-            }
-          } else {
-            if (isMounted.current) {
+            } else {
               setShowProgress(false);
+              setIncomeDataState(incomeEmptyData);
+              setListData([]);
               setDounghtIncomeData([]);
               setLineIncomeCategory([]);
               setLineIncomeSeries([]);
@@ -1051,10 +1299,10 @@ function Dashboard() {
             }
           }
         }
+
         // }
       }
     };
-
     if (userloaded) {
       console.log("User is loaded, proceeding to update data.");
       updateData();
@@ -1122,8 +1370,8 @@ function Dashboard() {
           sortedData: [],
         }
       : displayData;
-  // console.log("SafeDisplayData", safeDisplayData);
-  // console.log("DisplayData", displayData);
+  console.log("SafeDisplayData", safeDisplayData);
+  console.log("DisplayData", displayData);
   const totalAmount = listData.reduce(
     (acc, item) => acc + Math.abs(item.amount),
     0
