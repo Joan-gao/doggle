@@ -127,7 +127,7 @@ flask --app api run
 
 ## Links
 
-- ([Demo Video](https://youtu.be/8D57UD3cWfo?si=xhHj6ELR5Tlrhy4y))
+- ([Demo Video](https://youtu.be/Fwdy6FSLmCA?si=7OcwHwgjyHFChXH0))
 
 ## Contributors
 
