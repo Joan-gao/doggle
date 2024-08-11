@@ -151,6 +151,27 @@ def delete_transaction_route(user_id):
         return jsonify({"data": "No transactions found"})
 
 
+status = {}
+response_dict = {}
+
+
+@app.route('/get_file_analyze', methods=['POST'])
+def get_file_analyze():
+    try:
+
+        file = request.files['file']
+        if status[file.filename] == False:
+            return jsonify({'status': status[file.filename]})
+        else:
+            return jsonify({
+                    "status": status[file.filename],
+                    "reply": response_dict[file.filename][0],
+                    "count": response_dict[file.filename][1]
+                })
+    except Exception as e:
+        print(e)
+        return jsonify({"status": "False", "reply": "I am unable to analyze this file", "count": "0"})
+
 @app.route('/upload_file/<int:user_id>', methods=['POST'])
 def upload_file(user_id):
     try:
@@ -167,8 +188,11 @@ def upload_file(user_id):
         files_ = {
             'file': (file.filename, file.stream, file.content_type)
         }
+
+        status[file.filename] = False
+        print("Send request")
         return_val = requests.post(
-            "https://doogle-1c3b68536bb7.herokuapp.com/file_analyze", files=files_)
+            "http://127.0.0.1:5001/file_analyze", files=files_)
         return_val_dict = return_val.json()
         summary, response = return_val_dict["summary"], return_val_dict["response"]
         response = response.replace("json", "").replace(
@@ -203,6 +227,9 @@ def upload_file(user_id):
             add_transaction(
                 user_id, category_id, transaction["transaction_date"], transaction["description"], transaction["amount"])
             added_transaction_count += 1
+
+        status[file.filename] = True
+        response_dict[file.filename] = (summary, str(added_transaction_count))
         return jsonify({"reply": summary, "count": str(added_transaction_count)})
     except Exception as e:
         print(e)

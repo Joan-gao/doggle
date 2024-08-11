@@ -6,6 +6,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from "dotenv";
 import LoginReminder from "../components/other/LogInReminder";
 import * as fs from "fs";
+import { resolve } from "path";
 // import { REPL_MODE_STRICT } from "reply";
 
 const canRecord = true; // 写个判断逻辑
@@ -123,26 +124,52 @@ function ChatBot() {
     }
   }
 
+  
+  async function check_file_status(formData, url) {
+    try {
+      while (true) {
+        const response = await fetch(url, {
+          method: "POST",
+          body: formData,
+        });
+  
+        const fetchData = await response.json(); // Parse the JSON response
+  
+        console.log(fetchData);
+  
+        if (fetchData.status === "True" || fetchData.status === "true" || fetchData.status === true) {
+          return { reply: fetchData.reply, count: fetchData.count };
+        } else {
+          console.log("Waiting for 30 seconds before the next check...");
+          await new Promise((resolve) => setTimeout(resolve, 30000));
+        }
+      }
+    } catch (error) {
+      console.log("Error: ", error);
+      return null;
+    }
+  }
+
   async function uploadFile(formData, url) {
     try {
-      const response = await fetch(url, {
+      const response = fetch(url, {
         method: "POST",
         body: formData,
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      // if (!response.ok) {
+      //   throw new Error(`HTTP error! status: ${response.status}`);
+      // }
 
-      const data = await response.json();
+      // const data = await response.json();
 
-      // Save the returned data into a variable
-      const analysisResult = data;
+      // // Save the returned data into a variable
+      // const analysisResult = data;
 
-      // Handle the response from the server
-      console.log("Success:", analysisResult);
-      console.log(analysisResult.reply);
-      return { reply: analysisResult.reply, count: analysisResult.count };
+      // // Handle the response from the server
+      // console.log("Success:", analysisResult);
+      // console.log(analysisResult.reply);
+      // return { reply: analysisResult.reply, count: analysisResult.count };
     } catch (error) {
       console.error("Error:", error);
       return null; // Handle the error appropriately, possibly returning null or a specific error value
@@ -400,11 +427,14 @@ function ChatBot() {
                   msg.content.type === "photo"
                 ) {
                   console.log("file type");
-                  const return_obj = await uploadFile(
+                  uploadFile(
                     msg.content.formData,
-                    "https://doogle-1c3b68536bb7.herokuapp.com/upload_file/" +
+                    "http://127.0.0.1:5000/upload_file/" +
                       +user.user.id
                   );
+                  console.log("Wait for result");
+                  const return_obj = await check_file_status(msg.content.formData, "http://127.0.0.1:5000/get_file_analyze");
+
                   reply = return_obj.reply;
                   if (return_obj.count === "0") {
                     //
@@ -438,7 +468,7 @@ function ChatBot() {
                     question_type.indexOf("Financial") != -1
                   ) {
                     reply = await postData(
-                      "https://doogle-1c3b68536bb7.herokuapp.com/info/" +
+                      "http://127.0.0.1:5000/info/" +
                         user.user.id,
                       msg.content.text
                     );
