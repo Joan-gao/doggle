@@ -213,7 +213,7 @@ def upload_file(user_id):
         counter = 0
         while(True):
             return_val_dict = return_val.json()
-            if counter == 10 or return_val_dict["status"] == True or return_val_dict["status"] == 'true' or return_val_dict["status"] == 'True':
+            if counter == 30 or return_val_dict["status"] == True or return_val_dict["status"] == 'true' or return_val_dict["status"] == 'True':
                 break
 
             print("Sleep for 10 second and try again")
