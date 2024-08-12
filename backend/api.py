@@ -207,8 +207,7 @@ def upload_file(user_id):
         
         print("first check")
         time.sleep(10)
-        return_val = requests.post(
-            "https://doogle-file-api-9c26b7fba502.herokuapp.com/get_file_analyze", files=files_)
+        return_val = requests.post("https://doogle-file-api-9c26b7fba502.herokuapp.com/get_file_analyze", files=files_)
         
         counter = 0
         while(True):
@@ -219,8 +218,7 @@ def upload_file(user_id):
             print("Sleep for 10 second and try again")
             time.sleep(10)
             counter += 1
-            return_val = requests.post(
-        "https://doogle-file-api-9c26b7fba502.herokuapp.com/get_file_analyze", files=files_)
+            return_val = requests.post("https://doogle-file-api-9c26b7fba502.herokuapp.com/get_file_analyze", files=files_)
 
         return_val_dict = return_val.json()
         summary, response = return_val_dict["summary"], return_val_dict["response"]
@@ -243,20 +241,23 @@ def upload_file(user_id):
         prompt += f"[{name_string}]"
         added_transaction_count = 0
         for transaction in transaction_dict:
-            transaction_string = f'transaction_date: {transaction["transaction_date"]} description: {transaction["description"]} amount: {transaction["amount"]}'
-            category = categorizer_func(
-                prompt + " Transaction: " + transaction_string + "just return the category name itself")
-            print(transaction)
-            print(category)
-            category = category.strip("\n").strip(" ")
-            if category in categories_mapping:
-                category_id = categories_mapping[category]
-            else:
-                continue
+            try:
+                transaction_string = f'transaction_date: {transaction["transaction_date"]} description: {transaction["description"]} amount: {transaction["amount"]}'
+                category = categorizer_func(
+                    prompt + " Transaction: " + transaction_string + "just return the category name itself")
+                print(transaction)
+                print(category)
+                category = category.strip("\n").strip(" ")
+                if category in categories_mapping:
+                    category_id = categories_mapping[category]
+                else:
+                    continue
 
-            add_transaction(
-                user_id, category_id, transaction["transaction_date"], transaction["description"], transaction["amount"])
-            added_transaction_count += 1
+                add_transaction(
+                    user_id, category_id, transaction["transaction_date"], transaction["description"], transaction["amount"])
+                added_transaction_count += 1
+            except Exception as e:
+                continue
 
         status[file.filename] = True
         response_dict[file.filename] = (summary, str(added_transaction_count))
