@@ -6,6 +6,7 @@ from gemini_fune_tune_util.util import analyzer_func, categorizer_func, transact
 import requests
 import json
 import re
+import time
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -191,10 +192,38 @@ def upload_file(user_id):
 
         status[file.filename] = False
         print("Send request")
+
+        try:
+        # Send the request with a very short timeout
+            response = requests.post("https://doogle-file-api-9c26b7fba502.herokuapp.com/file_analyze", files=files_, timeout=0.01)
+        except requests.exceptions.Timeout:
+            # Handle the timeout, knowing the request was still sent
+            print("Request sent, but we are not waiting for the response.")
+
+        
+
+        # requests.post(
+        #     "https://doogle-file-api-9c26b7fba502.herokuapp.com/file_analyze", files=files_)
+        
+        print("first check")
         return_val = requests.post(
-            "https://doogle-file-api-9c26b7fba502.herokuapp.com/file_analyze", files=files_)
+            "https://doogle-file-api-9c26b7fba502.herokuapp.com/get_file_analyze", files=files_)
+        
+        counter = 0
+        while(True):
+            return_val_dict = return_val.json()
+            if counter == 10 or return_val_dict["status"] == True or return_val_dict["status"] == 'true' or return_val_dict["status"] == 'True':
+                break
+
+            print("Sleep for 10 second and try again")
+            time.sleep(10)
+            counter += 1
+            return_val = requests.post(
+        "https://doogle-file-api-9c26b7fba502.herokuapp.com/get_file_analyze", files=files_)
+
         return_val_dict = return_val.json()
         summary, response = return_val_dict["summary"], return_val_dict["response"]
+        # summary, response = fileAnalyze(file)
         response = response.replace("json", "").replace(
             "\n", " ").replace("```", "")
         print(response)

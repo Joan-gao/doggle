@@ -56,6 +56,8 @@ def geminiUploadFile(file_path):
     print(f"Retrieved file '{verify.display_name}' as: {user_file.uri}")
     return user_file
 
+status_dict = {}
+response_dict = {}
 
 def fileAnalyze(file):
     # save file to a local path
@@ -74,12 +76,30 @@ def fileAnalyze(file):
     else:
         print("Upload file to gemini fail")
 
+@app.route('/get_file_analyze', methods=['POST'])
+def get_file_analyze():
+    file = request.files['file']
+    print(status_dict)
+    if (status_dict[file.filename] == True):
+        return jsonify({
+            "summary": response_dict[file.filename][0],
+            "response": response_dict[file.filename][1],
+            "status": True
+        }), 200
+    else:
+        return jsonify({
+                "status": False
+            }), 200
+
 @app.route('/file_analyze', methods=['POST'])
 def file_analyze():
-    print("Start analyzing")
     file = request.files['file']
+    print("update status")
+    status_dict[file.filename] = False
     summary, response_ = fileAnalyze(file)
 
+    status_dict[file.filename] = True
+    response_dict[file.filename] = (summary, response_)
     return jsonify({
             "summary": summary,
             "response": response_
