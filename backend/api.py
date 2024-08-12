@@ -192,7 +192,7 @@ def upload_file(user_id):
 
         status[file.filename] = False
         print("Send request")
-
+        
         try:
         # Send the request with a very short timeout
             response = requests.post("https://doogle-file-api-9c26b7fba502.herokuapp.com/file_analyze", files=files_, timeout=0.01)
@@ -206,6 +206,7 @@ def upload_file(user_id):
         #     "https://doogle-file-api-9c26b7fba502.herokuapp.com/file_analyze", files=files_)
         
         print("first check")
+        time.sleep(10)
         return_val = requests.post(
             "https://doogle-file-api-9c26b7fba502.herokuapp.com/get_file_analyze", files=files_)
         
